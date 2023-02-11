@@ -1,4 +1,3 @@
-local printTable = require("src.utils.printTable")
 local expect = require("src.expect")
 local buildEnvironment = require("src.runtime.environment")
 
@@ -75,9 +74,8 @@ end
 
 --- Start a test runtime
 ---@param testFiles string[]
+---@return table
 return function(testFiles)
 	local tests = findTests(testFiles)
-	local results = runTests(tests)
-
-	printTable(results, 5)
+	return runTests(tests)
 end

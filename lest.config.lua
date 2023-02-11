@@ -1,3 +1,3 @@
 return {
-	testMatch = "tests/**/*.test.lua",
+	testMatch = { "tests/.+%.test%.lua" },
 }
