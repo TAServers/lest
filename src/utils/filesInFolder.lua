@@ -7,9 +7,13 @@ local LIST_FILES_COMMAND = isUnix and BASH_LIST_FILES or WINDOWS_LIST_FILES
 
 --- Returns a list of files at the specified path
 ---@param path? string -- File path to list. Defaults to the current directory
+---@param normalise? boolean -- Normalise file separators to `/`. Defaults to true
 ---@return string[] -- List of files relative to the search path
-return function(path)
+return function(path, normalise)
 	path = path or "."
+	if normalise == nil then
+		normalise = true
+	end
 
 	local handle, err = io.popen(string.format(LIST_FILES_COMMAND, path))
 	local cwdLength = not isUnix and #getCwd() + 1
@@ -26,6 +30,10 @@ return function(path)
 	for filepath in handle:lines() do
 		i = i + 1
 		files[i] = string.sub(filepath, isUnix and #path + 2 or cwdLength + 1)
+
+		if normalise and not isUnix then
+			files[i] = string.gsub(files[i], "\\", "/")
+		end
 	end
 
 	handle:close()

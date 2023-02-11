@@ -1,4 +1,3 @@
-local printTable = require("src.utils.printTable")
 local OPTIONS = {
 	config = {
 		alias = "c",
@@ -54,9 +53,9 @@ local function parseArgs(args)
 	return parsed
 end
 
---- Lest CLI
+--- Parse command line args
 ---@param args string[]
+---@return table<string, string>
 return function(args)
-	local options = parseArgs(args)
-	printTable(options)
+	return parseArgs(args)
 end
