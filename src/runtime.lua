@@ -25,9 +25,14 @@ local function createEnvironment()
 
 	return setmetatable({
 		expect = expect,
+
 		describe = describe,
 		test = test,
 		it = test,
+
+		xdescribe = function() end,
+		xtest = function() end,
+		xit = function() end,
 	}, {
 		__index,
 	})
