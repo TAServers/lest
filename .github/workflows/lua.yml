@@ -15,4 +15,4 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           version: latest
-          args: --check lua/
+          args: --check .
