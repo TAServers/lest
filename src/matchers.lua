@@ -1,3 +1,5 @@
+local mergeTables = require("src.utils.mergeTables")
+
 local equality = require("src.matchers.equality")
 
-return table.pack(equality, { __index = equality })
+return mergeTables(equality)

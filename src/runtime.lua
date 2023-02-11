@@ -1,31 +1,26 @@
 local printTable = require("src.utils.printTable")
 local expect = require("src.expect")
+local buildEnvironment = require("src.runtime.environment")
 
-local tests = {}
-local currentDescribeScope = tests
+local function findTests(testFiles)
+	local tests = {}
+	local currentDescribeScope = tests
 
-local function describe(name, func)
-	local prevScope = currentDescribeScope
-	currentDescribeScope = {}
+	local function describe(name, func)
+		local prevScope = currentDescribeScope
+		currentDescribeScope = {}
 
-	func()
+		func()
 
-	prevScope[name] = currentDescribeScope
-	currentDescribeScope = prevScope
-end
-
-local function test(name, func)
-	currentDescribeScope[name] = func
-end
-
-local function createEnvironment()
-	local function __index(self, key)
-		return _G[key]
+		prevScope[name] = currentDescribeScope
+		currentDescribeScope = prevScope
 	end
 
-	return setmetatable({
-		expect = expect,
+	local function test(name, func)
+		currentDescribeScope[name] = func
+	end
 
+	local cleanup = buildEnvironment({
 		describe = describe,
 		test = test,
 		it = test,
@@ -33,33 +28,56 @@ local function createEnvironment()
 		xdescribe = function() end,
 		xtest = function() end,
 		xit = function() end,
-	}, {
-		__index,
 	})
+
+	for _, filepath in ipairs(testFiles) do
+		dofile(filepath)
+	end
+
+	cleanup()
+
+	return tests
 end
 
-local function getTestsForFile(filepath, environment)
-	local func, err = loadfile(filepath, "t", environment)
+--- Runs all registered tests
+---@param tests table<string, table | function>
+---@return table
+local function runTests(tests)
+	local function _runTests(testsToRun)
+		local results = {}
 
-	if err then
-		error(err)
+		for name, testOrDescribe in pairs(testsToRun) do
+			if type(testOrDescribe) == "table" then
+				results[name] = _runTests(testOrDescribe)
+			else
+				local success, err = pcall(testOrDescribe)
+				if success then
+					results[name] = { pass = true }
+				else
+					results[name] = { pass = false, error = err }
+				end
+			end
+		end
+
+		return results
 	end
 
-	if not func then
-		error("Failed to load test file " .. filepath)
-	end
+	local cleanup = buildEnvironment({
+		expect = expect,
+	})
 
-	func()
+	local results = _runTests(tests)
+
+	cleanup()
+
+	return results
 end
 
 --- Start a test runtime
 ---@param testFiles string[]
 return function(testFiles)
-	local environment = createEnvironment()
+	local tests = findTests(testFiles)
+	local results = runTests(tests)
 
-	for _, filepath in ipairs(testFiles) do
-		getTestsForFile(filepath, environment)
-	end
-
-	printTable(tests)
+	printTable(results, 5)
 end
