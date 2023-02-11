@@ -1,0 +1,5 @@
+describe("debug", function()
+	it("should pass equality check", function()
+		expect(1):toBe(2)
+	end)
+end)
