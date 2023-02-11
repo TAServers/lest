@@ -1,3 +1,3 @@
-local runtime = require("src.runtime")
+local cli = require("src.cli")
 
-runtime({ "./tests/debug.test.lua" })
+cli(arg)
