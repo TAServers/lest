@@ -50,4 +50,24 @@ describe("deepEqual", function()
 			expect(received).toBe(false)
 		end)
 	end)
+
+	it(
+		"should not stack overflow when tables contain circular reference",
+		function()
+			-- Given
+			local a, b = { val = 5 }, { val = 5 }
+
+			a.a = a
+			b.a = b
+
+			a.key2 = a
+			b.key2 = a
+
+			-- When
+			local received = deepEqual(a, b)
+
+			-- Then
+			expect(received).toBe(true)
+		end
+	)
 end)
