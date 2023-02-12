@@ -6,7 +6,7 @@ afterEach(function()
 	print("After each global")
 end)
 
-describe("debug", function()
+describe("basic", function()
 	beforeEach(function()
 		print("Before each")
 	end)
@@ -45,5 +45,34 @@ describe("debug", function()
 
 	it("throws an error", function()
 		error("This is an error")
+	end)
+end)
+
+describe("mocking", function()
+	local mockedFn = lest.fn(function(arg)
+		return arg
+	end)
+
+	it("should return arg", function()
+		-- Given
+		local expected = 12345
+
+		-- When
+		local received = mockedFn(expected)
+
+		-- Then
+		expect(received).toBe(expected)
+	end)
+
+	it("should mock return", function()
+		-- Given
+		local expected = 12345
+		mockedFn:mockReturnValue(expected)
+
+		-- When
+		local received = mockedFn()
+
+		-- Then
+		expect(received).toBe(expected)
 	end)
 end)

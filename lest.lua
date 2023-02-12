@@ -1,3 +1,5 @@
+require("src.mocking")
+
 local cli = require("src.cli")
 local filesInFolder = require("src.utils.filesInFolder")
 local runtime = require("src.runtime")
