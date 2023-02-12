@@ -113,12 +113,13 @@ describe("lest.fn", function()
 
 		it("should clear and reset any implementations", function()
 			-- Given
-			mockFn:mockImplementation(function()
-				return "always"
-			end)
-			mockFn:mockImplementationOnce(function()
-				return "once"
-			end)
+			mockFn
+				:mockImplementation(function()
+					return "always"
+				end)
+				:mockImplementationOnce(function()
+					return "once"
+				end)
 
 			-- When
 			mockFn:mockReset()
@@ -172,5 +173,57 @@ describe("lest.isMockFunction", function()
 
 		-- Then
 		expect(received).toBe(false)
+	end)
+end)
+
+describe("lest.clear/resetAllMocks", function()
+	it("should clear all mocks", function()
+		-- Given
+		local mockFns = { lest.fn(), lest.fn() }
+		for _, mockFn in ipairs(mockFns) do
+			mockFn()
+		end
+
+		-- When
+		lest.clearAllMocks()
+
+		-- Then
+		for _, mockFn in ipairs(mockFns) do
+			expect(mockFn.mock.lastCall).toBeUndefined()
+			expect(mockFn.mock.lastResult).toBeUndefined()
+			expect(#mockFn.mock.calls).toBe(0)
+			expect(#mockFn.mock.results).toBe(0)
+		end
+	end)
+
+	it("should reset all mocks", function()
+		-- Given
+		local mockFns = {
+			lest.fn()
+				:mockImplementation(function()
+					return "always"
+				end)
+				:mockImplementationOnce(function()
+					return "once"
+				end),
+			lest.fn()
+				:mockImplementation(function()
+					return "always"
+				end)
+				:mockImplementationOnce(function()
+					return "once"
+				end),
+		}
+		for _, mockFn in ipairs(mockFns) do
+			mockFn()
+		end
+
+		-- When
+		lest.resetAllMocks()
+
+		-- Then
+		for _, mockFn in ipairs(mockFns) do
+			expect(mockFn()).toBeUndefined()
+		end
 	end)
 end)

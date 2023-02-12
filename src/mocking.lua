@@ -124,16 +124,23 @@ function mockMeta:mockReset()
 	self._implementationStack = {}
 end
 
+---@type lest.Mock[]
+local allMocks = {}
+
 --- Creates a new mock function
 ---@param implementation? function
 ---@return lest.Mock
 function lest.fn(implementation)
-	return setmetatable({
+	local mockFn = setmetatable({
 		_implementation = implementation or function() end,
 		_implementationStack = {},
 		_name = "lest.fn()",
 		mock = { calls = {}, results = {} },
 	}, mockMeta)
+
+	tablex.push(allMocks, mockFn)
+
+	return mockFn
 end
 
 --- Returns true if the passed value is a mock function
@@ -141,4 +148,16 @@ end
 ---@return boolean
 function lest.isMockFunction(value)
 	return getmetatable(value) == mockMeta
+end
+
+function lest.clearAllMocks()
+	for _, mockFn in ipairs(allMocks) do
+		mockFn:mockClear()
+	end
+end
+
+function lest.resetAllMocks()
+	for _, mockFn in ipairs(allMocks) do
+		mockFn:mockReset()
+	end
 end
