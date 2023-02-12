@@ -83,4 +83,17 @@ describe("lest.fn", function()
 		expect(mockFn()).toBe(1)
 		expect(mockFn()).toBe(2)
 	end)
+
+	it("should set the mock's name", function()
+		-- Given
+		local mockFn = lest.fn()
+		local expected = "mockName"
+
+		-- When
+		mockFn:mockName(expected)
+
+		-- Then
+		expect(mockFn:getMockName()).toBe(expected)
+		expect(tostring(mockFn)).toBe(expected)
+	end)
 end)
