@@ -129,26 +129,45 @@ describe("lest.fn", function()
 		end)
 	end)
 
-	xdescribe("matchers", function()
-		it("toHaveBeenCalled should pass", function() end)
+	describe("matchers", function()
+		it("toHaveBeenCalled should pass", function()
+			-- Given
+			expect(mockFn).never.toHaveBeenCalled()
 
-		it("toHaveBeenCalledTimes should pass", function() end)
+			-- When
+			mockFn()
 
-		it("toHaveBeenCalledWith should pass", function() end)
+			-- Then
+			expect(mockFn).toHaveBeenCalled()
+		end)
 
-		it("toHaveBeenLastCalledWith should pass", function() end)
+		it("toHaveBeenCalledTimes should pass", function()
+			-- Given
+			expect(mockFn).toHaveBeenCalledTimes(0)
+			expect(mockFn).never.toHaveBeenCalledTimes(1)
 
-		it("toHaveBeenNthCalledWith should pass", function() end)
+			-- When
+			mockFn()
 
-		it("toHaveReturned should pass", function() end)
+			-- Then
+			expect(mockFn).toHaveBeenCalledTimes(1)
+		end)
 
-		it("toHaveReturnedTimes should pass", function() end)
+		xit("toHaveBeenCalledWith should pass", function() end)
 
-		it("toHaveReturnedWith should pass", function() end)
+		xit("toHaveBeenLastCalledWith should pass", function() end)
 
-		it("toHaveLastReturnedWith should pass", function() end)
+		xit("toHaveBeenNthCalledWith should pass", function() end)
 
-		it("toHaveNthReturnedWith should pass", function() end)
+		xit("toHaveReturned should pass", function() end)
+
+		xit("toHaveReturnedTimes should pass", function() end)
+
+		xit("toHaveReturnedWith should pass", function() end)
+
+		xit("toHaveLastReturnedWith should pass", function() end)
+
+		xit("toHaveNthReturnedWith should pass", function() end)
 	end)
 end)
 
