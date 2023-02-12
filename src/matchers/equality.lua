@@ -50,6 +50,15 @@ local function toEqual(ctx, received, expected)
 	}
 end
 
+---@type lest.Matcher
+local function toBeTruthy(ctx, received) end
+
+---@type lest.Matcher
+local function toBeFalsy(ctx, received) end
+
+---@type lest.Matcher
+local function toBeInstanceOf(ctx, received, metatable) end
+
 return {
 	toBe = toBe,
 
