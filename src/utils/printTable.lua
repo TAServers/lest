@@ -1,10 +1,4 @@
-local function prettyValue(value)
-	if type(value) == "string" then
-		return '"' .. value .. '"'
-	end
-
-	return tostring(value)
-end
+local prettyValue = require("src.utils.prettyValue")
 
 local function printTable(table, currDepth, maxDepth)
 	local indent = string.rep(" ", currDepth * 4)

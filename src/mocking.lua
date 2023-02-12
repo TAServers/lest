@@ -131,7 +131,7 @@ function lest.fn(implementation)
 	return setmetatable({
 		_implementation = implementation or function() end,
 		_implementationStack = {},
-		_name = "jest.fn()",
+		_name = "lest.fn()",
 		mock = { calls = {}, results = {} },
 	}, mockMeta)
 end

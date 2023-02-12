@@ -12,7 +12,7 @@ describe("basic", function()
 	end)
 
 	it("should fail", function()
-		expect(true).toBe(false)
+		expect("5").toBe(5, "6", 7)
 	end)
 
 	it("should also fail", function()

@@ -1,4 +1,5 @@
 local matchers = require("src.matchers")
+local prettyValue = require("src.utils.prettyValue")
 
 --- Builds a message for the result with the given context
 ---@param context lest.MessageContext
@@ -21,12 +22,12 @@ end
 local function buildSignature(name, args, received, inverted)
 	local stringArgs = {}
 	for i, arg in ipairs(args) do
-		stringArgs[i] = tostring(arg)
+		stringArgs[i] = prettyValue(arg)
 	end
 
 	return string.format(
 		"expect(%s)%s.%s(%s)",
-		tostring(received),
+		prettyValue(received),
 		inverted and ".never" or "",
 		name,
 		table.concat(stringArgs, ", ")
