@@ -1,22 +1,14 @@
-local function toBe(received, expected, ctx)
-	if ctx.inverted then
-		return {
-			pass = received ~= expected,
-			message = string.format(
-				"Expected %s to not be %s",
-				tostring(received),
-				tostring(expected)
-			),
-		}
-	end
-
+local function toBe(received, expected)
 	return {
 		pass = received == expected,
-		message = string.format(
-			"Expected %s to be %s",
-			tostring(received),
-			tostring(expected)
-		),
+		message = function(ctx)
+			return string.format(
+				"Expected %s to%sbe %s",
+				tostring(received),
+				ctx.inverted and " not " or " ",
+				tostring(expected)
+			)
+		end,
 	}
 end
 
