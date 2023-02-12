@@ -1,5 +1,5 @@
-local mergeTables = require("src.utils.mergeTables")
+local tablex = require("src.utils.tablex")
 
 local equality = require("src.matchers.equality")
 
-return mergeTables(equality)
+return tablex.merge(equality)

@@ -1,6 +1,6 @@
 local expect = require("src.expect")
 local buildEnvironment = require("src.runtime.environment")
-local mergeTables = require("src.utils.mergeTables")
+local tablex = require("src.utils.tablex")
 
 local HookKey = {
 	BeforeEach = 0,
@@ -47,20 +47,16 @@ local function findTests(testFiles)
 		xit = function() end,
 
 		beforeEach = function(func)
-			currentDescribeScope[HookKey.BeforeEach][#currentDescribeScope[HookKey.BeforeEach] + 1] =
-				func
+			tablex.push(currentDescribeScope[HookKey.BeforeEach], func)
 		end,
 		beforeAll = function(func)
-			currentDescribeScope[HookKey.BeforeAll][#currentDescribeScope[HookKey.BeforeAll] + 1] =
-				func
+			tablex.push(currentDescribeScope[HookKey.BeforeAll], func)
 		end,
 		afterEach = function(func)
-			currentDescribeScope[HookKey.AfterEach][#currentDescribeScope[HookKey.AfterEach] + 1] =
-				func
+			tablex.push(currentDescribeScope[HookKey.AfterEach], func)
 		end,
 		afterAll = function(func)
-			currentDescribeScope[HookKey.AfterAll][#currentDescribeScope[HookKey.AfterAll] + 1] =
-				func
+			tablex.push(currentDescribeScope[HookKey.AfterAll], func)
 		end,
 	})
 
@@ -113,11 +109,11 @@ local function runTests(tests)
 				if type(testOrDescribe) == "table" then
 					results[name] = _runTests(
 						testOrDescribe,
-						mergeTables(
+						tablex.merge(
 							previousBeforeEach,
 							testsToRun[HookKey.BeforeEach]
 						),
-						mergeTables(
+						tablex.merge(
 							previousAfterEach,
 							testsToRun[HookKey.AfterEach]
 						)
