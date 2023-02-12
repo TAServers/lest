@@ -8,7 +8,7 @@ local unpack = table.unpack or unpack
 ---@alias lest.MockResult { type: "return" | "throw", value: any }
 
 ---@class lest.Mock
----@field mock { calls: any[][], lastCall?: any[], results: lest.MockResult[] }
+---@field mock { calls: any[][], lastCall?: any[], results: lest.MockResult[], lastResult?: lest.MockResult }
 ---@field protected _name string
 ---@field protected _implementation function
 ---@field protected _implementationStack function[]
@@ -16,6 +16,11 @@ local mockMeta = {}
 mockMeta.__index = mockMeta
 
 function mockMeta:__call(...)
+	local function pushResult(result)
+		self.mock.lastResult = result
+		tablex.push(self.mock.results, self.mock.lastResult)
+	end
+
 	local args = { ... }
 	local implementation = table.remove(self._implementationStack, 1)
 		or self._implementation
@@ -27,7 +32,7 @@ function mockMeta:__call(...)
 	tablex.push(self.mock.calls, self.mock.lastCall)
 
 	if success then
-		tablex.push(self.mock.results, {
+		pushResult({
 			type = "return",
 			value = result,
 		})
@@ -35,7 +40,7 @@ function mockMeta:__call(...)
 		return unpack(result)
 	end
 
-	tablex.push(self.mock.results, {
+	pushResult({
 		type = "throw",
 		value = result[1],
 	})
@@ -101,6 +106,24 @@ function mockMeta:mockReturnValueOnce(...)
 	return self:mockImplementationOnce(function()
 		return unpack(args)
 	end)
+end
+
+--- Clears all information stored in the `mockFn.mock` table
+---
+--- Note that this replaces `mockFn.mock`, not its contents.
+--- Make sure you're not storing a stale reference to the old table
+---
+--- To also reset mocked implementations and return values, use `mockFn:mockReset()`
+function mockMeta:mockClear()
+	self.mock = { calls = {}, results = {} }
+end
+
+--- Does everything that `mockFn:mockClear()` does, and also removes any mocked return values or implementations
+function mockMeta:mockReset()
+	self:mockClear()
+
+	self._implementation = function() end
+	self._implementationStack = {}
 end
 
 --- Creates a new mock function

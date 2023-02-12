@@ -1,7 +1,12 @@
 describe("lest.fn", function()
+	local mockFn = lest.fn()
+
+	afterEach(function()
+		mockFn:mockReset()
+	end)
+
 	it("should mock the implementation", function()
 		-- Given
-		local mockFn = lest.fn()
 		local implementation = function() end
 
 		-- When
@@ -13,13 +18,13 @@ describe("lest.fn", function()
 
 	it("should call the mock implementation", function()
 		-- Given
-		local mockFn = lest.fn(function(arg)
+		local mockFnWithConstructorImpl = lest.fn(function(arg)
 			return arg
 		end)
 		local expected = 12345
 
 		-- When
-		local received = mockFn(expected)
+		local received = mockFnWithConstructorImpl(expected)
 
 		-- Then
 		expect(received).toBe(expected)
@@ -27,7 +32,7 @@ describe("lest.fn", function()
 
 	it("should update mock data when called", function()
 		-- Given
-		local mockFn = lest.fn(function(arg)
+		mockFn:mockImplementation(function(arg)
 			return arg
 		end)
 		local expected = 12345
@@ -38,14 +43,13 @@ describe("lest.fn", function()
 		-- Then
 		expect(mockFn.mock.calls[1][1]).toBe(expected)
 		expect(mockFn.mock.lastCall).toBe(mockFn.mock.calls[1])
+
 		expect(mockFn.mock.results[1].type).toBe("return")
 		expect(mockFn.mock.results[1].value[1]).toBe(expected)
+		expect(mockFn.mock.lastResult).toBe(mockFn.mock.results[1])
 	end)
 
 	it("should mock the implementation once", function()
-		-- Given
-		local mockFn = lest.fn()
-
 		-- When
 		mockFn
 			:mockImplementationOnce(function()
@@ -62,7 +66,6 @@ describe("lest.fn", function()
 
 	it("should mock the return value", function()
 		-- Given
-		local mockFn = lest.fn()
 		local expected = 12345
 
 		-- When
@@ -73,9 +76,6 @@ describe("lest.fn", function()
 	end)
 
 	it("should mock the return value once", function()
-		-- Given
-		local mockFn = lest.fn()
-
 		-- When
 		mockFn:mockReturnValueOnce(1):mockReturnValueOnce(2)
 
@@ -86,7 +86,6 @@ describe("lest.fn", function()
 
 	it("should set the mock's name", function()
 		-- Given
-		local mockFn = lest.fn()
 		local expected = "mockName"
 
 		-- When
@@ -95,6 +94,60 @@ describe("lest.fn", function()
 		-- Then
 		expect(mockFn:getMockName()).toBe(expected)
 		expect(tostring(mockFn)).toBe(expected)
+	end)
+
+	describe("clear and reset", function()
+		it("should clear any stored calls and results", function()
+			-- Given
+			mockFn()
+
+			-- When
+			mockFn:mockClear()
+
+			-- Then
+			expect(mockFn.mock.lastCall).toBe(nil)
+			expect(mockFn.mock.lastResult).toBe(nil)
+			expect(#mockFn.mock.calls).toBe(0)
+			expect(#mockFn.mock.results).toBe(0)
+		end)
+
+		it("should clear and reset any implementations", function()
+			-- Given
+			mockFn:mockImplementation(function()
+				return "always"
+			end)
+			mockFn:mockImplementationOnce(function()
+				return "once"
+			end)
+
+			-- When
+			mockFn:mockReset()
+
+			-- Then
+			expect(mockFn()).toBe(nil)
+		end)
+	end)
+
+	xdescribe("matchers", function()
+		it("toHaveBeenCalled should pass", function() end)
+
+		it("toHaveBeenCalledTimes should pass", function() end)
+
+		it("toHaveBeenCalledWith should pass", function() end)
+
+		it("toHaveBeenLastCalledWith should pass", function() end)
+
+		it("toHaveBeenNthCalledWith should pass", function() end)
+
+		it("toHaveReturned should pass", function() end)
+
+		it("toHaveReturnedTimes should pass", function() end)
+
+		it("toHaveReturnedWith should pass", function() end)
+
+		it("toHaveLastReturnedWith should pass", function() end)
+
+		it("toHaveNthReturnedWith should pass", function() end)
 	end)
 end)
 
