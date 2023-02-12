@@ -1,18 +1,6 @@
 local matchers = require("src.matchers")
 local prettyValue = require("src.utils.prettyValue")
 
---- Builds a message for the result with the given context
----@param context lest.MessageContext
----@param result lest.TestResult
----@return string
-local function buildMessage(context, result)
-	if type(result.message) == "function" then
-		return tostring(result.message(context))
-	end
-
-	return tostring(result.message)
-end
-
 --- Builds a signature for the expect call
 ---@param name string -- Name of the matcher that was used
 ---@param args any -- Arguments passed to the matcher
@@ -42,19 +30,19 @@ end
 ---@return function
 local function bindMatcher(name, matcher, received, inverted)
 	return function(...)
-		---@type lest.MessageContext
+		---@type lest.MatcherContext
 		local context = {
 			inverted = inverted,
 		}
 
-		local result = matcher(received, ...)
+		local result = matcher(context, received, ...)
 		if inverted then
 			result.pass = not result.pass
 		end
 
 		if not result.pass then
 			error({
-				message = buildMessage(context, result),
+				message = tostring(result.message),
 				signature = buildSignature(name, { ... }, received, inverted),
 			})
 		end
