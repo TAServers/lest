@@ -39,6 +39,10 @@ describe("debug", function()
 		expect(true).toBe(false)
 	end)
 
+	it("should also fail", function()
+		expect(true).never.toBe(true)
+	end)
+
 	it("throws an error", function()
 		error("This is an error")
 	end)
