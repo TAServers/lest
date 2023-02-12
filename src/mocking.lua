@@ -114,3 +114,10 @@ function lest.fn(implementation)
 		mock = { calls = {}, results = {} },
 	}, mockMeta)
 end
+
+--- Returns true if the passed value is a mock function
+---@param value any
+---@return boolean
+function lest.isMockFunction(value)
+	return getmetatable(value) == mockMeta
+end

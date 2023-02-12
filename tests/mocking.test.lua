@@ -97,3 +97,27 @@ describe("lest.fn", function()
 		expect(tostring(mockFn)).toBe(expected)
 	end)
 end)
+
+describe("lest.isMockFunction", function()
+	it("should return true when the argument is a mock function", function()
+		-- Given
+		local mockFn = lest.fn()
+
+		-- When
+		local received = lest.isMockFunction(mockFn)
+
+		-- Then
+		expect(received).toBe(true)
+	end)
+
+	it("should return false when the argument is a normal function", function()
+		-- Given
+		local normalFn = function() end
+
+		-- When
+		local received = lest.isMockFunction(normalFn)
+
+		-- Then
+		expect(received).toBe(false)
+	end)
+end)
