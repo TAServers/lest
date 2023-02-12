@@ -105,8 +105,8 @@ describe("lest.fn", function()
 			mockFn:mockClear()
 
 			-- Then
-			expect(mockFn.mock.lastCall).toBe(nil)
-			expect(mockFn.mock.lastResult).toBe(nil)
+			expect(mockFn.mock.lastCall).toBeUndefined()
+			expect(mockFn.mock.lastResult).toBeUndefined()
 			expect(#mockFn.mock.calls).toBe(0)
 			expect(#mockFn.mock.results).toBe(0)
 		end)
@@ -124,7 +124,7 @@ describe("lest.fn", function()
 			mockFn:mockReset()
 
 			-- Then
-			expect(mockFn()).toBe(nil)
+			expect(mockFn()).toBeUndefined()
 		end)
 	end)
 

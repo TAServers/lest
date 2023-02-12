@@ -1,21 +1,41 @@
+local prettyValue = require("src.utils.prettyValue")
+
 ---@type lest.Matcher
 local function toBe(ctx, received, expected)
 	return {
 		pass = received == expected,
 		message = string.format(
 			"Expected %s to%sbe %s",
-			tostring(received),
+			prettyValue(received),
 			ctx.inverted and " not " or " ",
-			tostring(expected)
+			prettyValue(expected)
 		),
 	}
 end
 
 ---@type lest.Matcher
-local function toBeDefined(ctx, received) end
+local function toBeDefined(ctx, received)
+	return {
+		pass = received ~= nil,
+		message = string.format(
+			"Expected %s to be %sdefined",
+			prettyValue(received),
+			ctx.inverted and "un" or ""
+		),
+	}
+end
 
 ---@type lest.Matcher
-local function toBeUndefined(ctx, received) end
+local function toBeUndefined(ctx, received)
+	return {
+		pass = received == nil,
+		message = string.format(
+			"Expected %s to be %sdefined",
+			prettyValue(received),
+			ctx.inverted and "" or "un"
+		),
+	}
+end
 
 return {
 	toBe = toBe,

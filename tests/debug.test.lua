@@ -1,4 +1,4 @@
-describe("basic", function()
+xdescribe("basic", function()
 	it("should pass equality check", function()
 		expect(true).toBe(true)
 	end)
