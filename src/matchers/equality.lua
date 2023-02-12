@@ -1,4 +1,5 @@
 local prettyValue = require("src.utils.prettyValue")
+local deepEqual = require("src.utils.deepEqual")
 
 ---@type lest.Matcher
 local function toBe(ctx, received, expected)
@@ -37,9 +38,24 @@ local function toBeUndefined(ctx, received)
 	}
 end
 
+local function toEqual(ctx, received, expected)
+	return {
+		pass = deepEqual(received, expected),
+		message = string.format(
+			"Expected %s to%sdeeply equal %s",
+			prettyValue(received),
+			ctx.inverted and " not " or " ",
+			prettyValue(expected)
+		),
+	}
+end
+
 return {
 	toBe = toBe,
+
 	toBeDefined = toBeDefined,
 	toBeUndefined = toBeUndefined,
 	toBeNil = toBeUndefined,
+
+	toEqual = toEqual,
 }
