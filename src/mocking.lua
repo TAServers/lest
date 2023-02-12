@@ -106,6 +106,18 @@ function mockMeta:mockReturnValueOnce(...)
 	end)
 end
 
+--- Shorthand for `
+--- lest.fn():mockImplementation(function(self) return self end)
+--- `
+---
+--- Useful for functions that chain
+---@return lest.Mock
+function mockMeta:mockReturnThis()
+	return self:mockImplementation(function(this)
+		return this
+	end)
+end
+
 --- Clears all information stored in the `mockFn.mock` table
 ---
 --- Note that this replaces `mockFn.mock`, not its contents.

@@ -84,6 +84,19 @@ describe("lest.fn", function()
 		expect(mockFn()).toBe(2)
 	end)
 
+	it("should mock with chaining", function()
+		-- Given
+		local classInstance = { chainedMethod = mockFn }
+
+		-- When
+		mockFn:mockReturnThis()
+
+		-- Then
+		expect(classInstance:chainedMethod():chainedMethod()).toBe(
+			classInstance
+		)
+	end)
+
 	it("should set the mock's name", function()
 		-- Given
 		local expected = "mockName"
