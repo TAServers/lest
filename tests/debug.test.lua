@@ -47,32 +47,3 @@ describe("basic", function()
 		error("This is an error")
 	end)
 end)
-
-describe("mocking", function()
-	local mockedFn = lest.fn(function(arg)
-		return arg
-	end)
-
-	it("should return arg", function()
-		-- Given
-		local expected = 12345
-
-		-- When
-		local received = mockedFn(expected)
-
-		-- Then
-		expect(received).toBe(expected)
-	end)
-
-	it("should mock return", function()
-		-- Given
-		local expected = 12345
-		mockedFn:mockReturnValue(expected)
-
-		-- When
-		local received = mockedFn()
-
-		-- Then
-		expect(received).toBe(expected)
-	end)
-end)

@@ -17,7 +17,7 @@ mockMeta.__index = mockMeta
 
 function mockMeta:__call(...)
 	local args = { ... }
-	local implementation = tablex.pop(self._implementationStack)
+	local implementation = table.remove(self._implementationStack, 1)
 		or self._implementation
 
 	local result = { pcall(implementation, ...) }
@@ -53,12 +53,24 @@ function mockMeta:mockName(name)
 	self._name = name
 end
 
+--- Gets the name that will be used for the mock in test outputs
+---@return string
+function mockMeta:getMockName()
+	return self._name
+end
+
 --- Mocks the function's implementation
 ---@param implementation function
 ---@return self
 function mockMeta:mockImplementation(implementation)
 	self._implementation = implementation
 	return self
+end
+
+--- Gets the implementation for the mock
+---@return function
+function mockMeta:getMockImplementation()
+	return self._implementation
 end
 
 --- Mocks the function's implementation for one call
