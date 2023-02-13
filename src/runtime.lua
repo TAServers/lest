@@ -120,8 +120,8 @@ local function runTests(tests)
 			if testOrDescribe.isDescribe then
 				results[testOrDescribe.name] = _runTests(
 					testOrDescribe,
-					tablex.merge(previousBeforeEach, testsToRun.beforeEach),
-					tablex.merge(previousAfterEach, testsToRun.afterEach)
+					tablex.squash(previousBeforeEach, testsToRun.beforeEach),
+					tablex.squash(previousAfterEach, testsToRun.afterEach)
 				)
 			else
 				runTest(testOrDescribe --[[@as lest.Test]]) -- LuaLS does not narrow by isDescribe
