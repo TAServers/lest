@@ -17,7 +17,7 @@ local function findTests(testFiles)
 	---@type lest.TestSuite | lest.Describe
 	local currentScope = tests
 
-	--- Registeres a new test suite
+	--- Registers a new test suite
 	---@param name string
 	---@param func fun()
 	local function describe(name, func)
@@ -37,7 +37,7 @@ local function findTests(testFiles)
 		currentScope = prevScope
 	end
 
-	--- Registeres a new test
+	--- Registers a new test
 	---@param name string
 	---@param func fun()
 	local function test(name, func)
