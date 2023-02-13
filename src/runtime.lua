@@ -81,8 +81,11 @@ end
 
 --- Runs all registered tests
 ---@param tests lest.TestSuite
----@return lest.TestResults
+---@return boolean success
+---@return lest.TestResults results
 local function runTests(tests)
+	local allTestsPassed = true
+
 	--- Internal test runner
 	---@param testsToRun lest.TestSuite | lest.Describe
 	---@param previousBeforeEach fun()[]
@@ -115,6 +118,7 @@ local function runTests(tests)
 			if success then
 				results[test.name] = { pass = true }
 			else
+				allTestsPassed = false
 				results[test.name] = { pass = false, error = err }
 			end
 		end
@@ -144,13 +148,7 @@ local function runTests(tests)
 
 	cleanup()
 
-	return results
+	return allTestsPassed, results
 end
 
---- Start a test runtime
----@param testFiles string[]
----@return lest.TestResults
-return function(testFiles)
-	local tests = findTests(testFiles)
-	return runTests(tests)
-end
+return { findTests = findTests, runTests = runTests }
