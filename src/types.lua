@@ -12,3 +12,20 @@
 ---@class lest.MockResult
 ---@field type "return" | "throw"
 ---@field value any
+
+---@class lest.Test
+---@field name string
+---@field func fun()
+---@field isDescribe false
+
+---@class lest.TestSuite: { [number]: lest.Describe | lest.Test }
+---@field beforeEach fun()[]
+---@field beforeAll fun()[]
+---@field afterEach fun()[]
+---@field afterAll fun()[]
+
+---@class lest.Describe: lest.TestSuite
+---@field name string
+---@field isDescribe true
+
+---@class lest.TestResults: { [string]: lest.TestResult | lest.TestResults }
