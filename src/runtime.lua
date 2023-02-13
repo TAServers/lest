@@ -2,39 +2,37 @@ local expect = require("src.expect")
 local buildEnvironment = require("src.runtime.environment")
 local tablex = require("src.utils.tablex")
 
-local HookKey = {
-	BeforeEach = 0,
-	BeforeAll = 1,
-	AfterEach = 2,
-	AfterAll = 3,
-}
-
 local function findTests(testFiles)
 	local tests = {
-		[HookKey.BeforeEach] = {},
-		[HookKey.BeforeAll] = {},
-		[HookKey.AfterEach] = {},
-		[HookKey.AfterAll] = {},
+		beforeEach = {},
+		beforeAll = {},
+		afterEach = {},
+		afterAll = {},
 	}
 	local currentDescribeScope = tests
 
 	local function describe(name, func)
 		local prevScope = currentDescribeScope
 		currentDescribeScope = {
-			[HookKey.BeforeEach] = {},
-			[HookKey.BeforeAll] = {},
-			[HookKey.AfterEach] = {},
-			[HookKey.AfterAll] = {},
+			beforeEach = {},
+			beforeAll = {},
+			afterEach = {},
+			afterAll = {},
+			name = name,
+			isDescribe = true,
 		}
 
 		func()
 
-		prevScope[name] = currentDescribeScope
+		tablex.push(prevScope, currentDescribeScope)
 		currentDescribeScope = prevScope
 	end
 
 	local function test(name, func)
-		currentDescribeScope[name] = func
+		tablex.push(currentDescribeScope, {
+			func = func,
+			name = name,
+		})
 	end
 
 	local cleanup = buildEnvironment({
@@ -47,16 +45,16 @@ local function findTests(testFiles)
 		xit = function() end,
 
 		beforeEach = function(func)
-			tablex.push(currentDescribeScope[HookKey.BeforeEach], func)
+			tablex.push(currentDescribeScope.beforeEach, func)
 		end,
 		beforeAll = function(func)
-			tablex.push(currentDescribeScope[HookKey.BeforeAll], func)
+			tablex.push(currentDescribeScope.beforeAll, func)
 		end,
 		afterEach = function(func)
-			tablex.push(currentDescribeScope[HookKey.AfterEach], func)
+			tablex.push(currentDescribeScope.afterEach, func)
 		end,
 		afterAll = function(func)
-			tablex.push(currentDescribeScope[HookKey.AfterAll], func)
+			tablex.push(currentDescribeScope.afterAll, func)
 		end,
 	})
 
@@ -74,28 +72,23 @@ end
 ---@return table
 local function runTests(tests)
 	local function _runTests(testsToRun, previousBeforeEach, previousAfterEach)
-		local function runHooks(hookKeyOrTable)
-			for _, hook in
-				ipairs(
-					type(hookKeyOrTable) == "table" and hookKeyOrTable
-						or testsToRun[hookKeyOrTable]
-				)
-			do
+		local function runHooks(hookTable)
+			for _, hook in ipairs(hookTable) do
 				hook()
 			end
 		end
 
-		runHooks(HookKey.BeforeAll)
+		runHooks(testsToRun.beforeAll)
 
 		local results = {}
 		local function runTest(name, test)
 			runHooks(previousBeforeEach)
-			runHooks(HookKey.BeforeEach)
+			runHooks(testsToRun.beforeEach)
 
 			local success, err = pcall(test)
 
 			runHooks(previousAfterEach)
-			runHooks(HookKey.AfterEach)
+			runHooks(testsToRun.afterEach)
 
 			if success then
 				results[name] = { pass = true }
@@ -104,27 +97,19 @@ local function runTests(tests)
 			end
 		end
 
-		for name, testOrDescribe in pairs(testsToRun) do
-			if type(name) == "string" then
-				if type(testOrDescribe) == "table" then
-					results[name] = _runTests(
-						testOrDescribe,
-						tablex.merge(
-							previousBeforeEach,
-							testsToRun[HookKey.BeforeEach]
-						),
-						tablex.merge(
-							previousAfterEach,
-							testsToRun[HookKey.AfterEach]
-						)
-					)
-				else
-					runTest(name, testOrDescribe)
-				end
+		for _, testOrDescribe in ipairs(testsToRun) do
+			if testOrDescribe.isDescribe then
+				results[testOrDescribe.name] = _runTests(
+					testOrDescribe,
+					tablex.merge(previousBeforeEach, testsToRun.beforeEach),
+					tablex.merge(previousAfterEach, testsToRun.afterEach)
+				)
+			else
+				runTest(testOrDescribe.name, testOrDescribe.func)
 			end
 		end
 
-		runHooks(HookKey.AfterAll)
+		runHooks(testsToRun.afterAll)
 
 		return results
 	end
