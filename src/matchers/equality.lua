@@ -51,13 +51,41 @@ local function toEqual(ctx, received, expected)
 end
 
 ---@type lest.Matcher
-local function toBeTruthy(ctx, received) end
+local function toBeTruthy(ctx, received)
+	return {
+		pass = not not received,
+		message = string.format(
+			"Expected %s to%sbe truthy",
+			prettyValue(received),
+			ctx.inverted and " not " or " "
+		),
+	}
+end
 
 ---@type lest.Matcher
-local function toBeFalsy(ctx, received) end
+local function toBeFalsy(ctx, received)
+	return {
+		pass = not received,
+		message = string.format(
+			"Expected %s to%sbe falsy",
+			prettyValue(received),
+			ctx.inverted and " not " or " "
+		),
+	}
+end
 
 ---@type lest.Matcher
-local function toBeInstanceOf(ctx, received, metatable) end
+local function toBeInstanceOf(ctx, received, metatable)
+	return {
+		pass = deepEqual(getmetatable(received), metatable),
+		message = string.format(
+			"Expected %s to%sbe an instance of %s",
+			prettyValue(received),
+			ctx.inverted and " not " or " ",
+			prettyValue(metatable)
+		),
+	}
+end
 
 return {
 	toBe = toBe,
@@ -65,6 +93,11 @@ return {
 	toBeDefined = toBeDefined,
 	toBeUndefined = toBeUndefined,
 	toBeNil = toBeUndefined,
+
+	toBeTruthy = toBeTruthy,
+	toBeFalsy = toBeFalsy,
+
+	toBeInstanceOf = toBeInstanceOf,
 
 	toEqual = toEqual,
 }
