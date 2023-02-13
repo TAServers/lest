@@ -26,4 +26,4 @@ local success, results = runtime.runTests(tests)
 
 printTable(results, 5)
 
-os.exit(success)
+os.exit(success and 0 or 1)
