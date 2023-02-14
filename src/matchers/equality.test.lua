@@ -1,4 +1,5 @@
 local equality = require("src.matchers.equality")
+local prettyValue = require("src.utils.prettyValue")
 
 --- Asserts that a matcher passed
 ---@param result lest.TestResult Result of the matcher
@@ -174,7 +175,10 @@ describe("equality matchers", function()
 
 			assertFail(
 				result,
-				("Expected %s to deeply equal %s"):format(tableOne, tableTwo)
+				("Expected %s to deeply equal %s"):format(
+					prettyValue(tableOne),
+					prettyValue(tableTwo)
+				)
 			)
 		end)
 
@@ -247,8 +251,8 @@ describe("equality matchers", function()
 			assertFail(
 				result,
 				("Expected %s to not deeply equal %s"):format(
-					tableOne,
-					tableTwo
+					prettyValue(tableOne),
+					prettyValue(tableTwo)
 				)
 			)
 		end)
@@ -336,8 +340,8 @@ describe("equality matchers", function()
 			assertFail(
 				equality.toBeInstanceOf(CONTEXT, nonInstance, TestClass),
 				("Expected %s to be an instance of %s"):format(
-					nonInstance,
-					TestClass
+					prettyValue(nonInstance),
+					prettyValue(TestClass)
 				)
 			)
 		end)
@@ -349,8 +353,8 @@ describe("equality matchers", function()
 			assertFail(
 				result,
 				("Expected %s to not be an instance of %s"):format(
-					instance,
-					TestClass
+					prettyValue(instance),
+					prettyValue(TestClass)
 				)
 			)
 		end)
