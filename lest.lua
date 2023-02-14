@@ -21,5 +21,9 @@ for _, filepath in ipairs(files) do
 	end
 end
 
-local results = runtime(testFiles)
+local tests = runtime.findTests(testFiles)
+local success, results = runtime.runTests(tests)
+
 printTable(results, 5)
+
+os.exit(success and 0 or 1)

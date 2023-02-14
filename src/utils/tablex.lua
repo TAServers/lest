@@ -19,18 +19,35 @@ return {
 	---@param ... table
 	---@return table
 	merge = function(...)
-		local merged
+		local merged = {}
 
 		for _, tbl in ipairs({ ... }) do
-			if merged then
-				for k, v in pairs(tbl) do
-					merged[k] = v
-				end
-			else
-				merged = tbl
+			for k, v in pairs(tbl) do
+				merged[k] = v
 			end
 		end
 
 		return merged or {}
+	end,
+
+	--- Appends the values of each array into a single array
+	---
+	--- Order of the elements is maintained
+	---@param ... any[]
+	---@return any[]
+	squash = function(...)
+		local squashed, offset = {}, 0
+
+		for _, tbl in ipairs({ ... }) do
+			local lastIndex = 0
+			for i, v in ipairs(tbl) do
+				squashed[i + offset] = v
+				lastIndex = i
+			end
+
+			offset = offset + lastIndex
+		end
+
+		return squashed
 	end,
 }
