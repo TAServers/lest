@@ -76,8 +76,10 @@ end
 
 ---@type lest.Matcher
 local function toBeInstanceOf(ctx, received, metatable)
+	assert(type(metatable) == "table", "Metatable must be a table")
+
 	return {
-		pass = deepEqual(getmetatable(received), metatable),
+		pass = getmetatable(received) == metatable,
 		message = string.format(
 			"Expected %s to%sbe an instance of %s",
 			prettyValue(received),
