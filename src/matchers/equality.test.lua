@@ -2,13 +2,13 @@ local equality = require("src.matchers.equality")
 local prettyValue = require("src.utils.prettyValue")
 
 --- Asserts that a matcher passed
----@param result lest.TestResult Result of the matcher
+---@param result lest.MatcherResult Result of the matcher
 local function assertPass(result)
 	assert(result.pass, "test failed when it should have passed!")
 end
 
 --- Asserts that a matcher failed
----@param result lest.TestResult Result of the matcher
+---@param result lest.MatcherResult Result of the matcher
 ---@param expectedMsg string Expected message of the matcher
 local function assertFail(result, expectedMsg)
 	assert(result.message == expectedMsg, "test has an incorrect fail message!")
