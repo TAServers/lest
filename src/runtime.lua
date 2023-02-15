@@ -2,7 +2,7 @@ local expect = require("src.expect")
 local buildEnvironment = require("src.runtime.environment")
 local tablex = require("src.utils.tablex")
 local withTimeout = require("src.utils.timeout")
-local TestNodeType = require("src.interface.testnodetype")
+local NodeType = require("src.interface.testnodetype")
 
 --- Finds every test in the given files
 ---@param testFiles string[]
@@ -25,7 +25,7 @@ local function findTests(testFiles)
 			afterEach = {},
 			afterAll = {},
 			name = name,
-			type = TestNodeType.Describe,
+			type = NodeType.Describe,
 		}
 
 		func()
@@ -41,7 +41,7 @@ local function findTests(testFiles)
 		tablex.push(currentScope, {
 			func = func,
 			name = name,
-			type = TestNodeType.Test,
+			type = NodeType.Test,
 		})
 	end
 
@@ -75,7 +75,7 @@ local function findTests(testFiles)
 			afterAll = {},
 			afterEach = {},
 			name = filepath,
-			type = TestNodeType.Suite,
+			type = NodeType.Suite,
 		}
 
 		dofile(filepath)
@@ -99,7 +99,7 @@ local function runTests(tests)
 	---@param testsToRun lest.TestSuite | lest.Describe
 	---@param previousBeforeEach fun()[]
 	---@param previousAfterEach fun()[]
-	---@return lest.TestResults
+	---@return lest.TestSuiteResults | lest.DescribeResults
 	local function _runTests(testsToRun, previousBeforeEach, previousAfterEach)
 		--- Helper to run hooks
 		---@param hookTable fun()[]
@@ -114,6 +114,7 @@ local function runTests(tests)
 
 		runHooks(testsToRun.beforeAll)
 
+		---@type lest.TestSuiteResults | lest.DescribeResults
 		local results = {}
 
 		--- Helper to run a single test
@@ -128,19 +129,31 @@ local function runTests(tests)
 			runHooks(testsToRun.afterEach)
 
 			if success then
-				results[test.name] = { pass = true }
+				tablex.push(results, {
+					type = NodeType.Test,
+					name = test.name,
+					pass = true,
+				})
 			else
 				allTestsPassed = false
-				results[test.name] = { pass = false, error = err }
+				tablex.push(results, {
+					type = NodeType.Test,
+					name = test.name,
+					pass = false,
+					error = err,
+				})
 			end
 		end
 
 		for _, testOrDescribe in ipairs(testsToRun) do
-			if testOrDescribe.type == TestNodeType.Describe then
-				results[testOrDescribe.name] = _runTests(
-					testOrDescribe,
-					tablex.squash(previousBeforeEach, testsToRun.beforeEach),
-					tablex.squash(previousAfterEach, testsToRun.afterEach)
+			if testOrDescribe.type == NodeType.Describe then
+				tablex.push(
+					results,
+					_runTests(
+						testOrDescribe,
+						tablex.squash(previousBeforeEach, testsToRun.beforeEach),
+						tablex.squash(previousAfterEach, testsToRun.afterEach)
+					)
 				)
 			else
 				runTest(testOrDescribe --[[@as lest.Test]]) -- LuaLS does not narrow by isDescribe
@@ -149,6 +162,8 @@ local function runTests(tests)
 
 		runHooks(testsToRun.afterAll)
 
+		results.type = testsToRun.type
+		results.name = testsToRun.name
 		return results
 	end
 
@@ -158,7 +173,7 @@ local function runTests(tests)
 
 	local results = {}
 	for _, testSuite in ipairs(tests) do
-		results[testSuite.name] = _runTests(testSuite, {}, {})
+		tablex.push(results, _runTests(testSuite, {}, {}))
 	end
 
 	cleanup()
