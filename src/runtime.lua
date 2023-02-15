@@ -2,21 +2,17 @@ local expect = require("src.expect")
 local buildEnvironment = require("src.runtime.environment")
 local tablex = require("src.utils.tablex")
 local withTimeout = require("src.utils.timeout")
+local TestNodeType = require("src.interface.testnodetype")
 
 --- Finds every test in the given files
 ---@param testFiles string[]
----@return lest.TestSuite
+---@return lest.Tests
 local function findTests(testFiles)
-	---@type lest.TestSuite
-	local tests = {
-		beforeEach = {},
-		beforeAll = {},
-		afterEach = {},
-		afterAll = {},
-	}
+	---@type lest.Tests
+	local tests = {}
 
 	---@type lest.TestSuite | lest.Describe
-	local currentScope = tests
+	local currentScope
 
 	--- Registers a new test suite
 	---@param name string
@@ -29,7 +25,7 @@ local function findTests(testFiles)
 			afterEach = {},
 			afterAll = {},
 			name = name,
-			isDescribe = true,
+			type = TestNodeType.Describe,
 		}
 
 		func()
@@ -45,6 +41,7 @@ local function findTests(testFiles)
 		tablex.push(currentScope, {
 			func = func,
 			name = name,
+			type = TestNodeType.Test,
 		})
 	end
 
@@ -72,7 +69,18 @@ local function findTests(testFiles)
 	})
 
 	for _, filepath in ipairs(testFiles) do
+		currentScope = {
+			beforeAll = {},
+			beforeEach = {},
+			afterAll = {},
+			afterEach = {},
+			name = filepath,
+			type = TestNodeType.Suite,
+		}
+
 		dofile(filepath)
+
+		tablex.push(tests, currentScope)
 	end
 
 	cleanup()
@@ -81,7 +89,7 @@ local function findTests(testFiles)
 end
 
 --- Runs all registered tests
----@param tests lest.TestSuite
+---@param tests lest.Tests
 ---@return boolean success
 ---@return lest.TestResults results
 local function runTests(tests)
@@ -128,7 +136,7 @@ local function runTests(tests)
 		end
 
 		for _, testOrDescribe in ipairs(testsToRun) do
-			if testOrDescribe.isDescribe then
+			if testOrDescribe.type == TestNodeType.Describe then
 				results[testOrDescribe.name] = _runTests(
 					testOrDescribe,
 					tablex.squash(previousBeforeEach, testsToRun.beforeEach),
@@ -148,7 +156,10 @@ local function runTests(tests)
 		expect = expect,
 	})
 
-	local results = _runTests(tests, {}, {})
+	local results = {}
+	for _, testSuite in ipairs(tests) do
+		results[testSuite.name] = _runTests(testSuite, {}, {})
+	end
 
 	cleanup()
 
