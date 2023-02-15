@@ -8,16 +8,16 @@ local function withTimeout(timeout, func, ...)
 	local startTime = os.clock()
 	local timedOut = false
 
-	hook.setLineHook(function()
+	hook.setCountHook(function()
 		if not timedOut and os.clock() - startTime > timeout then
 			timedOut = true
-			TimeoutError:throw()
+			error(TimeoutError())
 		end
 	end)
 
 	local results = { pcall(func, ...) }
 
-	hook.setLineHook()
+	hook.setCountHook()
 
 	return unpack(results)
 end

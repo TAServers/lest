@@ -1,6 +1,7 @@
 local expect = require("src.expect")
 local buildEnvironment = require("src.runtime.environment")
 local tablex = require("src.utils.tablex")
+local withTimeout = require("src.utils.timeout")
 
 --- Finds every test in the given files
 ---@param testFiles string[]
@@ -110,7 +111,7 @@ local function runTests(tests)
 			runHooks(previousBeforeEach)
 			runHooks(testsToRun.beforeEach)
 
-			local success, err = pcall(test.func)
+			local success, err = withTimeout(5, test.func)
 
 			runHooks(previousAfterEach)
 			runHooks(testsToRun.afterEach)
