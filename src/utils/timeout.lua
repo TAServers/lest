@@ -10,8 +10,8 @@ local function withTimeout(timeout, func, ...)
 	print("OUTSIDE HOOK", timeout)
 
 	hook.setCountHook(function()
-		print("INSIDE HOOK", timeout)
 		if not timedOut and os.clock() - startTime > timeout then
+			print("TIMEOUT", timeout)
 			timedOut = true
 			error(TimeoutError(timeout))
 		end
