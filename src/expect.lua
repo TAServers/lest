@@ -1,5 +1,6 @@
 local matchers = require("src.matchers")
 local prettyValue = require("src.utils.prettyValue")
+local TestResultError = require("src.errors.testresult")
 
 --- Builds a signature for the expect call
 ---@param name string -- Name of the matcher that was used
@@ -41,10 +42,12 @@ local function bindMatcher(name, matcher, received, inverted)
 		end
 
 		if not result.pass then
-			error({
-				message = tostring(result.message),
-				signature = buildSignature(name, { ... }, received, inverted),
-			})
+			error(
+				TestResultError(
+					tostring(result.message),
+					buildSignature(name, { ... }, received, inverted)
+				)
+			)
 		end
 	end
 end
