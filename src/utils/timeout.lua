@@ -7,8 +7,10 @@ local unpack = table.unpack or unpack
 local function withTimeout(timeout, func, ...)
 	local startTime = os.clock()
 	local timedOut = false
+	print("OUTSIDE HOOK", timeout)
 
 	hook.setCountHook(function()
+		print("INSIDE HOOK", timeout)
 		if not timedOut and os.clock() - startTime > timeout then
 			timedOut = true
 			error(TimeoutError(timeout))
