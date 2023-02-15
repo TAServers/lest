@@ -12,7 +12,6 @@ local function withTimeout(timeout, func, ...)
 		pcall(function(...)
 			hook.setCountHook(function()
 				if not timedOut and os.clock() - startTime > timeout then
-					print("TIMEOUT", timeout)
 					timedOut = true
 					error(TimeoutError(timeout))
 				end
