@@ -11,7 +11,7 @@ local function withTimeout(timeout, func, ...)
 	hook.setCountHook(function()
 		if not timedOut and os.clock() - startTime > timeout then
 			timedOut = true
-			error(TimeoutError())
+			error(TimeoutError(timeout))
 		end
 	end)
 

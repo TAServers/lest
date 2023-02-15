@@ -1,19 +1,24 @@
+---@class ErrorBody: table
+---@field message string
+
 ---@class Error
----@operator call(...): table
+---@operator call(...): ErrorBody
 
 --- Registers a new error class
 ---@param name string
----@param constructor fun(...: any): table
+---@param constructor fun(...: any): ErrorBody
 ---@return Error
 local function registerError(name, constructor)
-	local function __tostring()
-		return name
-	end
-
-	local meta = { __tostring = __tostring }
+	local meta = {
+		__tostring = function(self)
+			return string.format("%s: %s", name, self.message)
+		end,
+	}
 
 	return setmetatable(meta, {
-		__tostring = __tostring,
+		__tostring = function()
+			return name
+		end,
 		__call = function(self, ...)
 			return setmetatable(constructor(...), meta)
 		end,

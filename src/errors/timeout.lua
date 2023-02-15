@@ -1,7 +1,10 @@
 local registerError = require("src.errors.register")
 
-return registerError("TimeoutError", function()
+return registerError("TimeoutError", function(timeout)
 	return {
-		message = "Function call timed out",
+		message = string.format(
+			"Function call exceeded %ims timeout",
+			timeout * 1000
+		),
 	}
 end)

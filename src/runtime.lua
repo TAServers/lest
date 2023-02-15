@@ -97,7 +97,10 @@ local function runTests(tests)
 		---@param hookTable fun()[]
 		local function runHooks(hookTable)
 			for _, hook in ipairs(hookTable) do
-				hook()
+				local success, err = withTimeout(5, hook)
+				if not success then
+					error(err)
+				end
 			end
 		end
 
