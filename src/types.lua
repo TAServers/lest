@@ -13,19 +13,24 @@
 ---@field type "return" | "throw"
 ---@field value any
 
----@class lest.Test
+---@class lest.TestNode
+---@field type lest.TestNodeType
 ---@field name string
----@field func fun()
----@field isDescribe false
 
----@class lest.TestSuite: { [number]: lest.Describe | lest.Test }
+---@class lest.Test: lest.TestNode
+---@field type 0
+---@field func fun()
+
+---@class lest.Describe: lest.TestNode, { [number]: lest.Describe | lest.Test }
+---@field type 1
 ---@field beforeEach fun()[]
 ---@field beforeAll fun()[]
 ---@field afterEach fun()[]
 ---@field afterAll fun()[]
 
----@class lest.Describe: lest.TestSuite
----@field name string
----@field isDescribe true
+---@class lest.TestSuite: lest.Describe
+---@field type 2
+
+---@class lest.Tests: { [number]: lest.TestSuite }
 
 ---@class lest.TestResults: { [string]: lest.TestResult | lest.TestResults }
