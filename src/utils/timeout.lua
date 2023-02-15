@@ -7,17 +7,20 @@ local unpack = table.unpack or unpack
 local function withTimeout(timeout, func, ...)
 	local startTime = os.clock()
 	local timedOut = false
-	print("OUTSIDE HOOK", timeout)
 
-	hook.setCountHook(function()
-		if not timedOut and os.clock() - startTime > timeout then
-			print("TIMEOUT", timeout)
-			timedOut = true
-			error(TimeoutError(timeout))
-		end
-	end)
+	local results = {
+		pcall(function(...)
+			hook.setCountHook(function()
+				if not timedOut and os.clock() - startTime > timeout then
+					print("TIMEOUT", timeout)
+					timedOut = true
+					error(TimeoutError(timeout))
+				end
+			end)
 
-	local results = { pcall(func, ...) }
+			return func(...)
+		end, ...),
+	}
 
 	hook.setCountHook()
 
