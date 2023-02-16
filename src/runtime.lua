@@ -6,8 +6,14 @@ local NodeType = require("src.interface.testnodetype")
 
 lest = lest or {}
 
-local DEFAULT_TIMEOUT_SECONDS = 5
-local currentTimeoutSeconds = DEFAULT_TIMEOUT_SECONDS
+local defaultTimeoutSeconds = 5
+local currentTimeoutSeconds = defaultTimeoutSeconds
+
+--- Sets the timeout used by default
+---@param timeout number
+local function setDefaultTimeout(timeout)
+	defaultTimeoutSeconds = timeout / 1000
+end
 
 --- Sets the timeout for all hooks and tests in this suite
 ---@param timeout number
@@ -97,7 +103,7 @@ local function findTests(testFiles)
 		}
 
 		dofile(filepath)
-		currentTimeoutSeconds = DEFAULT_TIMEOUT_SECONDS
+		currentTimeoutSeconds = defaultTimeoutSeconds
 
 		tablex.push(tests, currentScope)
 	end
@@ -200,4 +206,8 @@ local function runTests(tests)
 	return allTestsPassed, results
 end
 
-return { findTests = findTests, runTests = runTests }
+return {
+	findTests = findTests,
+	runTests = runTests,
+	setDefaultTimeout = setDefaultTimeout,
+}
