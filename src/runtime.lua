@@ -4,11 +4,13 @@ local tablex = require("src.utils.tablex")
 local withTimeout = require("src.utils.timeout")
 local NodeType = require("src.interface.testnodetype")
 
+local DEFAULT_TIMEOUT_SECONDS = 5
+
 --- Finds every test in the given files
 ---@param testFiles string[]
----@return lest.Tests
+---@return lest.TestSuite[]
 local function findTests(testFiles)
-	---@type lest.Tests
+	---@type lest.TestSuite[]
 	local tests = {}
 
 	---@type lest.TestSuite | lest.Describe
@@ -37,12 +39,27 @@ local function findTests(testFiles)
 	--- Registers a new test
 	---@param name string
 	---@param func fun()
-	local function test(name, func)
+	---@param timeout number
+	local function test(name, func, timeout)
 		tablex.push(currentScope, {
 			func = func,
 			name = name,
 			type = NodeType.Test,
+			timeout = timeout and (timeout / 1000) or DEFAULT_TIMEOUT_SECONDS,
 		})
+	end
+
+	--- Makes a new hook register function
+	---@param key "beforeEach" | "beforeAll" | "afterEach" | "afterAll"
+	---@return fun(func: fun(), timeout: number)
+	local function makeHook(key)
+		return function(func, timeout)
+			tablex.push(currentScope[key], {
+				func = func,
+				timeout = timeout and (timeout / 1000)
+					or DEFAULT_TIMEOUT_SECONDS,
+			})
+		end
 	end
 
 	local cleanup = buildEnvironment({
@@ -54,18 +71,10 @@ local function findTests(testFiles)
 		xtest = function() end,
 		xit = function() end,
 
-		beforeEach = function(func)
-			tablex.push(currentScope.beforeEach, func)
-		end,
-		beforeAll = function(func)
-			tablex.push(currentScope.beforeAll, func)
-		end,
-		afterEach = function(func)
-			tablex.push(currentScope.afterEach, func)
-		end,
-		afterAll = function(func)
-			tablex.push(currentScope.afterAll, func)
-		end,
+		beforeEach = makeHook("beforeEach"),
+		beforeAll = makeHook("beforeAll"),
+		afterEach = makeHook("afterEach"),
+		afterAll = makeHook("afterAll"),
 	})
 
 	for _, filepath in ipairs(testFiles) do
@@ -89,23 +98,23 @@ local function findTests(testFiles)
 end
 
 --- Runs all registered tests
----@param tests lest.Tests
+---@param tests lest.TestSuite[]
 ---@return boolean success
----@return lest.TestResults results
+---@return lest.TestSuiteResults[] results
 local function runTests(tests)
 	local allTestsPassed = true
 
 	--- Internal test runner
 	---@param testsToRun lest.TestSuite | lest.Describe
-	---@param previousBeforeEach fun()[]
-	---@param previousAfterEach fun()[]
+	---@param previousBeforeEach lest.Hook[]
+	---@param previousAfterEach lest.Hook[]
 	---@return lest.TestSuiteResults | lest.DescribeResults
 	local function _runTests(testsToRun, previousBeforeEach, previousAfterEach)
 		--- Helper to run hooks
-		---@param hookTable fun()[]
+		---@param hookTable lest.Hook[]
 		local function runHooks(hookTable)
 			for _, hook in ipairs(hookTable) do
-				local success, err = withTimeout(5, hook)
+				local success, err = withTimeout(hook.timeout, hook.func)
 				if not success then
 					error(err)
 				end
@@ -123,7 +132,7 @@ local function runTests(tests)
 			runHooks(previousBeforeEach)
 			runHooks(testsToRun.beforeEach)
 
-			local success, err = withTimeout(5, test.func)
+			local success, err = withTimeout(test.timeout, test.func)
 
 			runHooks(previousAfterEach)
 			runHooks(testsToRun.afterEach)

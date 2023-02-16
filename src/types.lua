@@ -20,18 +20,21 @@
 ---@class lest.Test: lest.TestNode
 ---@field type 0
 ---@field func fun()
+---@field timeout number
+
+---@class lest.Hook
+---@field func fun()
+---@field timeout number
 
 ---@class lest.Describe: lest.TestNode, { [number]: lest.Describe | lest.Test }
 ---@field type 1
----@field beforeEach fun()[]
----@field beforeAll fun()[]
----@field afterEach fun()[]
----@field afterAll fun()[]
+---@field beforeEach lest.Hook[]
+---@field beforeAll lest.Hook[]
+---@field afterEach lest.Hook[]
+---@field afterAll lest.Hook[]
 
 ---@class lest.TestSuite: lest.Describe
 ---@field type 2
-
----@class lest.Tests: { [number]: lest.TestSuite }
 
 ---@class lest.TestResultNode
 ---@field type lest.NodeType
@@ -48,5 +51,3 @@
 
 ---@class lest.TestSuiteResults: lest.DescribeResults
 ---@field type 2
-
----@class lest.TestResults: { [number]: lest.TestSuiteResults }
