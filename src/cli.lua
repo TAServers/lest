@@ -1,18 +1,21 @@
 local OPTIONS = {
 	config = {
-		alias = "c",
 		takesArg = true,
 		default = "lest.config.lua",
+	},
+	testTimeout = {
+		takesArg = true,
+		cast = function(val)
+			local num = tonumber(val)
+			assert(num, "Expected testTimeout to be a number")
+			return num
+		end,
 	},
 }
 
 local PREFIXED_OPTIONS = {}
-local ALIASES = {}
-for optionName, option in pairs(OPTIONS) do
+for optionName, _ in pairs(OPTIONS) do
 	PREFIXED_OPTIONS["--" .. optionName] = optionName
-	if option.alias then
-		ALIASES["-" .. option.alias] = optionName
-	end
 end
 
 local function parseArgs(args)
@@ -21,7 +24,7 @@ local function parseArgs(args)
 	local argIdx = 1
 	while argIdx <= #args do
 		local arg = args[argIdx]
-		local optionName = PREFIXED_OPTIONS[arg] or ALIASES[arg]
+		local optionName = PREFIXED_OPTIONS[arg]
 
 		if not optionName then
 			error("Unknown option: " .. arg)
@@ -45,8 +48,12 @@ local function parseArgs(args)
 	end
 
 	for optionName, option in pairs(OPTIONS) do
-		if option.takesArg and option.default and not parsed[optionName] then
-			parsed[optionName] = option.default
+		if option.takesArg then
+			if not parsed[optionName] then
+				parsed[optionName] = option.default
+			elseif option.cast then
+				parsed[optionName] = option.cast(parsed[optionName])
+			end
 		end
 	end
 
@@ -55,7 +62,7 @@ end
 
 --- Parse command line args
 ---@param args string[]
----@return table<string, string>
+---@return table<string, any>
 return function(args)
 	return parseArgs(args)
 end
