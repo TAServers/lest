@@ -204,7 +204,7 @@ describe("lest.isMockFunction", function()
 		local received = lest.isMockFunction(normalFn)
 
 		-- Then
-		expect(received).never.toBe(false)
+		expect(received).toBe(false)
 	end)
 end)
 
