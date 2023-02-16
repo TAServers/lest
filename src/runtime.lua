@@ -4,7 +4,17 @@ local tablex = require("src.utils.tablex")
 local withTimeout = require("src.utils.timeout")
 local NodeType = require("src.interface.testnodetype")
 
+lest = lest or {}
+
 local DEFAULT_TIMEOUT_SECONDS = 5
+local currentTimeoutSeconds = DEFAULT_TIMEOUT_SECONDS
+
+--- Sets the timeout for all hooks and tests in this suite
+---@param timeout number
+---@diagnostic disable-next-line: duplicate-set-field
+function lest.setTimeout(timeout)
+	currentTimeoutSeconds = timeout / 1000
+end
 
 --- Finds every test in the given files
 ---@param testFiles string[]
@@ -45,7 +55,7 @@ local function findTests(testFiles)
 			func = func,
 			name = name,
 			type = NodeType.Test,
-			timeout = timeout and (timeout / 1000) or DEFAULT_TIMEOUT_SECONDS,
+			timeout = timeout and (timeout / 1000) or currentTimeoutSeconds,
 		})
 	end
 
@@ -56,8 +66,7 @@ local function findTests(testFiles)
 		return function(func, timeout)
 			tablex.push(currentScope[key], {
 				func = func,
-				timeout = timeout and (timeout / 1000)
-					or DEFAULT_TIMEOUT_SECONDS,
+				timeout = timeout and (timeout / 1000) or currentTimeoutSeconds,
 			})
 		end
 	end
@@ -88,6 +97,7 @@ local function findTests(testFiles)
 		}
 
 		dofile(filepath)
+		currentTimeoutSeconds = DEFAULT_TIMEOUT_SECONDS
 
 		tablex.push(tests, currentScope)
 	end
