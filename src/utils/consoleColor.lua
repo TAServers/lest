@@ -1,35 +1,34 @@
-local ANSI_COLOR_TEMPLATE = "\x1b[%s;%s;%sm"
+local ANSI_COLOUR_TEMPLATE = "\x1b[%s;%s;%sm%s\x1b[0;0;0m"
 local DEFAULT_BG_CODE = 49
 
-local RESET_CODE = ANSI_COLOR_TEMPLATE:format(0, 0, 0)
-
---- Creates a function which takes in text and colors it according to the arguments.
+--- Creates a function which takes in text and colours it according to the arguments.
 ---@param modifier number 0 means normal, 1 means bold and 2 means dimmed
----@param colorCode number ANSI escape color code
----@param bgColorCode number|nil Optional background color code
+---@param colourCode number ANSI escape colour code
+---@param bgColourCode number|nil Optional background colour code
 ---@return fun(text:string|nil):string textFn
-local function createColoredTextFn(modifier, colorCode, bgColorCode)
+local function createColouredTextFn(modifier, colourCode, bgColourCode)
 	return function(text)
 		text = text or ""
-		bgColorCode = bgColorCode or DEFAULT_BG_CODE
+		bgColourCode = bgColourCode or DEFAULT_BG_CODE
 
-		return ANSI_COLOR_TEMPLATE:format(
+		return ANSI_COLOUR_TEMPLATE:format(
 			tostring(modifier),
-			tostring(colorCode),
-			tostring(bgColorCode)
-		) .. text .. RESET_CODE
+			tostring(colourCode),
+			tostring(bgColourCode),
+			text
+		)
 	end
 end
 
 return {
-	GREEN = createColoredTextFn(0, 32),
-	RED = createColoredTextFn(0, 31),
+	GREEN = createColouredTextFn(0, 32),
+	RED = createColouredTextFn(0, 31),
 
-	WHITE_ON_RED_BOLD = createColoredTextFn(1, 37, 41),
-	WHITE_ON_GREEN_BOLD = createColoredTextFn(1, 37, 42),
+	WHITE_ON_RED_BOLD = createColouredTextFn(1, 37, 41),
+	WHITE_ON_GREEN_BOLD = createColouredTextFn(1, 37, 42),
 
-	BOLD = createColoredTextFn(1, 39),
-	BOLD_RED = createColoredTextFn(1, 31),
+	BOLD = createColouredTextFn(1, 39),
+	BOLD_RED = createColouredTextFn(1, 31),
 
-	DIMMED = createColoredTextFn(2, 39),
+	DIMMED = createColouredTextFn(2, 39),
 }
