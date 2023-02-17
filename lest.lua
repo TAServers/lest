@@ -22,6 +22,12 @@ for _, filepath in ipairs(files) do
 	end
 end
 
+if options.testTimeout then
+	runtime.setDefaultTimeout(options.testTimeout)
+elseif config.testTimeout then
+	runtime.setDefaultTimeout(config.testTimeout)
+end
+
 local tests = runtime.findTests(testFiles)
 local success, results = runtime.runTests(tests)
 

@@ -46,4 +46,21 @@ describe("timeout", function()
 		expect(success).toBe(false)
 		expect(err).toBeInstanceOf(TimeoutError)
 	end)
+
+	it(
+		"should adjust the timeout with lest.setTimeout while running",
+		function()
+			-- Given
+			local func = function()
+				lest.setTimeout(-1)
+			end
+
+			-- When
+			local success, err = withTimeout(1000, func)
+
+			-- Then
+			expect(success).toBe(false)
+			expect(err).toBeInstanceOf(TimeoutError)
+		end
+	)
 end)
