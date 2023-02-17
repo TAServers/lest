@@ -1,3 +1,5 @@
+local COLOURS = require("src.utils.consoleColor")
+
 local matchers = require("src.matchers")
 local prettyValue = require("src.utils.prettyValue")
 local TestResultError = require("src.errors.testresult")
@@ -15,11 +17,15 @@ local function buildSignature(name, args, received, inverted)
 	end
 
 	return string.format(
-		"expect(%s)%s.%s(%s)",
-		prettyValue(received),
+		"%s%s%s%s.%s%s%s%s",
+		COLOURS.DIMMED("expect("),
+		COLOURS.RECEIVED(prettyValue(received)),
+		COLOURS.DIMMED(")"),
 		inverted and ".never" or "",
-		name,
-		table.concat(stringArgs, ", ")
+		COLOURS.HIGHLIGHT(name),
+		COLOURS.DIMMED("("),
+		COLOURS.EXPECTED(table.concat(stringArgs, ", ")),
+		COLOURS.DIMMED(")")
 	)
 end
 

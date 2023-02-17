@@ -20,15 +20,26 @@ local function createColouredTextFn(modifier, colourCode, bgColourCode)
 	end
 end
 
-return {
-	GREEN = createColouredTextFn(0, 32),
-	RED = createColouredTextFn(0, 31),
+local COLORS = {
+	PASS = createColouredTextFn(0, 32),
+	FAIL = createColouredTextFn(0, 31),
 
-	WHITE_ON_RED_BOLD = createColouredTextFn(1, 37, 41),
-	WHITE_ON_GREEN_BOLD = createColouredTextFn(1, 37, 42),
+	PASS_HEADER = createColouredTextFn(1, 37, 42),
+	FAIL_HEADER = createColouredTextFn(1, 37, 41),
+
+	TESTS_PASSED = createColouredTextFn(1, 32),
+	TESTS_FAILED = createColouredTextFn(1, 31),
+
+	ERROR_HEADER = createColouredTextFn(1, 31),
 
 	BOLD = createColouredTextFn(1, 39),
-	BOLD_RED = createColouredTextFn(1, 31),
-
 	DIMMED = createColouredTextFn(2, 39),
+	HIGHLIGHT = createColouredTextFn(0, 37),
 }
+
+-- Aliases which may be changed or themed at a future date
+COLORS.EXPECTED = COLORS.PASS
+COLORS.RECEIVED = COLORS.FAIL
+COLORS.FILENAME = COLORS.BOLD
+
+return COLORS
