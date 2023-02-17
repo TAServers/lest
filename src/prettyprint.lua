@@ -10,7 +10,6 @@ local TAB_SIZE = 2
 
 local NodeType = require("src.interface.testnodetype")
 local tablex = require("src.utils.tablex")
-local printTable = require("src.utils.printTable")
 local prettyValue = require("src.utils.prettyValue")
 
 local function getTabs(amount)
