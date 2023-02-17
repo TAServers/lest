@@ -3,7 +3,6 @@ require("src.mocking")
 local cli = require("src.cli")
 local filesInFolder = require("src.utils.filesInFolder")
 local runtime = require("src.runtime")
-local printTable = require("src.utils.printTable")
 local prettyPrint = require("src.prettyprint")
 
 local options = cli(arg)

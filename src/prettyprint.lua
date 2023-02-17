@@ -43,7 +43,7 @@ local function traverseNodes(node, onNode, onEnd, _depth)
 end
 
 --- Prints a simple summary about the tests
----@param results lest.TestResults
+---@param results lest.TestSuiteResults
 ---@param testSuitesPassed table<string, boolean>
 local function printSummary(results, testSuitesPassed)
 	local passedTests, failedTests, totalTests = 0, 0, 0
@@ -121,7 +121,7 @@ local function printSummary(results, testSuitesPassed)
 end
 
 --- Prints detailed error reports about the tests that failed.
----@param results lest.TestResults
+---@param results lest.TestSuiteResults
 local function printTestErrors(results)
 	---@type table<number, {displayName: string, result: lest.TestResult}>
 	local failedTests = {}
@@ -167,7 +167,7 @@ local function printTestErrors(results)
 end
 
 --- Prints detailed reports about the test suites in the console.
----@param results lest.TestResults
+---@param results lest.TestSuiteResults
 ---@param testSuitesPassed table<string, boolean> Table containg which test suites passed
 local function printDetailedReports(results, testSuitesPassed)
 	--- Replicates the Jest test header output
@@ -225,7 +225,7 @@ local function printDetailedReports(results, testSuitesPassed)
 end
 
 --- Pretty prints the final test results
----@param results lest.TestResults
+---@param results lest.TestSuiteResults
 return function(results)
 	---@type table<string, boolean>
 	local testSuitesPassed = {}
