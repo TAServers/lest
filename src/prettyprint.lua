@@ -24,16 +24,12 @@ local function traverseNodes(node, onNode, onEnd, _depth)
 	_depth = _depth or 0
 
 	for _, childNode in ipairs(node) do
-		if childNode.type == NodeType.Describe then
-			if not onNode(childNode, _depth) then
-				break -- Callback wants to terminate
-			end
-
+		-- If the callback does not want to traverse this specific branch anymore, it can request it by returning false.
+		if
+			onNode(childNode, _depth)
+			and childNode.type == NodeType.Describe
+		then
 			traverseNodes(childNode, onNode, onEnd, _depth + 1)
-		elseif childNode.type == NodeType.Test then
-			if not onNode(childNode, _depth) then
-				break -- Callback wants to terminate
-			end
 		end
 	end
 
@@ -44,13 +40,12 @@ end
 
 --- Prints a simple summary about the tests
 ---@param results lest.TestSuiteResults
----@param testSuitesPassed table<string, boolean>
-local function printSummary(results, testSuitesPassed)
+local function printSummary(results)
 	local passedTests, failedTests, totalTests = 0, 0, 0
 	local passedSuites, failedSuites, totalSuites = 0, 0, #results
 
-	for _, passed in pairs(testSuitesPassed) do
-		if passed then
+	for _, testSuite in pairs(results) do
+		if testSuite.pass then
 			passedSuites = passedSuites + 1
 		else
 			failedSuites = failedSuites + 1
@@ -72,52 +67,45 @@ local function printSummary(results, testSuitesPassed)
 		end)
 	end
 
-	-- Certain elements are omitted in Jest depending if they are vital to conveying information or not.
-	local testSuitesStrTbl = {}
-	if failedSuites > 0 then
-		tablex.push(
-			testSuitesStrTbl,
-			COLOURS.TESTS_FAILED(("%d failed"):format(failedSuites))
+	--- Creates a colored summary element which omits certain information if it's not necessary to the reader.
+	---@param header string Header to display
+	---@param failed number
+	---@param passed number
+	---@param total number
+	---@return string rendered Rendered display
+	local function createSummaryInfo(header, failed, passed, total)
+		local stringTable = {}
+		if failed > 0 then
+			tablex.push(
+				stringTable,
+				COLOURS.TESTS_FAILED(("%d failed"):format(failed))
+			)
+		end
+
+		if passed > 0 then
+			tablex.push(
+				stringTable,
+				COLOURS.TESTS_PASSED(("%d passed"):format(passed))
+			)
+		end
+
+		tablex.push(stringTable, ("%d total"):format(total))
+		return ("%s %s"):format(
+			COLOURS.BOLD(header),
+			table.concat(stringTable, ", ")
 		)
 	end
 
-	if passedSuites > 0 then
-		tablex.push(
-			testSuitesStrTbl,
-			COLOURS.TESTS_PASSED(("%d passed"):format(passedSuites))
+	print(
+		createSummaryInfo(
+			"Test Suites:",
+			failedSuites,
+			passedSuites,
+			totalSuites
 		)
-	end
-
-	tablex.push(testSuitesStrTbl, ("%d total"):format(totalSuites))
-	local testSuitesRendered = ("%s %s"):format(
-		COLOURS.BOLD("Test Suites:"),
-		table.concat(testSuitesStrTbl, ", ")
 	)
 
-	-- TODO: Figure out a way to de-duplicate this code neatly
-	local testsStrTbl = {}
-	if failedTests > 0 then
-		tablex.push(
-			testsStrTbl,
-			COLOURS.TESTS_FAILED(("%d failed"):format(failedTests))
-		)
-	end
-
-	if passedTests > 0 then
-		tablex.push(
-			testsStrTbl,
-			COLOURS.TESTS_PASSED(("%d passed"):format(passedTests))
-		)
-	end
-
-	tablex.push(testsStrTbl, ("%d total"):format(totalTests))
-	local testsRendered = ("%s %s"):format(
-		COLOURS.BOLD("Tests:"),
-		table.concat(testsStrTbl, ", ")
-	)
-
-	print(testSuitesRendered)
-	print(testsRendered)
+	print(createSummaryInfo("Tests:", failedTests, passedTests, totalTests))
 end
 
 --- Prints detailed error reports about the tests that failed.
@@ -126,27 +114,32 @@ local function printTestErrors(results)
 	---@type table<number, {displayName: string, result: lest.TestResult}>
 	local failedTests = {}
 
-	local currentDescribeHierarchy = {}
+	---@type table<number, string>
+	local parentNames = {}
 	for _, testSuite in ipairs(results) do
-		traverseNodes(testSuite, function(node)
-			if node.type == NodeType.Describe then
-				tablex.push(currentDescribeHierarchy, node.name)
-			elseif node.type == NodeType.Test then
-				if not node.pass then
+		if not testSuite.passed then
+			traverseNodes(testSuite, function(node)
+				if node.type == NodeType.Describe then
+					if node.pass then
+						-- Skip traversing this branch as it doesn't have anything that failed.
+						return false
+					end
+
+					tablex.push(parentNames, node.name)
+				elseif node.type == NodeType.Test and not node.pass then
 					tablex.push(failedTests, {
-						displayName = table.concat(
-							currentDescribeHierarchy,
-							" › "
-						) .. " › " .. node.name,
+						displayName = table.concat(parentNames, " › ")
+							.. " › "
+							.. node.name,
 						result = node,
 					})
 				end
-			end
 
-			return true
-		end, function()
-			tablex.pop(currentDescribeHierarchy)
-		end)
+				return true
+			end, function()
+				tablex.pop(parentNames)
+			end)
+		end
 	end
 
 	for _, failedTest in ipairs(failedTests) do
@@ -156,10 +149,14 @@ local function printTestErrors(results)
 			)
 		)
 
-		if type(failedTest.result.error) == "table" then
-			if failedTest.result.error.signature then
-				print("   " .. failedTest.result.error.signature .. "\n")
-			end
+		if
+			type(failedTest.result.error) == "table"
+			and failedTest.result.error.signature
+		then
+			print("   " .. failedTest.result.error.signature .. "\n")
+			print(
+				"   " .. COLOURS.FAIL(failedTest.result.error.message) .. "\n"
+			)
 		else
 			print("   " .. prettyValue(failedTest.result.error) .. "\n")
 		end
@@ -168,8 +165,7 @@ end
 
 --- Prints detailed reports about the test suites in the console.
 ---@param results lest.TestSuiteResults
----@param testSuitesPassed table<string, boolean> Table containg which test suites passed
-local function printDetailedReports(results, testSuitesPassed)
+local function printDetailedReports(results)
 	--- Replicates the Jest test header output
 	---@param testSuite lest.TestSuiteResults
 	local function printHeader(testSuite)
@@ -184,7 +180,7 @@ local function printDetailedReports(results, testSuitesPassed)
 
 		print(
 			("%s %s"):format(
-				testSuitesPassed[testSuite.name] and PASS_HEADER or FAIL_HEADER,
+				testSuite.pass and PASS_HEADER or FAIL_HEADER,
 				renderedName
 			)
 		)
@@ -216,7 +212,7 @@ local function printDetailedReports(results, testSuitesPassed)
 	local singleTestSuite = #results == 1
 	for _, testSuite in ipairs(results) do
 		printHeader(testSuite)
-		if singleTestSuite or not testSuitesPassed[testSuite.name] then
+		if singleTestSuite or not testSuite.pass then
 			printReports(testSuite)
 		end
 	end
@@ -227,22 +223,7 @@ end
 --- Pretty prints the final test results
 ---@param results lest.TestSuiteResults
 return function(results)
-	---@type table<string, boolean>
-	local testSuitesPassed = {}
-	for _, testSuite in ipairs(results) do
-		testSuitesPassed[testSuite.name] = true
-
-		traverseNodes(testSuite, function(node, _)
-			if node.type == NodeType.Test and not node.pass then
-				testSuitesPassed[testSuite.name] = false
-				return false -- Terminate early
-			end
-
-			return true
-		end)
-	end
-
-	printDetailedReports(results, testSuitesPassed)
+	printDetailedReports(results)
 	printTestErrors(results)
-	printSummary(results, testSuitesPassed)
+	printSummary(results)
 end
