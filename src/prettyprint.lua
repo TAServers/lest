@@ -44,7 +44,7 @@ local function printSummary(results)
 	local passedTests, failedTests, totalTests = 0, 0, 0
 	local passedSuites, failedSuites, totalSuites = 0, 0, #results
 
-	for _, testSuite in pairs(results) do
+	for _, testSuite in ipairs(results) do
 		if testSuite.pass then
 			passedSuites = passedSuites + 1
 		else
