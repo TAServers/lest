@@ -36,6 +36,7 @@ xdescribe("assertType", function()
 
 			-- Then
 			expect(function()
+				---@diagnostic disable-next-line: param-type-mismatch
 				assertType(object, type)
 			end).toThrow(
 				"TypeError: typeStringOrMeta must be either a string or a table"
