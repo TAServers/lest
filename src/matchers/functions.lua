@@ -1,3 +1,5 @@
+local assertType = require("src.asserts.type")
+
 ---@type lest.Matcher
 local function toThrow(ctx, received, expected)
 	local success, err = pcall(received)
@@ -11,6 +13,8 @@ local function toThrow(ctx, received, expected)
 			),
 		}
 	end
+
+	assertType(expected, "string")
 
 	return {
 		pass = not success and string.match(tostring(err), expected),

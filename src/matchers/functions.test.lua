@@ -1,29 +1,5 @@
 local matchers = require("src.matchers.functions")
-
---- Asserts the matcher passed. TODO: move this into an asserts file in LEST-46
----@param result lest.MatcherResult
-local function assertPass(result)
-	assert(result.pass, "Expected matcher to pass")
-end
-
---- Asserts the matcher failed. TODO: move this into an asserts file in LEST-46
----@param result lest.MatcherResult
-local function assertFail(result)
-	assert(not result.pass, "Expected matcher to fail")
-end
-
---- Asserts the matcher returned the given message. TODO: move this into an asserts file in LEST-46
----@param result lest.MatcherResult
-local function assertMessage(result, message)
-	assert(
-		result.message == message,
-		string.format(
-			"Expected message: %s\nReceived message: %s",
-			message,
-			result.message
-		)
-	)
-end
+local assertMatcher = require("src.asserts.matchers")
 
 describe("function matchers", function()
 	local CONTEXT = {
@@ -52,7 +28,7 @@ describe("function matchers", function()
 			local result = matchers.toThrow(CONTEXT, func)
 
 			-- Then
-			assertPass(result)
+			assertMatcher.passed(result)
 		end)
 
 		it(
@@ -65,8 +41,8 @@ describe("function matchers", function()
 				local result = matchers.toThrow(CONTEXT, func)
 
 				-- Then
-				assertFail(result)
-				assertMessage(result, "Expected function to throw")
+				assertMatcher.failed(result)
+				assertMatcher.hasMessage(result, "Expected function to throw")
 			end
 		)
 
@@ -81,7 +57,7 @@ describe("function matchers", function()
 			local result = matchers.toThrow(CONTEXT, func, err)
 
 			-- Then
-			assertPass(result)
+			assertMatcher.passed(result)
 		end)
 
 		it(
@@ -99,13 +75,13 @@ describe("function matchers", function()
 				local result = matchers.toThrow(CONTEXT, func, errToExpect)
 
 				-- Then
-				assertFail(result)
-				assertMessage(
+				assertMatcher.failed(result)
+				assertMatcher.hasMessage(
 					result,
 					string.format(
 						"Expected function to throw %s\nReceived: %s",
 						errToExpect,
-						"src/matchers/functions.test.lua:95: " .. errToThrow
+						"src/matchers/functions.test.lua:71: " .. errToThrow
 					)
 				)
 			end
@@ -126,16 +102,16 @@ describe("function matchers", function()
 				matchers.toThrow(INVERTED_CONTEXT, func, errToExpect)
 
 			-- Then
-			assertMessage(
+			assertMatcher.hasMessage(
 				resultWithoutExpected,
 				"Expected function to not throw"
 			)
-			assertMessage(
+			assertMatcher.hasMessage(
 				resultWithExpected,
 				string.format(
 					"Expected function to not throw %s\nReceived: %s",
 					errToExpect,
-					"src/matchers/functions.test.lua:119: " .. errToThrow
+					"src/matchers/functions.test.lua:95: " .. errToThrow
 				)
 			)
 		end)

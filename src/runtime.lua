@@ -3,6 +3,7 @@ local buildEnvironment = require("src.runtime.environment")
 local tablex = require("src.utils.tablex")
 local withTimeout = require("src.utils.timeout")
 local NodeType = require("src.interface.testnodetype")
+local assertType = require("src.asserts.type")
 
 lest = lest or {}
 
@@ -12,6 +13,7 @@ local currentTimeoutSeconds = defaultTimeoutSeconds
 --- Sets the timeout used by default
 ---@param timeout number
 local function setDefaultTimeout(timeout)
+	assertType(timeout, "number")
 	defaultTimeoutSeconds = timeout / 1000
 end
 
@@ -19,6 +21,7 @@ end
 ---@param timeout number
 ---@diagnostic disable-next-line: duplicate-set-field
 function lest.setTimeout(timeout)
+	assertType(timeout, "number")
 	currentTimeoutSeconds = timeout / 1000
 end
 
@@ -26,6 +29,8 @@ end
 ---@param testFiles string[]
 ---@return lest.TestSuite[]
 local function findTests(testFiles)
+	assertType(testFiles, "table")
+
 	---@type lest.TestSuite[]
 	local tests = {}
 
@@ -118,6 +123,8 @@ end
 ---@return boolean success
 ---@return lest.TestSuiteResults[] results
 local function runTests(tests)
+	assertType(tests, "table")
+
 	local allTestsPassed = true
 
 	--- Internal test runner
