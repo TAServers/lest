@@ -5,10 +5,9 @@ local DEFAULT_BG_CODE = 49
 ---@param modifier number 0 means normal, 1 means bold and 2 means dimmed
 ---@param colourCode number ANSI escape colour code
 ---@param bgColourCode number|nil Optional background colour code
----@return fun(text:string|nil):string textFn
+---@return fun(text:string):string textFn
 local function createColouredTextFn(modifier, colourCode, bgColourCode)
 	return function(text)
-		text = text or ""
 		bgColourCode = bgColourCode or DEFAULT_BG_CODE
 
 		return ANSI_COLOUR_TEMPLATE:format(
@@ -30,8 +29,6 @@ local COLORS = {
 	TESTS_PASSED = createColouredTextFn(1, 32),
 	TESTS_FAILED = createColouredTextFn(1, 31),
 
-	ERROR_HEADER = createColouredTextFn(1, 31),
-
 	BOLD = createColouredTextFn(1, 39),
 	DIMMED = createColouredTextFn(2, 39),
 	HIGHLIGHT = createColouredTextFn(0, 37),
@@ -41,5 +38,6 @@ local COLORS = {
 COLORS.EXPECTED = COLORS.PASS
 COLORS.RECEIVED = COLORS.FAIL
 COLORS.FILENAME = COLORS.BOLD
+COLORS.ERROR_HEADER = COLORS.TESTS_FAILED
 
 return COLORS
