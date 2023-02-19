@@ -1,4 +1,5 @@
 local tablex = require("src.utils.tablex")
+local assertType = require("src.asserts.type")
 
 lest = lest or {}
 
@@ -53,6 +54,7 @@ end
 --- Sets the name that will be used for the mock in test outputs
 ---@param name string
 function mockMeta:mockName(name)
+	assertType(name, "string")
 	self._name = name
 end
 
@@ -66,6 +68,8 @@ end
 ---@param implementation function
 ---@return self
 function mockMeta:mockImplementation(implementation)
+	assertType(implementation, "function")
+
 	self._implementation = implementation
 	return self
 end
@@ -80,6 +84,8 @@ end
 ---@param implementation function
 ---@return self
 function mockMeta:mockImplementationOnce(implementation)
+	assertType(implementation, "function")
+
 	tablex.push(self._implementationStack, implementation)
 	return self
 end
@@ -143,8 +149,11 @@ local allMocks = {}
 ---@param implementation? function
 ---@return lest.Mock
 function lest.fn(implementation)
+	implementation = implementation or function() end
+	assertType(implementation, "function")
+
 	local mockFn = setmetatable({
-		_implementation = implementation or function() end,
+		_implementation = implementation,
 		_implementationStack = {},
 		_name = "lest.fn()",
 		mock = { calls = {}, results = {} },
