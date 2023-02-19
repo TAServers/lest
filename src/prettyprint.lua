@@ -30,20 +30,16 @@ end
 
 --- Recursively traverses the node tree while calling the supplied callback.
 ---@param node lest.TestResult|lest.DescribeResults
----@param onNode fun(node: lest.TestResult|lest.DescribeResults, depth: number):boolean A callback which is called for each Describe and Test in the tree. You can return true to keep going or return false to terminate.
----@param onEnd? fun() A callback which is called once a branch in the tree has finished being traversed.
+---@param onNode fun(node: lest.TestResult|lest.DescribeResults, depth: number) A callback which is called for each Describe and Test in the tree.
 ---@param depth? number Internal parameter which is used to measure how deep the traversal is.
-local function traverseNodes(node, onNode, onEnd, depth)
+local function traverseNodes(node, onNode, depth)
 	depth = depth or 0
 
 	for _, childNode in ipairs(node) do
-		if onNode(childNode, depth) and childNode.type == NodeType.Describe then
-			traverseNodes(childNode, onNode, onEnd, depth + 1)
+		onNode(childNode, depth)
+		if childNode.type == NodeType.Describe then
+			traverseNodes(childNode, onNode, depth + 1)
 		end
-	end
-
-	if onEnd then
-		onEnd()
 	end
 end
 
@@ -95,8 +91,6 @@ local function printSummary(results)
 					passedTests = passedTests + 1
 				end
 			end
-
-			return true
 		end)
 	end
 
@@ -183,8 +177,6 @@ local function printReports(testSuite)
 				)
 			)
 		end
-
-		return true
 	end)
 end
 
