@@ -119,8 +119,6 @@ end
 ---@param results lest.TestSuiteResults | lest.DescribeResults
 ---@param breadcrumbs? string
 local function printTestErrors(results, breadcrumbs)
-	breadcrumbs = breadcrumbs or ""
-
 	local function buildBreadcrumbs(nextCrumb)
 		if breadcrumbs then
 			return string.format("%s › %s", breadcrumbs, nextCrumb)
