@@ -3,7 +3,7 @@ local colours = require("src.utils.consoleColor")
 
 local originalCodepage
 
-do
+if not isUnix then
 	local handle = io.popen("chcp")
 	if not handle then
 		return
