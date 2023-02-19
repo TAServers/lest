@@ -1,5 +1,6 @@
 local prettyValue = require("src.utils.prettyValue")
 local deepEqual = require("src.utils.deepEqual")
+local assertType = require("src.asserts.type")
 
 local function prettyArgs(args)
 	local argStrings = {}
@@ -38,6 +39,7 @@ end
 ---@type lest.Matcher
 local function toHaveBeenCalledTimes(ctx, received, expected)
 	received = assertMockFn(received)
+	assertType(expected, "number")
 
 	return {
 		pass = #received.mock.calls == expected,
@@ -94,7 +96,25 @@ local function toHaveBeenLastCalledWith(ctx, received, ...)
 end
 
 ---@type lest.Matcher
-local function toHaveBeenNthCalledWith(ctx, received, ...) end
+local function toHaveBeenNthCalledWith(ctx, received, nthCall, ...)
+	received = assertMockFn(received)
+	assertType(nthCall, "number")
+	assert(nthCall > 0, "Call index must be greater than zero")
+
+	local args = { ... }
+
+	return {
+		pass = nthCall <= #received.mock.calls
+			and deepEqual(args, received.mock.calls[nthCall]),
+		message = string.format(
+			"Expected %s to%shave Nth been called with: %s\nCall index: %i",
+			tostring(received),
+			ctx.inverted and " not " or " ",
+			prettyArgs(args),
+			nthCall
+		),
+	}
+end
 
 ---@type lest.Matcher
 local function toHaveReturned(ctx, received, ...) end
@@ -123,4 +143,7 @@ return {
 
 	toHaveBeenLastCalledWith = toHaveBeenLastCalledWith,
 	lastCalledWith = toHaveBeenLastCalledWith,
+
+	toHaveBeenNthCalledWith = toHaveBeenNthCalledWith,
+	nthCalledWith = toHaveBeenNthCalledWith,
 }
