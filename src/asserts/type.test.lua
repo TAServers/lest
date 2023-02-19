@@ -1,7 +1,6 @@
 local assertType = require("src.asserts.type")
 
--- TODO: LEST-27
-xdescribe("assertType", function()
+describe("assertType", function()
 	it("should succeed when type(object) equals the given string", function()
 		-- Given
 		local type = "table"
@@ -49,14 +48,12 @@ xdescribe("assertType", function()
 		function()
 			-- Given
 			local type = "number"
-			local object = 1234
+			local object = "string"
 
 			-- Then
 			expect(function()
 				assertType(object, type)
-			end).toThrow(
-				'TypeError: Expected 1234 to be an instance of "number"'
-			)
+			end).toThrow('TypeError: Expected "string" to be a number')
 		end
 	)
 
@@ -75,7 +72,7 @@ xdescribe("assertType", function()
 			expect(function()
 				assertType(object, meta)
 			end).toThrow(
-				"TypeError: Expected 1234 to have metatable SomeMetatable"
+				"TypeError: Expected 1234 to be an instance of SomeMetatable"
 			)
 		end
 	)
