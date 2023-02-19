@@ -271,8 +271,8 @@ describe("lest.fn", function()
 			-- Given
 			mockFn
 				:mockReturnValueOnce("first call")
-				:mockReturnValueOnce(1, 2, 3, 4)
-				:mockReturnValueOnce("last call")
+				:mockReturnValueOnce("second call", 2, 3)
+				:mockReturnValueOnce("third call")
 
 			expect(mockFn).never.toHaveNthReturnedWith(2, "second call", 2, 3)
 

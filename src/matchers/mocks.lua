@@ -155,7 +155,7 @@ local function toHaveReturnedWith(ctx, received, ...)
 
 	local hasReturnedWithValues = false
 	for _, result in ipairs(received.mock.results) do
-		if deepEqual(retvals, result) then
+		if result.type == "return" and deepEqual(retvals, result.value) then
 			hasReturnedWithValues = true
 			break
 		end
@@ -179,7 +179,9 @@ local function toHaveLastReturnedWith(ctx, received, ...)
 	local retvals = { ... }
 
 	return {
-		pass = deepEqual(retvals, received.mock.lastResult),
+		pass = received.mock.lastResult
+			and received.mock.lastResult.type == "return"
+			and deepEqual(retvals, received.mock.lastResult.value),
 		message = string.format(
 			"Expected %s to%shave last returned with: %s",
 			tostring(received),
@@ -198,8 +200,9 @@ local function toHaveNthReturnedWith(ctx, received, nthCall, ...)
 	local retvals = { ... }
 
 	return {
-		pass = nthCall <= #received.mock.calls
-			and deepEqual(retvals, received.mock.results[nthCall]),
+		pass = nthCall <= #received.mock.results
+			and received.mock.results[nthCall].type == "return"
+			and deepEqual(retvals, received.mock.results[nthCall].value),
 		message = string.format(
 			"Expected %s to%shave Nth returned with: %s\nCall index: %i",
 			tostring(received),
