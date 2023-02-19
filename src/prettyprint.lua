@@ -84,7 +84,7 @@ local function printSummary(results)
 			passedSuites = passedSuites + 1
 		end
 
-		traverseNodes(testSuite, function(node, _)
+		traverseNodes(testSuite, function(node)
 			if node.type == NodeType.Test then
 				totalTests = totalTests + 1
 				if node.pass then
