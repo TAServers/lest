@@ -144,6 +144,7 @@ local function runTests(tests)
 
 		--- Helper to run a single test
 		---@param test lest.Test
+		---@return lest.TestResult result
 		local function runTest(test)
 			runHooks(previousBeforeEach)
 			runHooks(testsToRun.beforeEach)
@@ -154,34 +155,42 @@ local function runTests(tests)
 			runHooks(testsToRun.afterEach)
 
 			if success then
-				tablex.push(results, {
+				return {
 					type = NodeType.Test,
 					name = test.name,
 					pass = true,
-				})
+				}
 			else
 				allTestsPassed = false
-				tablex.push(results, {
+				return {
 					type = NodeType.Test,
 					name = test.name,
 					pass = false,
 					error = err,
-				})
+				}
 			end
 		end
 
+		results.pass = true
+
 		for _, testOrDescribe in ipairs(testsToRun) do
+			---@type lest.DescribeResults|lest.TestResult
+			local result
+
 			if testOrDescribe.type == NodeType.Describe then
-				tablex.push(
-					results,
-					_runTests(
-						testOrDescribe,
-						tablex.squash(previousBeforeEach, testsToRun.beforeEach),
-						tablex.squash(previousAfterEach, testsToRun.afterEach)
-					)
+				result = _runTests(
+					testOrDescribe,
+					tablex.squash(previousBeforeEach, testsToRun.beforeEach),
+					tablex.squash(previousAfterEach, testsToRun.afterEach)
 				)
 			else
-				runTest(testOrDescribe --[[@as lest.Test]]) -- LuaLS does not narrow by isDescribe
+				result = runTest(testOrDescribe --[[@as lest.Test]]) -- LuaLS does not narrow by isDescribe
+			end
+
+			tablex.push(results, result)
+
+			if not result.pass then
+				results.pass = false
 			end
 		end
 

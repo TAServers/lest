@@ -3,7 +3,7 @@ require("src.mocking")
 local cli = require("src.cli")
 local filesInFolder = require("src.utils.filesInFolder")
 local runtime = require("src.runtime")
-local printTable = require("src.utils.printTable")
+local prettyPrint = require("src.prettyprint")
 
 local options = cli(arg)
 local config = dofile(options.config)
@@ -30,6 +30,6 @@ end
 local tests = runtime.findTests(testFiles)
 local success, results = runtime.runTests(tests)
 
-printTable(results, 5)
+prettyPrint(results)
 
 os.exit(success and 0 or 1)
