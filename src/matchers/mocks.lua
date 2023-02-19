@@ -117,19 +117,98 @@ local function toHaveBeenNthCalledWith(ctx, received, nthCall, ...)
 end
 
 ---@type lest.Matcher
-local function toHaveReturned(ctx, received, ...) end
+local function toHaveReturned(ctx, received, ...)
+	received = assertMockFn(received)
+
+	return {
+		pass = received.mock.lastResult and true or false,
+		message = string.format(
+			"Expected %s to%shave returned",
+			tostring(received),
+			ctx.inverted and " not " or " "
+		),
+	}
+end
 
 ---@type lest.Matcher
-local function toHaveReturnedTimes(ctx, received, ...) end
+local function toHaveReturnedTimes(ctx, received, expected)
+	received = assertMockFn(received)
+	assertType(expected, "number")
+
+	return {
+		pass = #received.mock.results == expected,
+		message = string.format(
+			"Expected %s to%shave returned %i time%s",
+			tostring(received),
+			ctx.inverted and " not " or " ",
+			expected,
+			expected == 1 and "" or "s"
+		),
+	}
+end
 
 ---@type lest.Matcher
-local function toHaveReturnedWith(ctx, received, ...) end
+local function toHaveReturnedWith(ctx, received, ...)
+	received = assertMockFn(received)
+
+	local retvals = { ... }
+
+	local hasReturnedWithValues = false
+	for _, result in ipairs(received.mock.results) do
+		if deepEqual(retvals, result) then
+			hasReturnedWithValues = true
+			break
+		end
+	end
+
+	return {
+		pass = hasReturnedWithValues,
+		message = string.format(
+			"Expected %s to%shave returned with: %s",
+			tostring(received),
+			ctx.inverted and " not " or " ",
+			prettyArgs(retvals)
+		),
+	}
+end
 
 ---@type lest.Matcher
-local function toHaveLastReturnedWith(ctx, received, ...) end
+local function toHaveLastReturnedWith(ctx, received, ...)
+	received = assertMockFn(received)
+
+	local retvals = { ... }
+
+	return {
+		pass = deepEqual(retvals, received.mock.lastResult),
+		message = string.format(
+			"Expected %s to%shave last returned with: %s",
+			tostring(received),
+			ctx.inverted and " not " or " ",
+			prettyArgs(retvals)
+		),
+	}
+end
 
 ---@type lest.Matcher
-local function toHaveNthReturnedWith(ctx, received, ...) end
+local function toHaveNthReturnedWith(ctx, received, nthCall, ...)
+	received = assertMockFn(received)
+	assertType(nthCall, "number")
+	assert(nthCall > 0, "Call index must be greater than zero")
+
+	local retvals = { ... }
+
+	return {
+		pass = nthCall <= #received.mock.calls
+			and deepEqual(retvals, received.mock.results[nthCall]),
+		message = string.format(
+			"Expected %s to%shave Nth returned with: %s\nCall index: %i",
+			tostring(received),
+			ctx.inverted and " not " or " ",
+			prettyArgs(retvals),
+			nthCall
+		),
+	}
+end
 
 return {
 	toHaveBeenCalled = toHaveBeenCalled,
@@ -146,4 +225,19 @@ return {
 
 	toHaveBeenNthCalledWith = toHaveBeenNthCalledWith,
 	nthCalledWith = toHaveBeenNthCalledWith,
+
+	toHaveReturned = toHaveReturned,
+	toReturn = toHaveReturned,
+
+	toHaveReturnedTimes = toHaveReturnedTimes,
+	toReturnTimes = toHaveReturnedTimes,
+
+	toHaveReturnedWith = toHaveReturnedWith,
+	toReturnWith = toHaveReturnedWith,
+
+	toHaveLastReturnedWith = toHaveLastReturnedWith,
+	lastReturnedWith = toHaveLastReturnedWith,
+
+	toHaveNthReturnedWith = toHaveNthReturnedWith,
+	nthReturnedWith = toHaveNthReturnedWith,
 }
