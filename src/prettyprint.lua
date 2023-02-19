@@ -1,4 +1,9 @@
 local COLOURS = require("src.utils.consoleColor")
+local NodeType = require("src.interface.testnodetype")
+local tablex = require("src.utils.tablex")
+local prettyValue = require("src.utils.prettyValue")
+local codepage = require("src.utils.codepage")
+
 local PASS_SYMBOL = COLOURS.PASS("√")
 local ERROR_SYMBOL = "●"
 local FAIL_SYMBOL = COLOURS.FAIL("×")
@@ -11,19 +16,15 @@ local TESTS_HEADER = "Tests:      "
 -- Matches Jest
 local TAB_SIZE = 2
 
-local NodeType = require("src.interface.testnodetype")
-local tablex = require("src.utils.tablex")
-
 local function getTabs(amount)
 	return (" "):rep(amount * TAB_SIZE)
 end
 
 --- Prints an indented newline-delimited block of text.
----@param spaces number
 ---@param block string
-local function printIndentedBlock(spaces, block)
+local function printIndentedBlock(block)
 	for line in block:gmatch("([^\n]*)") do
-		print((" "):rep(spaces) .. line)
+		print("   " .. line)
 	end
 end
 
@@ -51,9 +52,10 @@ end
 ---@param failed number
 ---@param passed number
 ---@param total number
----@return string rendered
+---@return string
 local function createSummaryInfo(header, failed, passed, total)
 	local stringTable = {}
+
 	if failed > 0 then
 		tablex.push(
 			stringTable,
@@ -114,48 +116,41 @@ local function printSummary(results)
 end
 
 --- Prints detailed error reports about the tests that failed.
----@param results lest.TestSuiteResults[]
-local function printTestErrors(results)
-	---@type table<number, {displayName: string, result: lest.TestResult}>
-	local failedTests = {}
+---@param results lest.TestSuiteResults | lest.DescribeResults
+---@param breadcrumbs? string
+local function printTestErrors(results, breadcrumbs)
+	breadcrumbs = breadcrumbs or ""
 
-	---@type table<number, string>
-	local parentNames = {}
-	for _, testSuite in ipairs(results) do
-		if not testSuite.pass then
-			traverseNodes(testSuite, function(node)
-				if node.type == NodeType.Describe then
-					if node.pass then
-						-- Skip traversing this branch as it doesn't have anything that failed.
-						return false
-					end
-
-					tablex.push(parentNames, node.name)
-				elseif node.type == NodeType.Test and not node.pass then
-					tablex.push(failedTests, {
-						displayName = table.concat(parentNames, " › ")
-							.. " › "
-							.. node.name,
-						result = node,
-					})
-				end
-
-				return true
-			end, function()
-				tablex.pop(parentNames)
-			end)
+	local function buildBreadcrumbs(nextCrumb)
+		if breadcrumbs then
+			return string.format("%s › %s", breadcrumbs, nextCrumb)
+		else
+			return nextCrumb
 		end
 	end
 
-	for _, failedTest in ipairs(failedTests) do
-		print(
-			COLOURS.ERROR_HEADER(
-				string.format(" %s %s\n", ERROR_SYMBOL, failedTest.displayName)
-			)
-		)
+	for _, testOrDescribe in ipairs(results) do
+		if not testOrDescribe.pass then
+			if testOrDescribe.type == NodeType.Describe then
+				printTestErrors(
+					testOrDescribe,
+					buildBreadcrumbs(testOrDescribe.name)
+				)
+			else
+				print(
+					COLOURS.ERROR_HEADER(
+						string.format(
+							" %s %s\n",
+							ERROR_SYMBOL,
+							buildBreadcrumbs(testOrDescribe.name)
+						)
+					)
+				)
 
-		printIndentedBlock(3, tostring(failedTest.result.error))
-		print()
+				printIndentedBlock(prettyValue(testOrDescribe.error))
+				print()
+			end
+		end
 	end
 end
 
@@ -212,7 +207,13 @@ end
 --- Pretty prints the final test results
 ---@param results lest.TestSuiteResults[]
 return function(results)
+	codepage.set(65001)
+
 	printDetailedReports(results)
-	printTestErrors(results)
+	for _, testSuite in ipairs(results) do
+		printTestErrors(testSuite)
+	end
 	printSummary(results)
+
+	codepage.restore()
 end
