@@ -36,7 +36,6 @@ local function traverseNodes(node, onNode, onEnd, depth)
 	depth = depth or 0
 
 	for _, childNode in ipairs(node) do
-		-- Forming the condition like this allows the callback function to terminate traversal on a specific branch of the tree.
 		if onNode(childNode, depth) and childNode.type == NodeType.Describe then
 			traverseNodes(childNode, onNode, onEnd, depth + 1)
 		end
@@ -165,9 +164,7 @@ end
 local function printHeader(testSuite)
 	local fileNameIndex = testSuite.name:find("/[^/]*$")
 	local renderedName = COLOURS.DIMMED(testSuite.name:sub(1, fileNameIndex))
-		.. COLOURS.FILENAME(
-			testSuite.name:sub(fileNameIndex + 1, #testSuite.name)
-		)
+		.. COLOURS.FILENAME(testSuite.name:sub(fileNameIndex + 1))
 
 	print(
 		("%s %s"):format(

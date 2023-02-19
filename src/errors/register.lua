@@ -9,7 +9,7 @@ local tablex = require("src.utils.tablex")
 --- Registers a new error class
 ---@param name string
 ---@param constructor fun(...: any): ErrorBody
----@param metatable? table<string, any> Optional custom metatable
+---@param metatable? table
 ---@return Error
 local function registerError(name, constructor, metatable)
 	metatable = tablex.merge({

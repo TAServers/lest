@@ -45,10 +45,8 @@
 ---@field type 0
 ---@field error? any
 
----@class lest.DescribeResults: { [number]: lest.TestResult | lest.DescribeResults }
+---@class lest.DescribeResults: lest.TestResultNode, { [number]: lest.TestResult | lest.DescribeResults }
 ---@field type 1
----@field name string
 
 ---@class lest.TestSuiteResults: lest.DescribeResults
----@field pass boolean
 ---@field type 2
