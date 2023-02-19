@@ -1,5 +1,4 @@
 local isUnix = require("src.utils.isUnix")
-local colours = require("src.utils.consoleColor")
 
 local originalCodepage
 
@@ -21,10 +20,12 @@ local function setCodepage(codepage)
 		return
 	end
 
-	local success = os.execute(string.format("chcp %i", codepage))
-	if not success then
+	local handle = io.popen(string.format("chcp %i", codepage))
+	if not handle then
 		error("Failed to set codepage")
 	end
+
+	handle:close()
 end
 
 local function restoreCodepage()
