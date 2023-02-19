@@ -76,8 +76,8 @@ end
 --- Prints a simple summary about the tests
 ---@param results lest.TestSuiteResults
 local function printSummary(results)
-	local passedTests, failedTests, totalTests = 0, 0, 0
-	local passedSuites, failedSuites, totalSuites = 0, 0, #results
+	local passedTests, totalTests = 0, 0
+	local passedSuites, totalSuites = 0, #results
 
 	for _, testSuite in ipairs(results) do
 		if testSuite.pass then
@@ -94,8 +94,8 @@ local function printSummary(results)
 		end)
 	end
 
-	failedSuites = totalSuites - passedSuites
-	failedTests = totalTests - passedTests
+	local failedSuites = totalSuites - passedSuites
+	local failedTests = totalTests - passedTests
 
 	print(
 		createSummaryInfo(
