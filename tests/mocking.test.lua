@@ -157,30 +157,135 @@ describe("lest.fn", function()
 		it("toHaveBeenCalledTimes should pass", function()
 			-- Given
 			expect(mockFn).toHaveBeenCalledTimes(0)
-			expect(mockFn).never.toHaveBeenCalledTimes(1)
+			expect(mockFn).never.toHaveBeenCalledTimes(3)
+
+			-- When
+			mockFn()
+			mockFn()
+			mockFn()
+
+			-- Then
+			expect(mockFn).toHaveBeenCalledTimes(3)
+		end)
+
+		it("toHaveBeenCalledWith should pass", function()
+			-- Given
+			expect(mockFn).never.toHaveBeenCalledWith(1, 2, 3, 4)
+
+			-- When
+			mockFn("first call")
+			mockFn(1, 2, 3, 4)
+			mockFn("last call")
+
+			-- Then
+			expect(mockFn).toHaveBeenCalledWith(1, 2, 3, 4)
+		end)
+
+		it("toHaveBeenLastCalledWith should pass", function()
+			-- Given
+			expect(mockFn).never.toHaveBeenLastCalledWith(1, 2, 3, 4)
+
+			-- When
+			mockFn("first call")
+			mockFn(1, 2, 3, 4)
+
+			-- Then
+			expect(mockFn).toHaveBeenLastCalledWith(1, 2, 3, 4)
+		end)
+
+		it("toHaveBeenNthCalledWith should pass", function()
+			-- Given
+			expect(mockFn).never.toHaveBeenNthCalledWith(2, "second call", 2, 3)
+
+			-- When
+			mockFn("first call")
+			mockFn("second call", 2, 3)
+			mockFn("third call")
+
+			-- Then
+			expect(mockFn).toHaveBeenNthCalledWith(1, "first call")
+			expect(mockFn).toHaveBeenNthCalledWith(2, "second call", 2, 3)
+			expect(mockFn).toHaveBeenNthCalledWith(3, "third call")
+		end)
+
+		it("toHaveReturned should pass", function()
+			-- Given
+			expect(mockFn).never.toHaveReturned()
 
 			-- When
 			mockFn()
 
 			-- Then
-			expect(mockFn).toHaveBeenCalledTimes(1)
+			expect(mockFn).toHaveReturned()
 		end)
 
-		xit("toHaveBeenCalledWith should pass", function() end)
+		it("toHaveReturnedTimes should pass", function()
+			-- Given
+			expect(mockFn).toHaveReturnedTimes(0)
+			expect(mockFn).never.toHaveReturnedTimes(3)
 
-		xit("toHaveBeenLastCalledWith should pass", function() end)
+			-- When
+			mockFn()
+			mockFn()
+			mockFn()
 
-		xit("toHaveBeenNthCalledWith should pass", function() end)
+			-- Then
+			expect(mockFn).toHaveReturnedTimes(3)
+		end)
 
-		xit("toHaveReturned should pass", function() end)
+		it("toHaveReturnedWith should pass", function()
+			-- Given
+			mockFn
+				:mockReturnValueOnce("first call")
+				:mockReturnValueOnce(1, 2, 3, 4)
+				:mockReturnValueOnce("last call")
 
-		xit("toHaveReturnedTimes should pass", function() end)
+			expect(mockFn).never.toHaveReturnedWith(1, 2, 3, 4)
 
-		xit("toHaveReturnedWith should pass", function() end)
+			-- When
+			mockFn()
+			mockFn()
+			mockFn()
 
-		xit("toHaveLastReturnedWith should pass", function() end)
+			-- Then
+			expect(mockFn).toHaveReturnedWith(1, 2, 3, 4)
+		end)
 
-		xit("toHaveNthReturnedWith should pass", function() end)
+		it("toHaveLastReturnedWith should pass", function()
+			-- Given
+			mockFn
+				:mockReturnValueOnce("first call")
+				:mockReturnValueOnce(1, 2, 3, 4)
+
+			expect(mockFn).never.toHaveLastReturnedWith(1, 2, 3, 4)
+
+			-- When
+			mockFn()
+			mockFn()
+
+			-- Then
+			expect(mockFn).toHaveLastReturnedWith(1, 2, 3, 4)
+		end)
+
+		it("toHaveNthReturnedWith should pass", function()
+			-- Given
+			mockFn
+				:mockReturnValueOnce("first call")
+				:mockReturnValueOnce("second call", 2, 3)
+				:mockReturnValueOnce("third call")
+
+			expect(mockFn).never.toHaveNthReturnedWith(2, "second call", 2, 3)
+
+			-- When
+			mockFn("first call")
+			mockFn("second call", 2, 3)
+			mockFn("third call")
+
+			-- Then
+			expect(mockFn).toHaveNthReturnedWith(1, "first call")
+			expect(mockFn).toHaveNthReturnedWith(2, "second call", 2, 3)
+			expect(mockFn).toHaveNthReturnedWith(3, "third call")
+		end)
 	end)
 end)
 
