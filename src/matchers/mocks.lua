@@ -1,4 +1,5 @@
 local prettyValue = require("src.utils.prettyValue")
+local deepEqual = require("src.utils.deepEqual")
 
 --- Throws if the value is not a mock function
 ---@param value any
@@ -42,7 +43,33 @@ local function toHaveBeenCalledTimes(ctx, received, expected)
 end
 
 ---@type lest.Matcher
-local function toHaveBeenCalledWith(ctx, received, ...) end
+local function toHaveBeenCalledWith(ctx, received, ...)
+	received = assertMockFn(received)
+
+	local args = { ... }
+
+	local hasBeenCalledWithArgs = false
+	for _, call in ipairs(received.mock.calls) do
+		if deepEqual(args, call) then
+			hasBeenCalledWithArgs = true
+			break
+		end
+	end
+
+	for i, arg in ipairs(args) do
+		args[i] = prettyValue(arg)
+	end
+
+	return {
+		pass = hasBeenCalledWithArgs,
+		message = string.format(
+			"Expected %s to%shave been called with: %s",
+			tostring(received),
+			ctx.inverted and " not " or " ",
+			table.concat(args, ", ")
+		),
+	}
+end
 
 ---@type lest.Matcher
 local function toHaveBeenLastCalledWith(ctx, received, ...) end
@@ -71,4 +98,7 @@ return {
 
 	toHaveBeenCalledTimes = toHaveBeenCalledTimes,
 	toBeCalledTimes = toHaveBeenCalledTimes,
+
+	toHaveBeenCalledWith = toHaveBeenCalledWith,
+	toBeCalledWith = toHaveBeenCalledWith,
 }

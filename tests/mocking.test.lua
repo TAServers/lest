@@ -166,7 +166,18 @@ describe("lest.fn", function()
 			expect(mockFn).toHaveBeenCalledTimes(1)
 		end)
 
-		xit("toHaveBeenCalledWith should pass", function() end)
+		it("toHaveBeenCalledWith should pass", function()
+			-- Given
+			expect(mockFn).never.toHaveBeenCalledWith(1, 2, 3, 4)
+
+			-- When
+			mockFn("first call")
+			mockFn(1, 2, 3, 4)
+			mockFn("last call")
+
+			-- Then
+			expect(mockFn).toHaveBeenCalledWith(1, 2, 3, 4)
+		end)
 
 		xit("toHaveBeenLastCalledWith should pass", function() end)
 
