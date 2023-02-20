@@ -105,14 +105,16 @@ describe("number matchers", function()
 			assertMatcher.failed(result)
 			assertMatcher.hasMessage(
 				result,
-				("Expected %d to be close to nan within 1 digits"):format(
-					normalNumber
+				("Expected %d to be close to %s within 1 digits"):format(
+					normalNumber,
+					tostring(NAN)
 				)
 			)
 			assertMatcher.failed(resultSwapped)
 			assertMatcher.hasMessage(
 				resultSwapped,
-				("Expected nan to be close to %d within 1 digits"):format(
+				("Expected %s to be close to %d within 1 digits"):format(
+					tostring(NAN),
 					normalNumber
 				)
 			)
@@ -198,12 +200,18 @@ describe("number matchers", function()
 			assertMatcher.failed(result)
 			assertMatcher.hasMessage(
 				result,
-				("Expected %d to be greater than nan"):format(normalNumber)
+				("Expected %d to be greater than %s"):format(
+					normalNumber,
+					tostring(NAN)
+				)
 			)
 			assertMatcher.failed(resultSwapped)
 			assertMatcher.hasMessage(
 				resultSwapped,
-				("Expected nan to be greater than %d"):format(normalNumber)
+				("Expected %s to be greater than %d"):format(
+					tostring(NAN),
+					normalNumber
+				)
 			)
 		end)
 
