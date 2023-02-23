@@ -6,10 +6,8 @@ local function toBeCloseTo(ctx, received, expected, numDigits)
 	local expectedDiff = math.pow(10, -numDigits) / 2
 	local receivedDiff = math.abs(expected - received)
 
-	local pass = receivedDiff < expectedDiff
-
 	return {
-		pass = pass,
+		pass = receivedDiff < expectedDiff,
 		message = string.format(
 			"Expected %s to%sbe close to %s within %s digits",
 			prettyValue(received),
