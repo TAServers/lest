@@ -235,4 +235,184 @@ describe("table matchers", function()
 			)
 		end)
 	end)
+
+	describe("toMatchObject", function()
+		describe("should pass", function()
+			test(
+				"when the received object matches the expected object",
+				function()
+					-- Given
+					local testObject = {
+						a = 10,
+						b = "eleven",
+						c = "quux",
+					}
+
+					local testMatchObject = {
+						a = 10,
+						b = "eleven",
+					}
+
+					-- When
+					local result = matchers.toMatchObject(
+						CONTEXT,
+						testObject,
+						testMatchObject
+					)
+
+					-- Then
+					assertMatcher.passed(result)
+				end
+			)
+
+			test(
+				"when the received array of objects matches the expected array of objects",
+				function()
+					-- Given
+					local testObjectArray = {
+						{
+							a = 10,
+							b = "eleven",
+							c = "quux",
+						},
+
+						{
+							foo = 85,
+							bar = "lest",
+						},
+					}
+
+					local testMatchObjectArray = {
+						{
+							a = 10,
+							b = "eleven",
+						},
+
+						{ bar = "lest" },
+					}
+
+					-- When
+					local result = matchers.toMatchObject(
+						CONTEXT,
+						testObjectArray,
+						testMatchObjectArray
+					)
+
+					-- Then
+					assertMatcher.passed(result)
+				end
+			)
+		end)
+
+		describe("should fail", function()
+			test(
+				"when the received object doesn't matches the expected object",
+				function()
+					-- Given
+					local testObject = {
+						a = 10,
+						b = "eleven",
+						c = "quux",
+					}
+
+					local testMatchObject = {
+						a = 17,
+						b = "twelve",
+					}
+
+					-- When
+					local result = matchers.toMatchObject(
+						CONTEXT,
+						testObject,
+						testMatchObject
+					)
+
+					-- Then
+					assertMatcher.failed(result)
+					assertMatcher.hasMessage(
+						result,
+						("Expected %s to match %s"):format(
+							prettyValue(testObject),
+							prettyValue(testMatchObject)
+						)
+					)
+				end
+			)
+
+			test(
+				"when the received array of objects doesn't match the expected array of objects",
+				function()
+					-- Given
+					local testObjectArray = {
+						{
+							a = 10,
+							b = "eleven",
+							c = "quux",
+						},
+
+						{
+							foo = 85,
+							bar = "lest",
+						},
+					}
+
+					local testMatchObjectArray = {
+						{
+							a = 10,
+							b = "eleven",
+						},
+
+						{ bar = "lest" },
+
+						{ quux = "fiddle" },
+					}
+
+					-- When
+					local result = matchers.toMatchObject(
+						CONTEXT,
+						testObjectArray,
+						testMatchObjectArray
+					)
+
+					-- Then
+					assertMatcher.failed(result)
+					assertMatcher.hasMessage(
+						result,
+						("Expected %s to match %s"):format(
+							prettyValue(testObjectArray),
+							prettyValue(testMatchObjectArray)
+						)
+					)
+				end
+			)
+		end)
+
+		it("should have an inverted message", function()
+			-- Given
+			local testObject = {
+				a = 1,
+				finger = "appendage",
+			}
+
+			local testMatchObject = {
+				a = 1,
+			}
+
+			-- When
+			local result = matchers.toMatchObject(
+				INVERTED_CONTEXT,
+				testObject,
+				testMatchObject
+			)
+
+			-- Then
+			assertMatcher.hasMessage(
+				result,
+				("Expected %s to not match %s"):format(
+					prettyValue(testObject),
+					prettyValue(testMatchObject)
+				)
+			)
+		end)
+	end)
 end)
