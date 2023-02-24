@@ -22,6 +22,7 @@ local function toContain(ctx, received, item)
 	local pass = false
 
 	if type(received) == "string" then
+		assertType(item, "string")
 		pass = received:find(item) ~= nil
 	elseif type(received) == "table" then
 		for _, value in pairs(received) do
@@ -57,6 +58,7 @@ local function toContainEqual(ctx, received, item)
 			break
 		end
 	end
+
 	return {
 		pass = pass,
 		message = string.format(
