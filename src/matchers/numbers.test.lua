@@ -36,88 +36,91 @@ describe("number matchers", function()
 			end
 		)
 
-		it(
-			"should fail when the received value is not close to the expected value",
-			function()
+		describe("should fail", function()
+			test(
+				"when the received value is not close to the expected value",
+				function()
+					-- Given
+					local numDigits = 3
+
+					-- When
+					local result = matchers.toBeCloseTo(
+						CONTEXT,
+						closeValue,
+						testValue,
+						numDigits
+					)
+
+					-- Then
+					assertMatcher.failed(result)
+					assertMatcher.hasMessage(
+						result,
+						("Expected %.3f to be close to %d within %d digits"):format(
+							closeValue,
+							testValue,
+							numDigits
+						)
+					)
+				end
+			)
+
+			test("on infinity for any parameter", function()
 				-- Given
-				local numDigits = 3
+				local normalNumber = 1
 
 				-- When
-				local result = matchers.toBeCloseTo(
-					CONTEXT,
-					closeValue,
-					testValue,
-					numDigits
-				)
+				local result =
+					matchers.toBeCloseTo(CONTEXT, normalNumber, INFINITY, 1)
+
+				local resultSwapped =
+					matchers.toBeCloseTo(CONTEXT, INFINITY, normalNumber, 1)
 
 				-- Then
 				assertMatcher.failed(result)
 				assertMatcher.hasMessage(
 					result,
-					("Expected %.3f to be close to %d within %d digits"):format(
-						closeValue,
-						testValue,
-						numDigits
+					("Expected %d to be close to inf within 1 digits"):format(
+						normalNumber
 					)
 				)
-			end
-		)
 
-		it("should fail on infinity for any parameter", function()
-			-- Given
-			local normalNumber = 1
-
-			-- When
-			local result =
-				matchers.toBeCloseTo(CONTEXT, normalNumber, INFINITY, 1)
-
-			local resultSwapped =
-				matchers.toBeCloseTo(CONTEXT, INFINITY, normalNumber, 1)
-
-			-- Then
-			assertMatcher.failed(result)
-			assertMatcher.hasMessage(
-				result,
-				("Expected %d to be close to inf within 1 digits"):format(
-					normalNumber
+				assertMatcher.hasMessage(
+					resultSwapped,
+					("Expected inf to be close to %d within 1 digits"):format(
+						normalNumber
+					)
 				)
-			)
+			end)
 
-			assertMatcher.hasMessage(
-				resultSwapped,
-				("Expected inf to be close to %d within 1 digits"):format(
-					normalNumber
+			test("on NaN for any parameter", function()
+				-- Given
+				local normalNumber = 1
+
+				-- When
+				local result =
+					matchers.toBeCloseTo(CONTEXT, normalNumber, NAN, 1)
+
+				local resultSwapped =
+					matchers.toBeCloseTo(CONTEXT, NAN, normalNumber, 1)
+
+				-- Then
+				assertMatcher.failed(result)
+				assertMatcher.hasMessage(
+					result,
+					("Expected %d to be close to %s within 1 digits"):format(
+						normalNumber,
+						tostring(NAN)
+					)
 				)
-			)
-		end)
-
-		it("should fail on NaN for any parameter", function()
-			-- Given
-			local normalNumber = 1
-
-			-- When
-			local result = matchers.toBeCloseTo(CONTEXT, normalNumber, NAN, 1)
-
-			local resultSwapped =
-				matchers.toBeCloseTo(CONTEXT, NAN, normalNumber, 1)
-
-			-- Then
-			assertMatcher.failed(result)
-			assertMatcher.hasMessage(
-				result,
-				("Expected %d to be close to %s within 1 digits"):format(
-					normalNumber,
-					tostring(NAN)
+				assertMatcher.failed(resultSwapped)
+				assertMatcher.hasMessage(
+					resultSwapped,
+					("Expected %s to be close to %d within 1 digits"):format(
+						tostring(NAN),
+						normalNumber
+					)
 				)
-			)
-			assertMatcher.failed(resultSwapped)
-			assertMatcher.hasMessage(
-				resultSwapped,
-				("Expected %s to be close to %d within 1 digits"):format(
-					tostring(NAN),
-					normalNumber
-				)
-			)
+			end)
 		end)
 
 		it("should have an inverted message", function()
@@ -164,59 +167,62 @@ describe("number matchers", function()
 			end
 		)
 
-		it(
-			"should fail when the received value is less than the expected value",
-			function()
+		describe("should fail", function()
+			test(
+				"when the received value is less than the expected value",
+				function()
+					-- Given
+					local greaterNumber = 10
+					local smallerNumber = 5
+
+					-- When
+					local result = matchers.toBeGreaterThan(
+						CONTEXT,
+						smallerNumber,
+						greaterNumber
+					)
+
+					-- Then
+					assertMatcher.failed(result)
+					assertMatcher.hasMessage(
+						result,
+						("Expected %d to be greater than %d"):format(
+							smallerNumber,
+							greaterNumber
+						)
+					)
+				end
+			)
+
+			test("on NaN for any parameter", function()
 				-- Given
-				local greaterNumber = 10
-				local smallerNumber = 5
+				local normalNumber = 1
 
 				-- When
-				local result = matchers.toBeGreaterThan(
-					CONTEXT,
-					smallerNumber,
-					greaterNumber
-				)
+				local result =
+					matchers.toBeGreaterThan(CONTEXT, normalNumber, NAN)
+
+				local resultSwapped =
+					matchers.toBeGreaterThan(CONTEXT, NAN, normalNumber)
 
 				-- Then
 				assertMatcher.failed(result)
 				assertMatcher.hasMessage(
 					result,
-					("Expected %d to be greater than %d"):format(
-						smallerNumber,
-						greaterNumber
+					("Expected %d to be greater than %s"):format(
+						normalNumber,
+						tostring(NAN)
 					)
 				)
-			end
-		)
-
-		it("should fail on NaN for any parameter", function()
-			-- Given
-			local normalNumber = 1
-
-			-- When
-			local result = matchers.toBeGreaterThan(CONTEXT, normalNumber, NAN)
-
-			local resultSwapped =
-				matchers.toBeGreaterThan(CONTEXT, NAN, normalNumber)
-
-			-- Then
-			assertMatcher.failed(result)
-			assertMatcher.hasMessage(
-				result,
-				("Expected %d to be greater than %s"):format(
-					normalNumber,
-					tostring(NAN)
+				assertMatcher.failed(resultSwapped)
+				assertMatcher.hasMessage(
+					resultSwapped,
+					("Expected %s to be greater than %d"):format(
+						tostring(NAN),
+						normalNumber
+					)
 				)
-			)
-			assertMatcher.failed(resultSwapped)
-			assertMatcher.hasMessage(
-				resultSwapped,
-				("Expected %s to be greater than %d"):format(
-					tostring(NAN),
-					normalNumber
-				)
-			)
+			end)
 		end)
 
 		it("should have an inverted message", function()
@@ -273,60 +279,62 @@ describe("number matchers", function()
 			end
 		)
 
-		it(
-			"should fail when the received value is less than the expected value",
-			function()
+		describe("should fail", function()
+			test(
+				"when the received value is less than the expected value",
+				function()
+					-- Given
+					local greaterNumber = 10
+					local smallerNumber = 3
+
+					-- When
+					local result = matchers.toBeGreaterThanOrEqual(
+						CONTEXT,
+						smallerNumber,
+						greaterNumber
+					)
+
+					-- Then
+					assertMatcher.failed(result)
+					assertMatcher.hasMessage(
+						result,
+						("Expected %d to be greater than or equal to %d"):format(
+							smallerNumber,
+							greaterNumber
+						)
+					)
+				end
+			)
+
+			test("on NaN for any parameter", function()
 				-- Given
-				local greaterNumber = 10
-				local smallerNumber = 3
+				local normalNumber = 1
 
 				-- When
-				local result = matchers.toBeGreaterThanOrEqual(
-					CONTEXT,
-					smallerNumber,
-					greaterNumber
-				)
+				local result =
+					matchers.toBeGreaterThanOrEqual(CONTEXT, normalNumber, NAN)
+
+				local resultSwapped =
+					matchers.toBeGreaterThanOrEqual(CONTEXT, NAN, normalNumber)
 
 				-- Then
 				assertMatcher.failed(result)
 				assertMatcher.hasMessage(
 					result,
-					("Expected %d to be greater than or equal to %d"):format(
-						smallerNumber,
-						greaterNumber
+					("Expected %d to be greater than or equal to %s"):format(
+						normalNumber,
+						tostring(NAN)
 					)
 				)
-			end
-		)
-
-		it("should fail on NaN for any parameter", function()
-			-- Given
-			local normalNumber = 1
-
-			-- When
-			local result =
-				matchers.toBeGreaterThanOrEqual(CONTEXT, normalNumber, NAN)
-
-			local resultSwapped =
-				matchers.toBeGreaterThanOrEqual(CONTEXT, NAN, normalNumber)
-
-			-- Then
-			assertMatcher.failed(result)
-			assertMatcher.hasMessage(
-				result,
-				("Expected %d to be greater than or equal to %s"):format(
-					normalNumber,
-					tostring(NAN)
+				assertMatcher.failed(resultSwapped)
+				assertMatcher.hasMessage(
+					resultSwapped,
+					("Expected %s to be greater than or equal to %d"):format(
+						tostring(NAN),
+						normalNumber
+					)
 				)
-			)
-			assertMatcher.failed(resultSwapped)
-			assertMatcher.hasMessage(
-				resultSwapped,
-				("Expected %s to be greater than or equal to %d"):format(
-					tostring(NAN),
-					normalNumber
-				)
-			)
+			end)
 		end)
 
 		it("should have an inverted message", function()
@@ -368,56 +376,61 @@ describe("number matchers", function()
 			end
 		)
 
-		it(
-			"should fail when the received value is greater than the expected value",
-			function()
+		describe("should fail", function()
+			test(
+				"when the received value is greater than the expected value",
+				function()
+					-- Given
+					local greaterNumber = 10
+					local smallerNumber = 5
+
+					-- When
+					local result = matchers.toBeLessThan(
+						CONTEXT,
+						greaterNumber,
+						smallerNumber
+					)
+
+					-- Then
+					assertMatcher.failed(result)
+					assertMatcher.hasMessage(
+						result,
+						("Expected %d to be less than %d"):format(
+							greaterNumber,
+							smallerNumber
+						)
+					)
+				end
+			)
+
+			test("on NaN for any parameter", function()
 				-- Given
-				local greaterNumber = 10
-				local smallerNumber = 5
+				local normalNumber = 1
 
 				-- When
-				local result =
-					matchers.toBeLessThan(CONTEXT, greaterNumber, smallerNumber)
+				local result = matchers.toBeLessThan(CONTEXT, normalNumber, NAN)
+
+				local resultSwapped =
+					matchers.toBeLessThan(CONTEXT, NAN, normalNumber)
 
 				-- Then
 				assertMatcher.failed(result)
 				assertMatcher.hasMessage(
 					result,
-					("Expected %d to be less than %d"):format(
-						greaterNumber,
-						smallerNumber
+					("Expected %d to be less than %s"):format(
+						normalNumber,
+						tostring(NAN)
 					)
 				)
-			end
-		)
-
-		it("should fail on NaN for any parameter", function()
-			-- Given
-			local normalNumber = 1
-
-			-- When
-			local result = matchers.toBeLessThan(CONTEXT, normalNumber, NAN)
-
-			local resultSwapped =
-				matchers.toBeLessThan(CONTEXT, NAN, normalNumber)
-
-			-- Then
-			assertMatcher.failed(result)
-			assertMatcher.hasMessage(
-				result,
-				("Expected %d to be less than %s"):format(
-					normalNumber,
-					tostring(NAN)
+				assertMatcher.failed(resultSwapped)
+				assertMatcher.hasMessage(
+					resultSwapped,
+					("Expected %s to be less than %d"):format(
+						tostring(NAN),
+						normalNumber
+					)
 				)
-			)
-			assertMatcher.failed(resultSwapped)
-			assertMatcher.hasMessage(
-				resultSwapped,
-				("Expected %s to be less than %d"):format(
-					tostring(NAN),
-					normalNumber
-				)
-			)
+			end)
 		end)
 
 		it("should have an inverted message", function()
@@ -474,60 +487,62 @@ describe("number matchers", function()
 			end
 		)
 
-		it(
-			"should fail when the received value is greater than the expected value",
-			function()
+		describe("should fail", function()
+			test(
+				"when the received value is greater than the expected value",
+				function()
+					-- Given
+					local greaterNumber = 10
+					local smallerNumber = 3
+
+					-- When
+					local result = matchers.toBeLessThanOrEqual(
+						CONTEXT,
+						greaterNumber,
+						smallerNumber
+					)
+
+					-- Then
+					assertMatcher.failed(result)
+					assertMatcher.hasMessage(
+						result,
+						("Expected %d to be less than or equal to %d"):format(
+							greaterNumber,
+							smallerNumber
+						)
+					)
+				end
+			)
+
+			test("on NaN for any parameter", function()
 				-- Given
-				local greaterNumber = 10
-				local smallerNumber = 3
+				local normalNumber = 1
 
 				-- When
-				local result = matchers.toBeLessThanOrEqual(
-					CONTEXT,
-					greaterNumber,
-					smallerNumber
-				)
+				local result =
+					matchers.toBeLessThanOrEqual(CONTEXT, normalNumber, NAN)
+
+				local resultSwapped =
+					matchers.toBeLessThanOrEqual(CONTEXT, NAN, normalNumber)
 
 				-- Then
 				assertMatcher.failed(result)
 				assertMatcher.hasMessage(
 					result,
-					("Expected %d to be less than or equal to %d"):format(
-						greaterNumber,
-						smallerNumber
+					("Expected %d to be less than or equal to %s"):format(
+						normalNumber,
+						tostring(NAN)
 					)
 				)
-			end
-		)
-
-		it("should fail on NaN for any parameter", function()
-			-- Given
-			local normalNumber = 1
-
-			-- When
-			local result =
-				matchers.toBeLessThanOrEqual(CONTEXT, normalNumber, NAN)
-
-			local resultSwapped =
-				matchers.toBeLessThanOrEqual(CONTEXT, NAN, normalNumber)
-
-			-- Then
-			assertMatcher.failed(result)
-			assertMatcher.hasMessage(
-				result,
-				("Expected %d to be less than or equal to %s"):format(
-					normalNumber,
-					tostring(NAN)
+				assertMatcher.failed(resultSwapped)
+				assertMatcher.hasMessage(
+					resultSwapped,
+					("Expected %s to be less than or equal to %d"):format(
+						tostring(NAN),
+						normalNumber
+					)
 				)
-			)
-			assertMatcher.failed(resultSwapped)
-			assertMatcher.hasMessage(
-				resultSwapped,
-				("Expected %s to be less than or equal to %d"):format(
-					tostring(NAN),
-					normalNumber
-				)
-			)
+			end)
 		end)
 
 		it("should have an inverted message", function()
