@@ -3,10 +3,8 @@ local deepEqual = require("src.utils.deepEqual")
 
 ---@type lest.Matcher
 local function toHaveLength(ctx, received, length)
-	local receivedLen = #received
-
 	return {
-		pass = receivedLen == length,
+		pass = #received == length,
 		message = string.format(
 			"Expected %s to%shave the length of %d",
 			prettyValue(received),
