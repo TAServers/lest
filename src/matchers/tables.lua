@@ -6,10 +6,14 @@ local assertType = require("src.asserts.type")
 local function toHaveLength(ctx, received, length)
 	assertType(length, "number")
 
+	local success, comparison = pcall(function()
+		return #received == length
+	end)
+
 	return {
-		pass = #received == length,
+		pass = success and comparison,
 		message = string.format(
-			"Expected %s to%shave the length of %d",
+			"Expected %s to%shave a length of %d",
 			prettyValue(received),
 			ctx.inverted and " not " or " ",
 			length
@@ -23,7 +27,7 @@ local function toContain(ctx, received, item)
 
 	if type(received) == "string" then
 		assertType(item, "string")
-		pass = received:find(item) ~= nil
+		pass = received:find(item, 1, true) ~= nil
 	elseif type(received) == "table" then
 		for _, value in pairs(received) do
 			if value == item then
@@ -31,8 +35,6 @@ local function toContain(ctx, received, item)
 				break
 			end
 		end
-	else
-		error("Expected to receive a string or a table")
 	end
 
 	return {
@@ -48,14 +50,14 @@ end
 
 ---@type lest.Matcher
 local function toContainEqual(ctx, received, item)
-	assertType(received, "table")
-
 	local pass = false
 
-	for _, value in pairs(received) do
-		if deepEqual(value, item) then
-			pass = true
-			break
+	if type(received) == "table" then
+		for _, value in pairs(received) do
+			if deepEqual(value, item) then
+				pass = true
+				break
+			end
 		end
 	end
 
@@ -72,13 +74,28 @@ end
 
 ---@type lest.Matcher
 local function toMatchObject(ctx, received, object)
-	assertType(received, "table")
 	assertType(object, "table")
+
+	local function createMatcherResult(passed)
+		return {
+			pass = passed,
+			message = string.format(
+				"Expected %s to%smatch %s",
+				prettyValue(received),
+				ctx.inverted and " not " or " ",
+				prettyValue(object)
+			),
+		}
+	end
+
+	if type(received) ~= "table" then
+		return createMatcherResult(false)
+	end
 
 	--- Internal recursive function to determine if any property of `a` matches with `b`.
 	---@param a table
 	---@param b table
-	local function _matches(a, b)
+	local function matches(a, b)
 		if #a ~= #b then
 			-- This is done because this usually means that .toMatchObject
 			-- was called with an array of objects. Jest's .toMatchObject enforces
@@ -89,31 +106,20 @@ local function toMatchObject(ctx, received, object)
 
 		for aKey, aValue in pairs(a) do
 			local bValue = b[aKey]
-			if bValue then
-				if type(aValue) == "table" and type(bValue) == "table" then
-					if not _matches(aValue, bValue) then
-						return false
-					end
-				else
-					if aValue ~= bValue then
-						return false
-					end
+
+			if type(aValue) == "table" and type(bValue) == "table" then
+				if not matches(aValue, bValue) then
+					return false
 				end
+			elseif bValue ~= nil and aValue ~= bValue then
+				return false
 			end
 		end
 
 		return true
 	end
 
-	return {
-		pass = _matches(received, object),
-		message = string.format(
-			"Expected %s to%smatch %s",
-			prettyValue(received),
-			ctx.inverted and " not " or " ",
-			prettyValue(object)
-		),
-	}
+	return createMatcherResult(matches(received, object))
 end
 
 return {
@@ -121,4 +127,5 @@ return {
 	toContain = toContain,
 	toContainEqual = toContainEqual,
 	toMatchObject = toMatchObject,
+	toMatchTable = toMatchObject,
 }

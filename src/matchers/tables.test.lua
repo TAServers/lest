@@ -33,26 +33,47 @@ describe("table matchers", function()
 			end
 		)
 
-		it(
-			"should fail when the received object doesn't has the expected length",
-			function()
+		describe("should fail", function()
+			test(
+				"when the received object doesn't has the expected length",
+				function()
+					-- Given
+					local testArray = { 2, 3, 4 }
+
+					-- When
+					local resultArray =
+						matchers.toHaveLength(CONTEXT, testArray, 4)
+
+					-- Then
+					assertMatcher.failed(resultArray)
+					assertMatcher.hasMessage(
+						resultArray,
+						("Expected %s to have a length of %d"):format(
+							prettyValue(testArray),
+							4
+						)
+					)
+				end
+			)
+
+			test("when the received object has no length", function()
 				-- Given
-				local testArray = { 2, 3, 4 }
+				local noLengthObject = 1
 
 				-- When
-				local resultArray = matchers.toHaveLength(CONTEXT, testArray, 4)
+				local result =
+					matchers.toHaveLength(CONTEXT, noLengthObject, 10)
 
 				-- Then
-				assertMatcher.failed(resultArray)
+				assertMatcher.failed(result)
 				assertMatcher.hasMessage(
-					resultArray,
-					("Expected %s to have the length of %d"):format(
-						prettyValue(testArray),
-						4
+					result,
+					("Expected %s to have a length of 10"):format(
+						prettyValue(noLengthObject)
 					)
 				)
-			end
-		)
+			end)
+		end)
 
 		it("should have an inverted message", function()
 			-- Given
@@ -65,9 +86,8 @@ describe("table matchers", function()
 			-- Then
 			assertMatcher.hasMessage(
 				resultArray,
-				("Expected %s to not have the length of %d"):format(
-					prettyValue(testArray),
-					4
+				("Expected %s to not have a length of 4"):format(
+					prettyValue(testArray)
 				)
 			)
 		end)
@@ -154,6 +174,28 @@ describe("table matchers", function()
 					)
 				end
 			)
+
+			test(
+				"when the received object is neither a string or a table",
+				function()
+					-- Given
+					local invalidObject = 10
+
+					-- When
+					local result =
+						matchers.toContain(CONTEXT, invalidObject, 10)
+
+					-- Then
+					assertMatcher.failed(result)
+					assertMatcher.hasMessage(
+						result,
+						("Expected %s to contain %s"):format(
+							prettyValue(invalidObject),
+							prettyValue(10)
+						)
+					)
+				end
+			)
 		end)
 
 		it("should have an inverted message", function()
@@ -193,28 +235,49 @@ describe("table matchers", function()
 			end
 		)
 
-		it(
-			"should fail when the received object doesn't contains the expected item with deep equality",
-			function()
+		describe("should fail", function()
+			test(
+				"when the received object doesn't contains the expected item with deep equality",
+				function()
+					-- Given
+					local testArray =
+						{ 1, { hello = 10, hi = { turn = 10 } }, 2 }
+					local testItem = { foo = 10, bar = { quux = 10 } }
+
+					-- When
+					local result =
+						matchers.toContainEqual(CONTEXT, testArray, testItem)
+
+					-- Then
+					assertMatcher.failed(result)
+					assertMatcher.hasMessage(
+						result,
+						("Expected %s to contain %s with deep equality"):format(
+							prettyValue(testArray),
+							prettyValue(testItem)
+						)
+					)
+				end
+			)
+
+			test("when the received object is not a table", function()
 				-- Given
-				local testArray = { 1, { hello = 10, hi = { turn = 10 } }, 2 }
-				local testItem = { foo = 10, bar = { quux = 10 } }
+				local invalidObject = 45
 
 				-- When
 				local result =
-					matchers.toContainEqual(CONTEXT, testArray, testItem)
+					matchers.toContainEqual(CONTEXT, invalidObject, 45)
 
 				-- Then
 				assertMatcher.failed(result)
 				assertMatcher.hasMessage(
 					result,
-					("Expected %s to contain %s with deep equality"):format(
-						prettyValue(testArray),
-						prettyValue(testItem)
+					("Expected %s to contain 45 with deep equality"):format(
+						prettyValue(invalidObject)
 					)
 				)
-			end
-		)
+			end)
+		end)
 
 		it("should have an inverted message", function()
 			-- Given
@@ -306,7 +369,7 @@ describe("table matchers", function()
 
 		describe("should fail", function()
 			test(
-				"when the received object doesn't matches the expected object",
+				"when the received object doesn't match the expected object",
 				function()
 					-- Given
 					local testObject = {
@@ -385,6 +448,26 @@ describe("table matchers", function()
 					)
 				end
 			)
+
+			test("when the received object is not a table", function()
+				-- Given
+				local invalidObject = "hello"
+				local matchTable = { e = 10 }
+
+				-- When
+				local result =
+					matchers.toMatchObject(CONTEXT, invalidObject, matchTable)
+
+				-- Then
+				assertMatcher.failed(result)
+				assertMatcher.hasMessage(
+					result,
+					("Expected %s to match %s"):format(
+						prettyValue(invalidObject),
+						prettyValue(matchTable)
+					)
+				)
+			end)
 		end)
 
 		it("should have an inverted message", function()
