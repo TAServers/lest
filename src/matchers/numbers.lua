@@ -1,35 +1,50 @@
 local prettyValue = require("src.utils.prettyValue")
 local assertType = require("src.asserts.type")
 
-local INFINITY = math.huge
-
 ---@type lest.Matcher
 local function toBeCloseTo(ctx, received, expected, numDigits)
-	assertType(received, "number")
+	-- Matches Jest's default digits.
+	numDigits = numDigits == nil and 2 or numDigits
+
 	assertType(expected, "number")
 	assertType(numDigits, "number")
 
+	local function createMatcherResult(passed)
+		return {
+			pass = passed,
+			message = string.format(
+				"Expected %s to%sbe close to %s (%d decimal places)",
+				prettyValue(received),
+				ctx.inverted and " not " or " ",
+				prettyValue(expected),
+				numDigits
+			),
+		}
+	end
+
+	if type(received) ~= "number" then
+		return createMatcherResult(false)
+	end
+
+	if expected == received then
+		return createMatcherResult(true)
+	end
+
 	local expectedDiff = math.pow(10, -numDigits) / 2
 	local receivedDiff = math.abs(expected - received)
-	return {
-		pass = receivedDiff < expectedDiff,
-		message = string.format(
-			"Expected %s to%sbe close to %s within %s digits",
-			prettyValue(received),
-			ctx.inverted and " not " or " ",
-			prettyValue(expected),
-			prettyValue(numDigits)
-		),
-	}
+	return createMatcherResult(receivedDiff < expectedDiff)
 end
 
 ---@type lest.Matcher
 local function toBeGreaterThan(ctx, received, expected)
-	assertType(received, "number")
 	assertType(expected, "number")
 
+	local success, comparison = pcall(function()
+		return received > expected
+	end)
+
 	return {
-		pass = received > expected,
+		pass = success and comparison,
 		message = string.format(
 			"Expected %s to%sbe greater than %s",
 			prettyValue(received),
@@ -41,11 +56,14 @@ end
 
 ---@type lest.Matcher
 local function toBeGreaterThanOrEqual(ctx, received, expected)
-	assertType(received, "number")
 	assertType(expected, "number")
 
+	local success, comparison = pcall(function()
+		return received >= expected
+	end)
+
 	return {
-		pass = received >= expected,
+		pass = success and comparison,
 		message = string.format(
 			"Expected %s to%sbe greater than or equal to %s",
 			prettyValue(received),
@@ -57,11 +75,14 @@ end
 
 ---@type lest.Matcher
 local function toBeLessThan(ctx, received, expected)
-	assertType(received, "number")
 	assertType(expected, "number")
 
+	local success, comparison = pcall(function()
+		return received < expected
+	end)
+
 	return {
-		pass = received < expected,
+		pass = success and comparison,
 		message = string.format(
 			"Expected %s to%sbe less than %s",
 			prettyValue(received),
@@ -73,11 +94,14 @@ end
 
 ---@type lest.Matcher
 local function toBeLessThanOrEqual(ctx, received, expected)
-	assertType(received, "number")
 	assertType(expected, "number")
 
+	local success, comparison = pcall(function()
+		return received <= expected
+	end)
+
 	return {
-		pass = received <= expected,
+		pass = success and comparison,
 		message = string.format(
 			"Expected %s to%sbe less than or equal to %s",
 			prettyValue(received),
@@ -89,10 +113,8 @@ end
 
 ---@type lest.Matcher
 local function toBeNaN(ctx, received)
-	assertType(received, "number")
-
 	return {
-		pass = received ~= received,
+		pass = type(received) == "number" and received ~= received,
 		message = string.format(
 			"Expected %s to%sbe NaN",
 			prettyValue(received),
@@ -103,10 +125,8 @@ end
 
 ---@type lest.Matcher
 local function toBeInfinity(ctx, received)
-	assertType(received, "number")
-
 	return {
-		pass = received == INFINITY,
+		pass = type(received) == "number" and math.abs(received) == math.huge,
 		message = string.format(
 			"Expected %s to%sbe infinity",
 			prettyValue(received),
