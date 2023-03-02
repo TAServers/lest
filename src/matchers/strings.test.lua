@@ -92,6 +92,26 @@ describe("string matchers", function()
 					)
 				end
 			)
+
+			test("when the received object is not a string", function()
+				-- Given
+				local invalidObject = { 10 }
+				local testString = "Hi"
+
+				-- When
+				local result =
+					matchers.toMatch(CONTEXT, invalidObject, testString)
+
+				-- Then
+				assertMatcher.failed(result)
+				assertMatcher.hasMessage(
+					result,
+					("Expected %s to match %s"):format(
+						prettyValue(invalidObject),
+						prettyValue(testString)
+					)
+				)
+			end)
 		end)
 
 		it("should have inverted message", function()
