@@ -5,23 +5,15 @@ local assertType = require("src.asserts.type")
 local function toMatch(ctx, received, pattern)
 	assertType(pattern, "string")
 
-	local function createMatcherResult(passed)
-		return {
-			pass = passed,
-			message = string.format(
-				"Expected %s to%smatch %s",
-				prettyValue(received),
-				ctx.inverted and " not " or " ",
-				prettyValue(pattern)
-			),
-		}
-	end
-
-	if type(received) ~= "string" then
-		return createMatcherResult(false)
-	end
-
-	return createMatcherResult(received:match(pattern) ~= nil)
+	return {
+		pass = type(received) == "string" and received:match(pattern) ~= nil,
+		message = string.format(
+			"Expected %s to%smatch %s",
+			prettyValue(received),
+			ctx.inverted and " not " or " ",
+			prettyValue(pattern)
+		),
+	}
 end
 
 return {
