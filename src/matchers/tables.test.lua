@@ -176,7 +176,7 @@ describe("table matchers", function()
 			)
 
 			test(
-				"when the received object is neither a string or a table",
+				"when the received object is neither a string nor a table",
 				function()
 					-- Given
 					local invalidObject = 10
@@ -237,7 +237,7 @@ describe("table matchers", function()
 
 		describe("should fail", function()
 			test(
-				"when the received object doesn't contains the expected item with deep equality",
+				"when the received object doesn't contain the expected item with deep equality",
 				function()
 					-- Given
 					local testArray =
@@ -449,7 +449,7 @@ describe("table matchers", function()
 				end
 			)
 
-			test("when the received object is not a table", function()
+			test("when the received value is not a table", function()
 				-- Given
 				local invalidObject = "hello"
 				local matchTable = { e = 10 }

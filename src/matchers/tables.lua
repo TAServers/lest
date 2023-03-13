@@ -26,8 +26,7 @@ local function toContain(ctx, received, item)
 	local pass = false
 
 	if type(received) == "string" then
-		assertType(item, "string")
-		pass = received:find(item, 1, true) ~= nil
+		pass = received:find(tostring(item), 1, true) ~= nil
 	elseif type(received) == "table" then
 		for _, value in pairs(received) do
 			if value == item then
@@ -76,22 +75,6 @@ end
 local function toMatchObject(ctx, received, object)
 	assertType(object, "table")
 
-	local function createMatcherResult(passed)
-		return {
-			pass = passed,
-			message = string.format(
-				"Expected %s to%smatch %s",
-				prettyValue(received),
-				ctx.inverted and " not " or " ",
-				prettyValue(object)
-			),
-		}
-	end
-
-	if type(received) ~= "table" then
-		return createMatcherResult(false)
-	end
-
 	--- Internal recursive function to determine if any property of `a` matches with `b`.
 	---@param a table
 	---@param b table
@@ -119,7 +102,15 @@ local function toMatchObject(ctx, received, object)
 		return true
 	end
 
-	return createMatcherResult(matches(received, object))
+	return {
+		pass = type(received) == "table" and matches(received, object),
+		message = string.format(
+			"Expected %s to%smatch %s",
+			prettyValue(received),
+			ctx.inverted and " not " or " ",
+			prettyValue(object)
+		),
+	}
 end
 
 return {
