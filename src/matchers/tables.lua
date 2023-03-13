@@ -26,7 +26,7 @@ local function toContain(ctx, received, item)
 	local pass = false
 
 	if type(received) == "string" then
-		pass = received:find(tostring(item), 1, true) ~= nil
+		pass = type(item) == "string" and received:find(item, 1, true) ~= nil
 	elseif type(received) == "table" then
 		for _, value in pairs(received) do
 			if value == item then
