@@ -1,7 +1,6 @@
 local matchers = require("src.matchers.numbers")
 local assertMatcher = require("src.asserts.matchers")
 
-local INFINITY = math.huge
 local NAN = 0 / 0
 
 describe("number matchers", function()
@@ -70,10 +69,10 @@ describe("number matchers", function()
 
 				-- When
 				local result =
-					matchers.toBeCloseTo(CONTEXT, normalNumber, INFINITY, 1)
+					matchers.toBeCloseTo(CONTEXT, normalNumber, math.huge, 1)
 
 				local resultSwapped =
-					matchers.toBeCloseTo(CONTEXT, INFINITY, normalNumber, 1)
+					matchers.toBeCloseTo(CONTEXT, math.huge, normalNumber, 1)
 
 				-- Then
 				assertMatcher.failed(result)
@@ -123,17 +122,13 @@ describe("number matchers", function()
 			end)
 
 			test("on infinity and NaN for both parameters", function()
-				-- Given
-				local negativeInf = -math.huge
-				local positiveInf = math.huge
-
 				-- When
 				local resultBothInf =
-					matchers.toBeCloseTo(CONTEXT, positiveInf, positiveInf)
+					matchers.toBeCloseTo(CONTEXT, math.huge, math.huge)
 				local resultPosInfNegInf =
-					matchers.toBeCloseTo(CONTEXT, positiveInf, negativeInf)
+					matchers.toBeCloseTo(CONTEXT, math.huge, -math.huge)
 				local resultBothNegInf =
-					matchers.toBeCloseTo(CONTEXT, positiveInf, positiveInf)
+					matchers.toBeCloseTo(CONTEXT, -math.huge, -math.huge)
 				local resultBothNan = matchers.toBeCloseTo(CONTEXT, NAN, NAN)
 
 				-- Then
@@ -146,8 +141,8 @@ describe("number matchers", function()
 				assertMatcher.hasMessage(
 					resultPosInfNegInf,
 					("Expected %s to be close to %s (2 decimal places)"):format(
-						tostring(positiveInf),
-						tostring(negativeInf)
+						tostring(math.huge),
+						tostring(-math.huge)
 					)
 				)
 
@@ -230,8 +225,8 @@ describe("number matchers", function()
 	describe("toBeInfinity", function()
 		it("should pass when the received value is infinity", function()
 			-- When
-			local resultPositive = matchers.toBeInfinity(CONTEXT, INFINITY)
-			local resultNegative = matchers.toBeInfinity(CONTEXT, -INFINITY)
+			local resultPositive = matchers.toBeInfinity(CONTEXT, math.huge)
+			local resultNegative = matchers.toBeInfinity(CONTEXT, -math.huge)
 
 			-- Then
 			assertMatcher.passed(resultPositive)
@@ -255,12 +250,12 @@ describe("number matchers", function()
 
 		it("should have an inverted message", function()
 			-- When
-			local result = matchers.toBeInfinity(INVERTED_CONTEXT, INFINITY)
+			local result = matchers.toBeInfinity(INVERTED_CONTEXT, math.huge)
 
 			-- Then
 			assertMatcher.hasMessage(
 				result,
-				("Expected %s to not be infinity"):format(tostring(INFINITY))
+				("Expected %s to not be infinity"):format(tostring(math.huge))
 			)
 		end)
 	end)
