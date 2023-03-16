@@ -1,24 +1,27 @@
---- Asserts the matcher passed. TODO: move this into an asserts file in LEST-46
+--- Asserts the matcher passed.
 ---@param result lest.MatcherResult
 local function assertPass(result)
-	assert(result.pass, "Expected matcher to pass")
+	assert(result.pass, debug.traceback("Expected matcher to pass", 2))
 end
 
---- Asserts the matcher failed. TODO: move this into an asserts file in LEST-46
+--- Asserts the matcher failed.
 ---@param result lest.MatcherResult
 local function assertFail(result)
-	assert(not result.pass, "Expected matcher to fail")
+	assert(not result.pass, debug.traceback("Expected matcher to fail", 2))
 end
 
---- Asserts the matcher returned the given message. TODO: move this into an asserts file in LEST-46
+--- Asserts the matcher returned the given message.
 ---@param result lest.MatcherResult
 local function assertMessage(result, message)
 	assert(
 		result.message == message,
-		string.format(
-			"Expected message: %s\nReceived message: %s",
-			message,
-			result.message
+		debug.traceback(
+			string.format(
+				"Expected message: %s\nReceived message: %s",
+				message,
+				result.message
+			),
+			2
 		)
 	)
 end
