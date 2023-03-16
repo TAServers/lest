@@ -180,6 +180,307 @@ describe("number matchers", function()
 		end)
 	end)
 
+	describe("toBeGreaterThan", function()
+		it(
+			"should pass when the received value is greater than the expected value",
+			function()
+				-- Given
+				local greaterNumber = 10
+				local smallerNumber = 1
+
+				-- When
+				local result = matchers.toBeGreaterThan(
+					CONTEXT,
+					greaterNumber,
+					smallerNumber
+				)
+
+				-- Then
+				assertMatcher.passed(result)
+			end
+		)
+
+		describe("should fail", function()
+			test(
+				"when the received value is less than the expected value",
+				function()
+					-- Given
+					local greaterNumber = 10
+					local smallerNumber = 5
+
+					-- When
+					local result = matchers.toBeGreaterThan(
+						CONTEXT,
+						smallerNumber,
+						greaterNumber
+					)
+
+					-- Then
+					assertMatcher.failed(result)
+					assertMatcher.hasMessage(
+						result,
+						("Expected %d to be greater than %d"):format(
+							smallerNumber,
+							greaterNumber
+						)
+					)
+				end
+			)
+		end)
+
+		it("should have an inverted message", function()
+			-- Given
+			local greaterNumber = 10
+			local smallerNumber = 1
+
+			-- When
+			local result = matchers.toBeGreaterThan(
+				INVERTED_CONTEXT,
+				greaterNumber,
+				smallerNumber
+			)
+
+			-- Then
+			assertMatcher.hasMessage(
+				result,
+				("Expected %d to not be greater than %d"):format(
+					greaterNumber,
+					smallerNumber
+				)
+			)
+		end)
+	end)
+
+	describe("toBeGreaterThanOrEqual", function()
+		it(
+			"should pass when the received value is greater than or equal to the expected value",
+			function()
+				-- Given
+				local greaterNumber = 10
+				local smallerNumber = 1
+				local equalNumber = greaterNumber
+
+				-- When
+				local result = matchers.toBeGreaterThanOrEqual(
+					CONTEXT,
+					greaterNumber,
+					smallerNumber
+				)
+
+				-- Then
+				assertMatcher.passed(result)
+
+				-- When
+				local resultEqual = matchers.toBeGreaterThanOrEqual(
+					CONTEXT,
+					greaterNumber,
+					equalNumber
+				)
+
+				-- Then
+				assertMatcher.passed(resultEqual)
+			end
+		)
+
+		describe("should fail", function()
+			test(
+				"when the received value is less than the expected value",
+				function()
+					-- Given
+					local greaterNumber = 10
+					local smallerNumber = 3
+
+					-- When
+					local result = matchers.toBeGreaterThanOrEqual(
+						CONTEXT,
+						smallerNumber,
+						greaterNumber
+					)
+
+					-- Then
+					assertMatcher.failed(result)
+					assertMatcher.hasMessage(
+						result,
+						("Expected %d to be greater than or equal to %d"):format(
+							smallerNumber,
+							greaterNumber
+						)
+					)
+				end
+			)
+		end)
+
+		it("should have an inverted message", function()
+			-- Given
+			local greaterNumber = 10
+			local smallerNumber = 2
+			-- When
+			local result = matchers.toBeGreaterThanOrEqual(
+				INVERTED_CONTEXT,
+				greaterNumber,
+				smallerNumber
+			)
+
+			-- Then
+			assertMatcher.hasMessage(
+				result,
+				("Expected %d to not be greater than or equal to %d"):format(
+					greaterNumber,
+					smallerNumber
+				)
+			)
+		end)
+	end)
+
+	describe("toBeLessThan", function()
+		it(
+			"should pass when the received value is less than the expected value",
+			function()
+				-- Given
+				local greaterNumber = 10
+				local smallerNumber = 1
+
+				-- When
+				local result =
+					matchers.toBeLessThan(CONTEXT, smallerNumber, greaterNumber)
+
+				-- Then
+				assertMatcher.passed(result)
+			end
+		)
+
+		describe("should fail", function()
+			test(
+				"when the received value is greater than the expected value",
+				function()
+					-- Given
+					local greaterNumber = 10
+					local smallerNumber = 5
+
+					-- When
+					local result = matchers.toBeLessThan(
+						CONTEXT,
+						greaterNumber,
+						smallerNumber
+					)
+
+					-- Then
+					assertMatcher.failed(result)
+					assertMatcher.hasMessage(
+						result,
+						("Expected %d to be less than %d"):format(
+							greaterNumber,
+							smallerNumber
+						)
+					)
+				end
+			)
+		end)
+
+		it("should have an inverted message", function()
+			-- Given
+			local greaterNumber = 10
+			local smallerNumber = 1
+
+			-- When
+			local result = matchers.toBeLessThan(
+				INVERTED_CONTEXT,
+				greaterNumber,
+				smallerNumber
+			)
+
+			-- Then
+			assertMatcher.hasMessage(
+				result,
+				("Expected %d to not be less than %d"):format(
+					greaterNumber,
+					smallerNumber
+				)
+			)
+		end)
+	end)
+
+	describe("toBeLessThanOrEqual", function()
+		it(
+			"should pass when the received value is less than or equal to the expected value",
+			function()
+				-- Given
+				local greaterNumber = 10
+				local smallerNumber = 1
+				local equalNumber = greaterNumber
+
+				-- When
+				local result = matchers.toBeLessThanOrEqual(
+					CONTEXT,
+					smallerNumber,
+					greaterNumber
+				)
+
+				-- Then
+				assertMatcher.passed(result)
+
+				-- When
+				local resultEqual = matchers.toBeLessThanOrEqual(
+					CONTEXT,
+					greaterNumber,
+					equalNumber
+				)
+
+				-- Then
+				assertMatcher.passed(resultEqual)
+			end
+		)
+
+		describe("should fail", function()
+			test(
+				"when the received value is greater than the expected value",
+				function()
+					-- Given
+					local greaterNumber = 10
+					local smallerNumber = 3
+
+					-- When
+					local result = matchers.toBeLessThanOrEqual(
+						CONTEXT,
+						greaterNumber,
+						smallerNumber
+					)
+
+					-- Then
+					assertMatcher.failed(result)
+					assertMatcher.hasMessage(
+						result,
+						("Expected %d to be less than or equal to %d"):format(
+							greaterNumber,
+							smallerNumber
+						)
+					)
+				end
+			)
+		end)
+
+		it("should have an inverted message", function()
+			-- Given
+			local greaterNumber = 10
+			local smallerNumber = 2
+			-- When
+			local result = matchers.toBeLessThanOrEqual(
+				INVERTED_CONTEXT,
+				greaterNumber,
+				smallerNumber
+			)
+
+			-- Then
+			assertMatcher.hasMessage(
+				result,
+				("Expected %d to not be less than or equal to %d"):format(
+					greaterNumber,
+					smallerNumber
+				)
+			)
+		end)
+	end)
+
 	describe("toBeNaN", function()
 		it("should pass when the received value is NaN", function()
 			-- Given
