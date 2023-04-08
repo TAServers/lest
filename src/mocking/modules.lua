@@ -30,7 +30,7 @@ mockTable = function(tbl, path)
 	local mocked = {}
 
 	for k, v in pairs(tbl) do
-		mocked[k] = mockValue(v, path + "->" + tostring(k))
+		mocked[k] = mockValue(v, path .. "->" .. tostring(k))
 	end
 
 	return mocked
