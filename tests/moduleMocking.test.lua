@@ -46,6 +46,19 @@ it(
 	end
 )
 
+it("should mock a virtual module when a factory is passed", function()
+	-- Given
+	local virtualModulePath = "not a real module" -- Can't use invalidModuleName as it will affect later tests
+	local mockFactoryFn = lest.fn()
+
+	-- When
+	lest.mock(virtualModulePath, mockFactoryFn, { virtual = true })
+	require(virtualModulePath)
+
+	-- Then
+	expect(mockFactoryFn).toHaveBeenCalled()
+end)
+
 it("should call the factory when the module is required", function()
 	-- Given
 	local mockFactory = lest.fn()
@@ -94,7 +107,19 @@ it("should bypass module mocks when using lest.requireActual", function()
 	expect(foo).toThrow("Module was not mocked")
 end)
 
-describe("lest.removeMOduleMock", function()
+it("should throw an error when auto mocking a virtual module", function()
+	-- Given
+	local mockModuleFn = function()
+		lest.mock(moduleName, nil, { virtual = true })
+	end
+
+	-- Then
+	expect(mockModuleFn).toThrow(
+		"A factory must be used to mock a virtual module"
+	)
+end)
+
+describe("lest.removeModuleMock", function()
 	it("should remove the module mock", function()
 		-- Given
 		lest.mock(moduleName)

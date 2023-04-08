@@ -47,14 +47,21 @@ end
 --- If importing the given module triggers any side effects, you may need to manually mock it with the factory function.
 ---@param moduleName string
 ---@param factory? function
-function lest.mock(moduleName, factory)
-	local realModule = lest.requireActual(moduleName)
+---@param options? { virtual: boolean }
+function lest.mock(moduleName, factory, options)
+	options = options or {}
+
+	local realModule = not options.virtual and lest.requireActual(moduleName)
 
 	if factory then
 		moduleMocks[moduleName] = function()
 			return factory()
 		end
 	else
+		if options.virtual then
+			error(Error("A factory must be used to mock a virtual module"))
+		end
+
 		-- We cache the mocked module as require also caches
 		local mockedModule = mockValue(realModule, moduleName)
 		moduleMocks[moduleName] = function()
