@@ -33,6 +33,19 @@ it(
 	end
 )
 
+it(
+	"should throw an error when a factory is passed and the module does not exist",
+	function()
+		-- Given
+		local mockModuleFn = function()
+			lest.mock(invalidModuleName, function() end)
+		end
+
+		-- Then
+		expect(mockModuleFn).toThrow("module 'this.is.not.real' not found")
+	end
+)
+
 it("should call the factory when the module is required", function()
 	-- Given
 	local mockFactory = lest.fn()
