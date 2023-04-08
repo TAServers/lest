@@ -1,4 +1,5 @@
 local Error = require("src.errors.error")
+local assertType = require("src.asserts.type")
 
 lest = lest or {}
 
@@ -51,9 +52,18 @@ end
 function lest.mock(moduleName, factory, options)
 	options = options or {}
 
-	local realModule = not options.virtual and lest.requireActual(moduleName)
+	assertType(moduleName, "string", "moduleName", 2)
+	if factory then
+		assertType(factory, "function", "factory", 2)
+	end
+	assertType(options, "table", "options", 2)
 
 	if factory then
+		-- Asserts the module exists
+		if not options.virtual then
+			lest.requireActual(moduleName)
+		end
+
 		moduleMocks[moduleName] = function()
 			return factory()
 		end
@@ -63,7 +73,8 @@ function lest.mock(moduleName, factory, options)
 		end
 
 		-- We cache the mocked module as require also caches
-		local mockedModule = mockValue(realModule, moduleName)
+		local mockedModule =
+			mockValue(lest.requireActual(moduleName), moduleName)
 		moduleMocks[moduleName] = function()
 			return mockedModule
 		end
@@ -75,6 +86,8 @@ end
 --- There is no equivalent to this in Jest. Not to be confused with `lest.unmock`.
 ---@param moduleName string
 function lest.removeModuleMock(moduleName)
+	assertType(moduleName, "string", "moduleName", 2)
+
 	if not moduleMocks[moduleName] then
 		error(
 			Error(string.format("Module '%s' has not been mocked", moduleName)),
