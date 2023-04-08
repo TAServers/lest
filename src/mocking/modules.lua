@@ -1,6 +1,6 @@
 lest = lest or {}
 
----@type table<string, fun(): any>
+---@type table<string, function>
 local moduleMocks = {}
 
 lest.requireActual = lest.requireActual or require
@@ -36,16 +36,6 @@ mockTable = function(tbl, path)
 	return mocked
 end
 
---- Builds a module factory from a module
----@param moduleName any
-local function autoMock(moduleName)
-	local module = require(moduleName)
-
-	return function()
-		return mockValue(module, moduleName)
-	end
-end
-
 --- Mocks a module with an auto-mocked version when it is being required.
 --- To manually mock the module, pass a function to `factory` which returns the new module.
 ---
@@ -56,5 +46,17 @@ end
 ---@param moduleName string
 ---@param factory? function
 function lest.mock(moduleName, factory)
-	moduleMocks[moduleName] = factory or autoMock(moduleName)
+	local realModule = lest.requireActual(moduleName)
+
+	if factory then
+		moduleMocks[moduleName] = function()
+			return factory()
+		end
+	else
+		-- We cache the mocked module as require also caches
+		local mockedModule = mockValue(realModule, moduleName)
+		moduleMocks[moduleName] = function()
+			return mockedModule
+		end
+	end
 end
