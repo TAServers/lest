@@ -3,6 +3,16 @@ local assertType = require("src.asserts.type")
 
 lest = lest or {}
 
+lest._realType = lest._realType or type
+
+function type(v)
+	if lest.isMockFunction(v) then
+		return "function"
+	end
+
+	return lest._realType(v)
+end
+
 ---@diagnostic disable-next-line: deprecated
 local unpack = table.unpack or unpack
 
