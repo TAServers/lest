@@ -69,3 +69,14 @@ it("should cache the auto mocked module when using require", function()
 	-- Then
 	expect(mockFn).toHaveBeenCalled()
 end)
+
+it("should bypass module mocks when using lest.requireActual", function()
+	-- Given
+	lest.mock(moduleName)
+
+	-- When
+	local foo = lest.requireActual(moduleName).funcs.foo
+
+	-- Then
+	expect(foo).toThrow("Module was not mocked")
+end)
