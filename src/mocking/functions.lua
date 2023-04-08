@@ -53,9 +53,12 @@ end
 
 --- Sets the name that will be used for the mock in test outputs
 ---@param name string
+---@return self
 function mockMeta:mockName(name)
 	assertType(name, "string")
+
 	self._name = name
+	return self
 end
 
 --- Gets the name that will be used for the mock in test outputs
