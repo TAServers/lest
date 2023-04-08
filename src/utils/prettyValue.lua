@@ -6,5 +6,17 @@ return function(value)
 		return '"' .. value .. '"'
 	end
 
+	if value == math.huge then
+		return "inf"
+	end
+
+	if value == -math.huge then
+		return "-inf"
+	end
+
+	if value ~= value then
+		return "NaN"
+	end
+
 	return tostring(value)
 end
