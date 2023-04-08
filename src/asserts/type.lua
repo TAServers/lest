@@ -6,8 +6,10 @@ local prettyValue = require("src.utils.prettyValue")
 --- If `typeStringOrMeta` is a string it uses `type()`, otherwise it uses `getmetatable`
 ---@param object any
 ---@param typeStringOrMeta type | table
+---@param label? string
 ---@param level? number
-return function(object, typeStringOrMeta, level)
+return function(object, typeStringOrMeta, label, level)
+	label = label or prettyValue(object)
 	level = (level or 1) + 1
 
 	if
@@ -20,11 +22,7 @@ return function(object, typeStringOrMeta, level)
 	if type(typeStringOrMeta) == "string" then
 		error(
 			TypeError(
-				string.format(
-					"Expected %s to be a %s",
-					prettyValue(object),
-					typeStringOrMeta
-				)
+				string.format("Expected %s to be a %s", label, typeStringOrMeta)
 			),
 			level
 		)
@@ -35,7 +33,7 @@ return function(object, typeStringOrMeta, level)
 			TypeError(
 				string.format(
 					"Expected %s to be an instance of %s",
-					prettyValue(object),
+					label,
 					prettyValue(typeStringOrMeta)
 				)
 			),
