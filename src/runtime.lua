@@ -215,6 +215,7 @@ local function runTests(tests)
 	local results = {}
 	for _, testSuite in ipairs(tests) do
 		tablex.push(results, _runTests(testSuite, {}, {}))
+		lest.removeAllModuleMocks()
 	end
 
 	cleanup()
