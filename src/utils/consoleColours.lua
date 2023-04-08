@@ -1,4 +1,4 @@
-local ANSI_COLOUR_TEMPLATE = "\x1b[%s;%s;%sm%s\x1b[0;0;0m"
+local ANSI_COLOUR_TEMPLATE = "\027[%s;%s;%sm%s\027[0;0;0m"
 local DEFAULT_BG_CODE = 49
 
 --- Creates a function which takes in text and colours it according to the arguments.

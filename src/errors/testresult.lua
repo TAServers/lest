@@ -1,4 +1,4 @@
-local COLOURS = require("src.utils.consoleColor")
+local COLOURS = require("src.utils.consoleColours")
 local registerError = require("src.errors.register")
 return registerError("TestResultError", function(message, signature)
 	return {
