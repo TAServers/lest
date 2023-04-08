@@ -93,3 +93,46 @@ it("should bypass module mocks when using lest.requireActual", function()
 	-- Then
 	expect(foo).toThrow("Module was not mocked")
 end)
+
+describe("lest.removeMOduleMock", function()
+	it("should remove the module mock", function()
+		-- Given
+		lest.mock(moduleName)
+
+		-- When
+		lest.removeModuleMock(moduleName)
+		local foo = require(moduleName).funcs.foo
+
+		-- Then
+		expect(foo).toThrow("Module was not mocked")
+	end)
+
+	it("should throw an error if the module has not been mocked", function()
+		-- Given
+		local removeMockFn = function()
+			lest.removeModuleMock(invalidModuleName)
+		end
+
+		-- Then
+		expect(removeMockFn).toThrow(
+			string.format("Module '%s' has not been mocked", invalidModuleName)
+		)
+	end)
+end)
+
+describe("lest.removeAllModuleMocks", function()
+	it("should remove all module mocks", function()
+		-- Given
+		lest.mock(moduleName)
+		lest.mock(secondModuleName)
+
+		-- When
+		lest.removeAllModuleMocks()
+		local firstModuleFn = require(moduleName).funcs.foo
+		local secondModuleFn = require(secondModuleName).foo
+
+		-- Then
+		expect(firstModuleFn).toThrow("Module was not mocked")
+		expect(secondModuleFn).toThrow("Module was not mocked")
+	end)
+end)

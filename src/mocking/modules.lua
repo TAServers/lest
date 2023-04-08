@@ -1,3 +1,5 @@
+local Error = require("src.errors.error")
+
 lest = lest or {}
 
 ---@type table<string, function>
@@ -59,4 +61,26 @@ function lest.mock(moduleName, factory)
 			return mockedModule
 		end
 	end
+end
+
+--- Removes the mock for the given module, or throws if the module has not been mocked.
+---
+--- There is no equivalent to this in Jest. Not to be confused with `lest.unmock`.
+---@param moduleName string
+function lest.removeModuleMock(moduleName)
+	if not moduleMocks[moduleName] then
+		error(
+			Error(string.format("Module '%s' has not been mocked", moduleName)),
+			2
+		)
+	end
+
+	moduleMocks[moduleName] = nil
+end
+
+--- Removes the mock for all mocked modules.
+---
+--- There is no equivalent to this in Jest. Not to be confused with `lest.unmock`.
+function lest.removeAllModuleMocks()
+	moduleMocks = {}
 end
