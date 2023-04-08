@@ -56,3 +56,16 @@ it("should not call the factory when a different module is required", function()
 	-- Then
 	expect(mockFactory).never.toHaveBeenCalled()
 end)
+
+it("should cache the auto mocked module when using require", function()
+	-- Given
+	local mockFn = lest.fn()
+
+	-- When
+	lest.mock(moduleName)
+	require(moduleName).funcs.foo = mockFn
+	require(moduleName).funcs.foo()
+
+	-- Then
+	expect(mockFn).toHaveBeenCalled()
+end)
