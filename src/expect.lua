@@ -1,4 +1,4 @@
-local COLOURS = require("src.utils.consoleColor")
+local COLOURS = require("src.utils.consoleColours")
 
 local matchers = require("src.matchers")
 local prettyValue = require("src.utils.prettyValue")

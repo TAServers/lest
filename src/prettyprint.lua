@@ -1,4 +1,4 @@
-local COLOURS = require("src.utils.consoleColor")
+local COLOURS = require("src.utils.consoleColours")
 local NodeType = require("src.interface.testnodetype")
 local tablex = require("src.utils.tablex")
 local prettyValue = require("src.utils.prettyValue")
