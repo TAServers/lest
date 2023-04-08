@@ -106,16 +106,14 @@ describe("number matchers", function()
 				assertMatcher.failed(result)
 				assertMatcher.hasMessage(
 					result,
-					("Expected %d to be close to %s (1 decimal places)"):format(
-						normalNumber,
-						tostring(NAN)
+					("Expected %d to be close to NaN (1 decimal places)"):format(
+						normalNumber
 					)
 				)
 				assertMatcher.failed(resultSwapped)
 				assertMatcher.hasMessage(
 					resultSwapped,
-					("Expected %s to be close to %d (1 decimal places)"):format(
-						tostring(NAN),
+					("Expected NaN to be close to %d (1 decimal places)"):format(
 						normalNumber
 					)
 				)
@@ -140,18 +138,12 @@ describe("number matchers", function()
 
 				assertMatcher.hasMessage(
 					resultPosInfNegInf,
-					("Expected %s to be close to %s (2 decimal places)"):format(
-						tostring(math.huge),
-						tostring(-math.huge)
-					)
+					"Expected inf to be close to -inf (2 decimal places)"
 				)
 
 				assertMatcher.hasMessage(
 					resultBothNan,
-					("Expected %s to be close to %s (2 decimal places)"):format(
-						tostring(NAN),
-						tostring(NAN)
-					)
+					"Expected NaN to be close to NaN (2 decimal places)"
 				)
 			end)
 		end)
@@ -509,17 +501,11 @@ describe("number matchers", function()
 		end)
 
 		it("should have an inverted message", function()
-			-- Given
-			local notANumber = 0 / 0
-
 			-- When
-			local result = matchers.toBeNaN(INVERTED_CONTEXT, notANumber)
+			local result = matchers.toBeNaN(INVERTED_CONTEXT, NAN)
 
 			-- Then
-			assertMatcher.hasMessage(
-				result,
-				("Expected %s to not be NaN"):format(tostring(notANumber))
-			)
+			assertMatcher.hasMessage(result, "Expected NaN to not be NaN")
 		end)
 	end)
 
@@ -554,10 +540,7 @@ describe("number matchers", function()
 			local result = matchers.toBeInfinity(INVERTED_CONTEXT, math.huge)
 
 			-- Then
-			assertMatcher.hasMessage(
-				result,
-				("Expected %s to not be infinity"):format(tostring(math.huge))
-			)
+			assertMatcher.hasMessage(result, "Expected inf to not be infinity")
 		end)
 	end)
 end)

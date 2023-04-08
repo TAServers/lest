@@ -8,7 +8,7 @@ if not isUnix then
 		return
 	end
 
-	local result = handle:read("l")
+	local result = handle:read()
 	local _, _, codepage = string.find(result, "Active code page: (%d+)")
 	originalCodepage = tonumber(codepage)
 

@@ -15,7 +15,7 @@ return function()
 		error("Process handle is nil")
 	end
 
-	local cwd = handle:read("l")
+	local cwd = handle:read()
 	handle:close()
 
 	return cwd
