@@ -54,7 +54,7 @@ end
 --- Additionally, when automocking it must first require the module in order to map over its exports.
 --- If importing the given module triggers any side effects, you may need to manually mock it with the factory function.
 ---@param moduleName string
----@param factory fun(): any
+---@param factory? fun(): any
 function lest.mock(moduleName, factory)
 	moduleMocks[moduleName] = factory or autoMock(moduleName)
 end
