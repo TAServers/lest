@@ -6,7 +6,7 @@ lest = lest or {}
 ---@diagnostic disable-next-line: deprecated
 local unpack = table.unpack or unpack
 
----@class lest.Mock
+---@class lest.Mock : function
 ---@field mock { calls: any[][], lastCall?: any[], results: lest.MockResult[], lastResult?: lest.MockResult }
 ---@field protected _name string
 ---@field protected _implementation function
