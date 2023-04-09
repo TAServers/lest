@@ -1,129 +1,164 @@
-local moduleName = "tests.data.moduleToMock"
-local secondModuleName = "tests.data.moduleToMock2"
-local invalidModuleName = "this.is.not.real"
+local testCases = {
+	require = {
+		importer = require,
+		moduleName = "tests.data.moduleToMock",
+		secondModuleName = "tests.data.moduleToMock2",
+		invalidModuleName = "this.is.not.real",
+	},
+	loadfile = {
+		importer = function(moduleName)
+			return loadfile(moduleName)()
+		end,
+		moduleName = "tests/data/moduleToMock.lua",
+		secondModuleName = "tests/data/moduleToMock2.lua",
+		invalidModuleName = "this/is/not/real.lua",
+	},
+	dofile = {
+		importer = dofile,
+		moduleName = "tests/data/moduleToMock.lua",
+		secondModuleName = "tests/data/moduleToMock2.lua",
+		invalidModuleName = "this/is/not/real.lua",
+	},
+}
 
 describe("lest.mock", function()
-	it(
-		"should mock the module automatically when no factory is passed",
-		function()
-			-- When
-			lest.mock(moduleName)
-			local module = require(moduleName)
+	-- TODO LEST-61: Replace loop with describe.each
+	for _, importerName in ipairs({ "require", "loadfile", "dofile" }) do
+		describe("with " .. importerName, function()
+			local testCase = testCases[importerName]
 
-			-- Then
-			expect(lest.isMockFunction(module.funcs.foo)).toBe(true)
-		end
-	)
+			local importer = testCase.importer
+			local importerActual = importerName == "loadfile"
+					and function(moduleName)
+						return lest.loadfileActual(moduleName)()
+					end
+				or lest[importerName .. "Actual"]
 
-	it("should not mock another module", function()
-		-- When
-		lest.mock(moduleName)
-		local module = require(secondModuleName)
+			local moduleName = testCase.moduleName
+			local secondModuleName = testCase.secondModuleName
+			local invalidModuleName = testCase.invalidModuleName
 
-		-- Then
-		expect(module.foo).toThrow("Module was not mocked")
-	end)
+			it(
+				"should mock the module automatically when no factory is passed",
+				function()
+					-- When
+					lest.mock(moduleName)
+					local module = importer(moduleName)
 
-	it(
-		"should throw an error when no factory is passed and the module does not exist",
-		function()
-			-- Given
-			local mockModuleFn = function()
-				lest.mock(invalidModuleName)
-			end
+					-- Then
+					expect(lest.isMockFunction(module.funcs.foo)).toBe(true)
+				end
+			)
 
-			-- Then
-			expect(mockModuleFn).toThrow("module 'this.is.not.real' not found")
-		end
-	)
+			it("should not mock another module", function()
+				-- When
+				lest.mock(moduleName)
+				local module = importer(secondModuleName)
 
-	it(
-		"should throw an error when a factory is passed and the module does not exist",
-		function()
-			-- Given
-			local mockModuleFn = function()
-				lest.mock(invalidModuleName, function() end)
-			end
+				-- Then
+				expect(module.foo).toThrow("Module was not mocked")
+			end)
 
-			-- Then
-			expect(mockModuleFn).toThrow("module 'this.is.not.real' not found")
-		end
-	)
+			it(
+				"should mock a virtual module when a factory is passed",
+				function()
+					-- Given
+					local virtualModulePath = "not a real module" -- Can't use invalidModuleName as it will affect later tests
+					local mockFactoryFn = lest.fn()
 
-	it("should mock a virtual module when a factory is passed", function()
-		-- Given
-		local virtualModulePath = "not a real module" -- Can't use invalidModuleName as it will affect later tests
-		local mockFactoryFn = lest.fn()
+					-- When
+					lest.mock(virtualModulePath, mockFactoryFn)
+					importer(virtualModulePath)
 
-		-- When
-		lest.mock(virtualModulePath, mockFactoryFn, { virtual = true })
-		require(virtualModulePath)
+					-- Then
+					expect(mockFactoryFn).toHaveBeenCalled()
+				end
+			)
 
-		-- Then
-		expect(mockFactoryFn).toHaveBeenCalled()
-	end)
+			it("should call the factory when the module is imported", function()
+				-- Given
+				local mockFactory = lest.fn()
 
-	it("should call the factory when the module is required", function()
-		-- Given
-		local mockFactory = lest.fn()
+				-- When
+				lest.mock(moduleName, mockFactory)
+				importer(moduleName)
 
-		-- When
-		lest.mock(moduleName, mockFactory)
-		require(moduleName)
+				-- Then
+				expect(mockFactory).toHaveBeenCalled()
+			end)
 
-		-- Then
-		expect(mockFactory).toHaveBeenCalled()
-	end)
+			it(
+				"should not call the factory when a different module is imported",
+				function()
+					-- Given
+					local mockFactory = lest.fn()
 
-	it(
-		"should not call the factory when a different module is required",
-		function()
-			-- Given
-			local mockFactory = lest.fn()
+					-- When
+					lest.mock(moduleName, mockFactory)
+					importer(secondModuleName)
 
-			-- When
-			lest.mock(moduleName, mockFactory)
-			require(secondModuleName)
+					-- Then
+					expect(mockFactory).never.toHaveBeenCalled()
+				end
+			)
 
-			-- Then
-			expect(mockFactory).never.toHaveBeenCalled()
-		end
-	)
+			it(
+				string.format(
+					"should bypass module mocks when using lest.%sActual",
+					importerName
+				),
+				function()
+					-- Given
+					lest.mock(moduleName)
+
+					-- When
+					local foo = importerActual(moduleName).funcs.foo
+
+					-- Then
+					expect(foo).toThrow("Module was not mocked")
+				end
+			)
+		end)
+	end
 
 	it("should cache the auto mocked module when using require", function()
 		-- Given
 		local mockFn = lest.fn()
 
 		-- When
-		lest.mock(moduleName)
-		require(moduleName).funcs.foo = mockFn
-		require(moduleName).funcs.foo()
+		lest.mock(testCases.require.moduleName)
+		require(testCases.require.moduleName).funcs.foo = mockFn
+		require(testCases.require.moduleName).funcs.foo()
 
 		-- Then
 		expect(mockFn).toHaveBeenCalled()
 	end)
 
-	it("should bypass module mocks when using lest.requireActual", function()
+	it("should return only the first export when using require", function()
 		-- Given
-		lest.mock(moduleName)
-
-		-- When
-		local foo = lest.requireActual(moduleName).funcs.foo
+		lest.mock(testCases.require.moduleName)
+		local _, second = require(testCases.require.moduleName)
 
 		-- Then
-		expect(foo).toThrow("Module was not mocked")
+		expect(second).toBeNil()
 	end)
 
-	it("should throw an error when auto mocking a virtual module", function()
+	it("should return all exports when using loadfile", function()
 		-- Given
-		local mockModuleFn = function()
-			lest.mock(moduleName, nil, { virtual = true })
-		end
+		lest.mock(testCases.loadfile.moduleName)
+		local _, second = loadfile(testCases.loadfile.moduleName)()
 
 		-- Then
-		expect(mockModuleFn).toThrow(
-			"A factory must be used to mock a virtual module"
-		)
+		expect(second).toBeDefined()
+	end)
+
+	it("should return all exports when using dofile", function()
+		-- Given
+		lest.mock(testCases.dofile.moduleName)
+		local _, second = dofile(testCases.dofile.moduleName)
+
+		-- Then
+		expect(second).toBeDefined()
 	end)
 
 	describe("argument assertions", function()
@@ -155,44 +190,44 @@ describe("lest.mock", function()
 				)
 			end
 		)
-
-		it("should throw when options are given and not a table", function()
-			-- Given
-			local mockModuleFn = function()
-				---@diagnostic disable-next-line: param-type-mismatch
-				lest.mock("", nil, 1234)
-			end
-
-			-- Then
-			expect(mockModuleFn).toThrow(
-				"TypeError: Expected options to be a table"
-			)
-		end)
 	end)
 end)
 
 describe("lest.removeModuleMock", function()
-	it("should remove the module mock", function()
-		-- Given
-		lest.mock(moduleName)
+	-- TODO LEST-61: Replace loop with describe.each
+	for _, importerName in ipairs({ "require", "loadfile", "dofile" }) do
+		describe("with " .. importerName, function()
+			local testCase = testCases[importerName]
 
-		-- When
-		lest.removeModuleMock(moduleName)
-		local foo = require(moduleName).funcs.foo
+			local importer = testCase.importer
+			local moduleName = testCase.moduleName
 
-		-- Then
-		expect(foo).toThrow("Module was not mocked")
-	end)
+			it("should remove the module mock", function()
+				-- Given
+				lest.mock(moduleName)
+
+				-- When
+				lest.removeModuleMock(moduleName)
+				local foo = importer(moduleName).funcs.foo
+
+				-- Then
+				expect(foo).toThrow("Module was not mocked")
+			end)
+		end)
+	end
 
 	it("should throw an error if the module has not been mocked", function()
 		-- Given
 		local removeMockFn = function()
-			lest.removeModuleMock(invalidModuleName)
+			lest.removeModuleMock(testCases.require.invalidModuleName)
 		end
 
 		-- Then
 		expect(removeMockFn).toThrow(
-			string.format("Module '%s' has not been mocked", invalidModuleName)
+			string.format(
+				"Module '%s' has not been mocked",
+				testCases.require.invalidModuleName
+			)
 		)
 	end)
 
@@ -213,13 +248,13 @@ end)
 describe("lest.removeAllModuleMocks", function()
 	it("should remove all module mocks", function()
 		-- Given
-		lest.mock(moduleName)
-		lest.mock(secondModuleName)
+		lest.mock(testCases.require.moduleName)
+		lest.mock(testCases.require.secondModuleName)
 
 		-- When
 		lest.removeAllModuleMocks()
-		local firstModuleFn = require(moduleName).funcs.foo
-		local secondModuleFn = require(secondModuleName).foo
+		local firstModuleFn = require(testCases.require.moduleName).funcs.foo
+		local secondModuleFn = require(testCases.require.secondModuleName).foo
 
 		-- Then
 		expect(firstModuleFn).toThrow("Module was not mocked")
