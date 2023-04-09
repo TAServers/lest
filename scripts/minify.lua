@@ -6,7 +6,7 @@ local function throwIfNotNil(message)
 	end
 end
 
-local handle, popenError = io.popen([[luamin -f "dist/lest.lua"]])
+local handle, popenError = io.popen([[luamin -f dist/lest.lua]])
 throwIfNotNil(popenError)
 
 if not handle then

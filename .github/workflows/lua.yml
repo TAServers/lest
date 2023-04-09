@@ -41,7 +41,7 @@ jobs:
         run: lua lest.lua
 
   pre-release:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     needs: [lint, test]
     # if: github.event_name == 'push' && github.ref_type == 'branch' && github.ref_name == 'master'
 
