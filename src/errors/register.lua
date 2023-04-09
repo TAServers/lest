@@ -19,7 +19,10 @@ local function registerError(name, constructor, metatable)
 
 	metatable = tablex.merge({
 		__tostring = function(self)
-			return string.format("%s: %s", name, self.message)
+			return debug.traceback(
+				string.format("%s: %s", name, self.message),
+				4
+			)
 		end,
 	}, metatable or {})
 
