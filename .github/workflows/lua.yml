@@ -48,6 +48,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - uses: ilammy/msvc-dev-cmd@v1
       - uses: leafo/gh-actions-lua@v10
         with:
           luaVersion: "5.4.4"
