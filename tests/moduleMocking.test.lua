@@ -60,19 +60,6 @@ describe("lest.mock", function()
 			end)
 
 			it(
-				"should throw an error when no factory is passed and the module does not exist",
-				function()
-					-- Given
-					local mockModuleFn = function()
-						lest.mock(invalidModuleName)
-					end
-
-					-- Then
-					expect(mockModuleFn).toThrow("module '.+' not found")
-				end
-			)
-
-			it(
 				"should mock a virtual module when a factory is passed",
 				function()
 					-- Given

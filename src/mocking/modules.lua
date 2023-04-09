@@ -9,6 +9,9 @@ lest = lest or {}
 ---@type table<string, table<string, function>>
 local moduleMocks = {}
 
+---@type table<string, any>
+local requireCache = {}
+
 local function registerImporterMock(importerName)
 	moduleMocks[importerName] = {}
 
@@ -79,17 +82,11 @@ function lest.mock(moduleName, factory)
 
 		moduleMocks.dofile[moduleName] = factory
 	else
-		local canBeRequired, module = pcall(lest.requireActual, moduleName)
-		local canBeLoaded = lest.loadfileActual(moduleName)
-
-		if not canBeRequired and not canBeLoaded then
-			error(Error(string.format("module '%s' not found", moduleName)))
-		end
-
-		-- We cache the mocked module as require also caches
-		local mockedModule = mockValue(module, moduleName)
 		moduleMocks.require[moduleName] = function()
-			return mockedModule
+			local module = lest.requireActual(moduleName)
+			requireCache[moduleName] = requireCache[moduleName]
+				or mockValue(module, moduleName)
+			return requireCache[moduleName]
 		end
 
 		moduleMocks.loadfile[moduleName] = function()
@@ -127,6 +124,8 @@ function lest.removeModuleMock(moduleName)
 	for importerName, _ in pairs(moduleMocks) do
 		moduleMocks[importerName][moduleName] = nil
 	end
+
+	requireCache[moduleName] = nil
 end
 
 --- Removes the mock for all mocked modules.
@@ -136,4 +135,6 @@ function lest.removeAllModuleMocks()
 	for importerName, _ in pairs(moduleMocks) do
 		moduleMocks[importerName] = {}
 	end
+
+	requireCache = {}
 end
