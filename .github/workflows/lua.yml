@@ -62,7 +62,7 @@ jobs:
 
       - name: Minify bundle
         run: |
-          luamin -f dist/lest.lua > dist/lest.lua
+          luamin -f dist/lest.lua
 
       - run: cat dist/lest.lua
 
