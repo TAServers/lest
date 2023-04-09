@@ -5,7 +5,7 @@ lest = lest or {}
 
 lest._realType = lest._realType or type
 
-function type(v)
+function _G.type(v)
 	if lest.isMockFunction(v) then
 		return "function"
 	end
