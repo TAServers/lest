@@ -39,3 +39,33 @@ jobs:
 
       - name: test
         run: lua lest.lua
+
+  pre-release:
+    runs-on: ubuntu-latest
+    needs: [lint, test]
+    if: github.ref_name == "master" && github.event_name == "push"
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: leafo/gh-actions-lua@v10
+        with:
+          luaVersion: "5.4.4"
+
+      - name: Install build dependencies
+        run: |
+          lua scripts/install.lua
+
+      - name: Build release bundle
+        run: |
+          lua scripts/bundle.lua
+          lua scripts/minify.lua
+
+      - uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: "latest"
+          prerelease: true
+          title: "${{ github.event.head_commit.message }}"
+          files: |
+            dist/lest.lua
