@@ -5,18 +5,23 @@ local invalidModuleName = "this.is.not.real"
 local testCases = {
 	{
 		importerName = "require",
+		importer = require,
 		moduleName = "tests.data.moduleToMock",
 		secondModuleName = "tests.data.moduleToMock2",
 		invalidModuleName = "this.is.not.real",
 	},
 	{
 		importerName = "loadfile",
+		importer = function(moduleName)
+			return loadfile(moduleName)()
+		end,
 		moduleName = "tests/data/moduleToMock.lua",
 		secondModuleName = "tests/data/moduleToMock2.lua",
 		invalidModuleName = "this/is/not/real.lua",
 	},
 	{
 		importerName = "dofile",
+		importer = dofile,
 		moduleName = "tests/data/moduleToMock.lua",
 		secondModuleName = "tests/data/moduleToMock2.lua",
 		invalidModuleName = "this/is/not/real.lua",
@@ -27,12 +32,7 @@ describe("lest.mock", function()
 	-- TODO LEST-61: Replace loop with describe.each
 	for _, testCase in ipairs(testCases) do
 		describe("with " .. testCase.importerName, function()
-			local importer = testCase.importerName == "loadfile"
-					and function(moduleName)
-						return loadfile(moduleName)()
-					end
-				or _G[testCase.importerName]
-
+			local importer = testCase.importer
 			local importerActual = testCase.importerName == "loadfile"
 					and function(moduleName)
 						return lest.loadfileActual(moduleName)()
@@ -188,12 +188,7 @@ describe("lest.removeModuleMock", function()
 	-- TODO LEST-61: Replace loop with describe.each
 	for _, testCase in ipairs(testCases) do
 		describe("with " .. testCase.importerName, function()
-			local importer = testCase.importerName == "loadfile"
-					and function(moduleName)
-						return loadfile(moduleName)()
-					end
-				or _G[testCase.importerName]
-
+			local importer = testCase.importer
 			local moduleName = testCase.moduleName
 
 			it("should remove the module mock", function()
