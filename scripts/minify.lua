@@ -16,6 +16,10 @@ end
 local minified = handle:read("a")
 handle:close()
 
+if string.match(minified, "Error:") then
+	error(minified)
+end
+
 local file, fileError = io.open("dist/lest.lua", "w+")
 throwIfNotNil(fileError)
 
