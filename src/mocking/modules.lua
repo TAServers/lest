@@ -8,7 +8,7 @@ local moduleMocks = {}
 
 lest.requireActual = lest.requireActual or require
 
-function require(moduleName)
+function _G.require(moduleName)
 	if moduleMocks[moduleName] then
 		return moduleMocks[moduleName]()
 	end
