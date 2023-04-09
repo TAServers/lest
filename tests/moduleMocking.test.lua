@@ -37,26 +37,13 @@ describe("lest.mock", function()
 		end
 	)
 
-	it(
-		"should throw an error when a factory is passed and the module does not exist",
-		function()
-			-- Given
-			local mockModuleFn = function()
-				lest.mock(invalidModuleName, function() end)
-			end
-
-			-- Then
-			expect(mockModuleFn).toThrow("module 'this.is.not.real' not found")
-		end
-	)
-
 	it("should mock a virtual module when a factory is passed", function()
 		-- Given
 		local virtualModulePath = "not a real module" -- Can't use invalidModuleName as it will affect later tests
 		local mockFactoryFn = lest.fn()
 
 		-- When
-		lest.mock(virtualModulePath, mockFactoryFn, { virtual = true })
+		lest.mock(virtualModulePath, mockFactoryFn)
 		require(virtualModulePath)
 
 		-- Then
@@ -114,18 +101,6 @@ describe("lest.mock", function()
 		expect(foo).toThrow("Module was not mocked")
 	end)
 
-	it("should throw an error when auto mocking a virtual module", function()
-		-- Given
-		local mockModuleFn = function()
-			lest.mock(moduleName, nil, { virtual = true })
-		end
-
-		-- Then
-		expect(mockModuleFn).toThrow(
-			"A factory must be used to mock a virtual module"
-		)
-	end)
-
 	describe("argument assertions", function()
 		it("should throw when the module name is not a string", function()
 			-- Given
@@ -155,19 +130,6 @@ describe("lest.mock", function()
 				)
 			end
 		)
-
-		it("should throw when options are given and not a table", function()
-			-- Given
-			local mockModuleFn = function()
-				---@diagnostic disable-next-line: param-type-mismatch
-				lest.mock("", nil, 1234)
-			end
-
-			-- Then
-			expect(mockModuleFn).toThrow(
-				"TypeError: Expected options to be a table"
-			)
-		end)
 	end)
 end)
 

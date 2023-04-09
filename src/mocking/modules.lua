@@ -3,18 +3,26 @@ local assertType = require("src.asserts.type")
 
 lest = lest or {}
 
----@type table<string, function>
+---@type table<string, table<string, function>>
 local moduleMocks = {}
 
-lest.requireActual = lest.requireActual or require
+local function registerImporterMock(importerName)
+	moduleMocks[importerName] = {}
 
-function _G.require(moduleName)
-	if moduleMocks[moduleName] then
-		return moduleMocks[moduleName]()
+	local actualFunctionName = importerName .. "Actual"
+	lest[actualFunctionName] = lest[actualFunctionName] or _G[importerName]
+
+	_G[importerName] = function(moduleName)
+		local moduleFactory = moduleMocks[importerName][moduleName]
+		if moduleFactory then
+			return moduleFactory()
+		end
+
+		return lest[actualFunctionName](moduleName)
 	end
-
-	return lest.requireActual(moduleName)
 end
+
+registerImporterMock("require")
 
 local mockTable
 local function mockValue(val, path)
@@ -48,34 +56,22 @@ end
 --- If importing the given module triggers any side effects, you may need to manually mock it with the factory function.
 ---@param moduleName string
 ---@param factory? function
----@param options? { virtual: boolean }
-function lest.mock(moduleName, factory, options)
-	options = options or {}
-
+function lest.mock(moduleName, factory)
 	assertType(moduleName, "string", "moduleName", 2)
 	if factory then
 		assertType(factory, "function", "factory", 2)
 	end
-	assertType(options, "table", "options", 2)
 
 	if factory then
-		-- Asserts the module exists
-		if not options.virtual then
-			lest.requireActual(moduleName)
-		end
-
-		moduleMocks[moduleName] = function()
-			return factory()
+		moduleMocks.require[moduleName] = function()
+			local firstRetval = factory()
+			return firstRetval
 		end
 	else
-		if options.virtual then
-			error(Error("A factory must be used to mock a virtual module"))
-		end
-
 		-- We cache the mocked module as require also caches
 		local mockedModule =
 			mockValue(lest.requireActual(moduleName), moduleName)
-		moduleMocks[moduleName] = function()
+		moduleMocks.require[moduleName] = function()
 			return mockedModule
 		end
 	end
@@ -88,19 +84,19 @@ end
 function lest.removeModuleMock(moduleName)
 	assertType(moduleName, "string", "moduleName", 2)
 
-	if not moduleMocks[moduleName] then
+	if not moduleMocks.require[moduleName] then
 		error(
 			Error(string.format("Module '%s' has not been mocked", moduleName)),
 			2
 		)
 	end
 
-	moduleMocks[moduleName] = nil
+	moduleMocks.require[moduleName] = nil
 end
 
 --- Removes the mock for all mocked modules.
 ---
 --- There is no equivalent to this in Jest. Not to be confused with `lest.unmock`.
 function lest.removeAllModuleMocks()
-	moduleMocks = {}
+	moduleMocks.require = {}
 end
