@@ -1,17 +1,11 @@
-local moduleName = "tests.data.moduleToMock"
-local secondModuleName = "tests.data.moduleToMock2"
-local invalidModuleName = "this.is.not.real"
-
 local testCases = {
-	{
-		importerName = "require",
+	require = {
 		importer = require,
 		moduleName = "tests.data.moduleToMock",
 		secondModuleName = "tests.data.moduleToMock2",
 		invalidModuleName = "this.is.not.real",
 	},
-	{
-		importerName = "loadfile",
+	loadfile = {
 		importer = function(moduleName)
 			return loadfile(moduleName)()
 		end,
@@ -19,8 +13,7 @@ local testCases = {
 		secondModuleName = "tests/data/moduleToMock2.lua",
 		invalidModuleName = "this/is/not/real.lua",
 	},
-	{
-		importerName = "dofile",
+	dofile = {
 		importer = dofile,
 		moduleName = "tests/data/moduleToMock.lua",
 		secondModuleName = "tests/data/moduleToMock2.lua",
@@ -30,14 +23,16 @@ local testCases = {
 
 describe("lest.mock", function()
 	-- TODO LEST-61: Replace loop with describe.each
-	for _, testCase in ipairs(testCases) do
-		describe("with " .. testCase.importerName, function()
+	for _, importerName in ipairs({ "require", "loadfile", "dofile" }) do
+		describe("with " .. importerName, function()
+			local testCase = testCases[importerName]
+
 			local importer = testCase.importer
-			local importerActual = testCase.importerName == "loadfile"
+			local importerActual = importerName == "loadfile"
 					and function(moduleName)
 						return lest.loadfileActual(moduleName)()
 					end
-				or lest[testCase.importerName .. "Actual"]
+				or lest[importerName .. "Actual"]
 
 			local moduleName = testCase.moduleName
 			local secondModuleName = testCase.secondModuleName
@@ -123,7 +118,7 @@ describe("lest.mock", function()
 			it(
 				string.format(
 					"should bypass module mocks when using lest.%sActual",
-					testCase.importerName
+					importerName
 				),
 				function()
 					-- Given
@@ -144,12 +139,39 @@ describe("lest.mock", function()
 		local mockFn = lest.fn()
 
 		-- When
-		lest.mock(moduleName)
-		require(moduleName).funcs.foo = mockFn
-		require(moduleName).funcs.foo()
+		lest.mock(testCases.require.moduleName)
+		require(testCases.require.moduleName).funcs.foo = mockFn
+		require(testCases.require.moduleName).funcs.foo()
 
 		-- Then
 		expect(mockFn).toHaveBeenCalled()
+	end)
+
+	it("should return only the first export when using require", function()
+		-- Given
+		lest.mock(testCases.require.moduleName)
+		local _, second = require(testCases.require.moduleName)
+
+		-- Then
+		expect(second).toBeNil()
+	end)
+
+	it("should return all exports when using loadfile", function()
+		-- Given
+		lest.mock(testCases.loadfile.moduleName)
+		local _, second = loadfile(testCases.loadfile.moduleName)()
+
+		-- Then
+		expect(second).toBeDefined()
+	end)
+
+	it("should return all exports when using dofile", function()
+		-- Given
+		lest.mock(testCases.dofile.moduleName)
+		local _, second = dofile(testCases.dofile.moduleName)
+
+		-- Then
+		expect(second).toBeDefined()
 	end)
 
 	describe("argument assertions", function()
@@ -186,8 +208,10 @@ end)
 
 describe("lest.removeModuleMock", function()
 	-- TODO LEST-61: Replace loop with describe.each
-	for _, testCase in ipairs(testCases) do
-		describe("with " .. testCase.importerName, function()
+	for _, importerName in ipairs({ "require", "loadfile", "dofile" }) do
+		describe("with " .. importerName, function()
+			local testCase = testCases[importerName]
+
 			local importer = testCase.importer
 			local moduleName = testCase.moduleName
 
@@ -208,12 +232,15 @@ describe("lest.removeModuleMock", function()
 	it("should throw an error if the module has not been mocked", function()
 		-- Given
 		local removeMockFn = function()
-			lest.removeModuleMock(invalidModuleName)
+			lest.removeModuleMock(testCases.require.invalidModuleName)
 		end
 
 		-- Then
 		expect(removeMockFn).toThrow(
-			string.format("Module '%s' has not been mocked", invalidModuleName)
+			string.format(
+				"Module '%s' has not been mocked",
+				testCases.require.invalidModuleName
+			)
 		)
 	end)
 
@@ -234,13 +261,13 @@ end)
 describe("lest.removeAllModuleMocks", function()
 	it("should remove all module mocks", function()
 		-- Given
-		lest.mock(moduleName)
-		lest.mock(secondModuleName)
+		lest.mock(testCases.require.moduleName)
+		lest.mock(testCases.require.secondModuleName)
 
 		-- When
 		lest.removeAllModuleMocks()
-		local firstModuleFn = require(moduleName).funcs.foo
-		local secondModuleFn = require(secondModuleName).foo
+		local firstModuleFn = require(testCases.require.moduleName).funcs.foo
+		local secondModuleFn = require(testCases.require.secondModuleName).foo
 
 		-- Then
 		expect(firstModuleFn).toThrow("Module was not mocked")
