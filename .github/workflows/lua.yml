@@ -61,6 +61,10 @@ jobs:
           lua scripts/bundle.lua
           lua scripts/minify.lua
 
+      - run: |
+          ls -la dist
+          cat dist/lest.lua
+
       # - uses: "marvinpinto/action-automatic-releases@latest"
       #   with:
       #     repo_token: "${{ secrets.GITHUB_TOKEN }}"
