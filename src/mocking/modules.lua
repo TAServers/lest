@@ -1,6 +1,9 @@
 local Error = require("src.errors.error")
 local assertType = require("src.asserts.type")
 
+---@diagnostic disable-next-line: deprecated
+local unpack = table.unpack or unpack
+
 lest = lest or {}
 
 ---@type table<string, table<string, function>>
@@ -23,6 +26,8 @@ local function registerImporterMock(importerName)
 end
 
 registerImporterMock("require")
+registerImporterMock("loadfile")
+registerImporterMock("dofile")
 
 local mockTable
 local function mockValue(val, path)
@@ -67,12 +72,40 @@ function lest.mock(moduleName, factory)
 			local firstRetval = factory()
 			return firstRetval
 		end
+
+		moduleMocks.loadfile[moduleName] = function()
+			return factory
+		end
+
+		moduleMocks.dofile[moduleName] = factory
 	else
+		local canBeRequired, module = pcall(lest.requireActual, moduleName)
+		local canBeLoaded = lest.loadfileActual(moduleName)
+
+		if not canBeRequired and not canBeLoaded then
+			error(Error(string.format("module '%s' not found", moduleName)))
+		end
+
 		-- We cache the mocked module as require also caches
-		local mockedModule =
-			mockValue(lest.requireActual(moduleName), moduleName)
+		local mockedModule = mockValue(module, moduleName)
 		moduleMocks.require[moduleName] = function()
 			return mockedModule
+		end
+
+		moduleMocks.loadfile[moduleName] = function()
+			local chunk, errorMessage = lest.loadfileActual(moduleName)
+			if not chunk then
+				return nil, errorMessage
+			end
+
+			return function()
+				return unpack(mockValue({ chunk() }, moduleName))
+			end
+		end
+
+		moduleMocks.dofile[moduleName] = function()
+			local results = { lest.dofileActual(moduleName) }
+			return unpack(mockValue(results, moduleName))
 		end
 	end
 end
@@ -91,12 +124,16 @@ function lest.removeModuleMock(moduleName)
 		)
 	end
 
-	moduleMocks.require[moduleName] = nil
+	for importerName, _ in pairs(moduleMocks) do
+		moduleMocks[importerName][moduleName] = nil
+	end
 end
 
 --- Removes the mock for all mocked modules.
 ---
 --- There is no equivalent to this in Jest. Not to be confused with `lest.unmock`.
 function lest.removeAllModuleMocks()
-	moduleMocks.require = {}
+	for importerName, _ in pairs(moduleMocks) do
+		moduleMocks[importerName] = {}
+	end
 end

@@ -1,6 +1,9 @@
 local tablex = require("src.utils.tablex")
 local assertType = require("src.asserts.type")
 
+---@diagnostic disable-next-line: deprecated
+local unpack = table.unpack or unpack
+
 lest = lest or {}
 
 lest._realType = lest._realType or type
@@ -12,9 +15,6 @@ function _G.type(v)
 
 	return lest._realType(v)
 end
-
----@diagnostic disable-next-line: deprecated
-local unpack = table.unpack or unpack
 
 ---@class lest.Mock : function
 ---@field mock { calls: any[][], lastCall?: any[], results: lest.MockResult[], lastResult?: lest.MockResult }
