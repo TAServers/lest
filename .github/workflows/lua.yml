@@ -61,17 +61,9 @@ jobs:
         run: |
           lua scripts/bundle.lua
 
-      - run: |
-          ls -la dist
-          cat dist/lest.lua
-
       - name: Minify bundle
         run: |
           lua scripts/minify.lua
-
-      - run: |
-          ls -la dist
-          cat dist/lest.lua
 
       # - uses: "marvinpinto/action-automatic-releases@latest"
       #   with:
