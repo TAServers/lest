@@ -1,0 +1,13 @@
+name: Update secondary release tags
+
+on:
+  release:
+    types: [published, edited]
+
+jobs:
+  update-tags:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: Actions-R-Us/actions-tagger@latest
+        with:
+          publish_latest_tag: true
