@@ -22,9 +22,9 @@ local testCases = {
 }
 
 describe("lest.mock", function()
-	-- TODO LEST-61: Replace loop with describe.each
-	for _, importerName in ipairs({ "require", "loadfile", "dofile" }) do
-		describe("with " .. importerName, function()
+	describe.each({ "require", "loadfile", "dofile" })(
+		"with %s",
+		function(importerName)
 			local testCase = testCases[importerName]
 
 			local importer = testCase.importer
@@ -118,8 +118,8 @@ describe("lest.mock", function()
 					expect(foo).toThrow("Module was not mocked")
 				end
 			)
-		end)
-	end
+		end
+	)
 
 	it("should cache the auto mocked module when using require", function()
 		-- Given
@@ -194,9 +194,9 @@ describe("lest.mock", function()
 end)
 
 describe("lest.removeModuleMock", function()
-	-- TODO LEST-61: Replace loop with describe.each
-	for _, importerName in ipairs({ "require", "loadfile", "dofile" }) do
-		describe("with " .. importerName, function()
+	describe.each({ "require", "loadfile", "dofile" })(
+		"with %s",
+		function(importerName)
 			local testCase = testCases[importerName]
 
 			local importer = testCase.importer
@@ -213,8 +213,8 @@ describe("lest.removeModuleMock", function()
 				-- Then
 				expect(foo).toThrow("Module was not mocked")
 			end)
-		end)
-	end
+		end
+	)
 
 	it("should throw an error if the module has not been mocked", function()
 		-- Given

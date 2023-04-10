@@ -4,6 +4,7 @@ local tablex = require("src.utils.tablex")
 local withTimeout = require("src.utils.timeout")
 local NodeType = require("src.interface.testnodetype")
 local assertType = require("src.asserts.type")
+local unpack = require("src.utils.unpack")
 
 lest = lest or {}
 
@@ -37,10 +38,7 @@ local function findTests(testFiles)
 	---@type lest.TestSuite | lest.Describe
 	local currentScope
 
-	--- Registers a new test suite
-	---@param name string
-	---@param func fun()
-	local function describe(name, func)
+	local function runInDescribeScope(name, func)
 		local prevScope = currentScope
 		currentScope = {
 			beforeEach = {},
@@ -55,6 +53,35 @@ local function findTests(testFiles)
 
 		tablex.push(prevScope, currentScope)
 		currentScope = prevScope
+	end
+
+	--- Registers a new test group
+	---@class lest.DescribeFunction
+	---@field each fun(testCases: table): fun(name: string, func: fun(testCase: any))
+	---@overload fun(name: string, func: fun())
+	local describe = {}
+	describe.__index = describe
+
+	function describe:__call(name, func)
+		runInDescribeScope(name, func)
+	end
+
+	--- Generates describe blocks for each test case
+	---@param testCases table
+	---@return fun(name: string, func: fun(testCase: any))
+	function describe.each(testCases)
+		return function(name, func)
+			for _, testCase in ipairs(testCases) do
+				if type(testCase) ~= "table" then
+					testCase = { testCase }
+				end
+
+				local caseName = string.format(name, unpack(testCase))
+				runInDescribeScope(caseName, function()
+					func(unpack(testCase))
+				end)
+			end
+		end
 	end
 
 	--- Registers a new test
@@ -83,7 +110,7 @@ local function findTests(testFiles)
 	end
 
 	local cleanup = buildEnvironment({
-		describe = describe,
+		describe = setmetatable({}, describe),
 		test = test,
 		it = test,
 
