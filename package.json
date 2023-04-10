@@ -1,5 +1,5 @@
 {
-	"name": "lest",
+	"name": "@taservers/lest",
 	"description": "Lua testing framework in the style of Jest. This package.json is just for scripts and tooling",
 	"version": "0.0.0",
 	"scripts": {
