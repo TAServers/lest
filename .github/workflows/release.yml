@@ -1,0 +1,29 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: leafo/gh-actions-lua@v10
+        with:
+          luaVersion: "5.4.4"
+
+      - name: Install build dependencies
+        run: |
+          lua scripts/install.lua
+
+      - name: Build release bundle
+        run: |
+          lua scripts/bundle.lua
+
+      - name: Minify bundle
+        run: |
+          lua scripts/minify.lua
