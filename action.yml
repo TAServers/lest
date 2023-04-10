@@ -34,7 +34,7 @@ runs:
       with:
         luaVersion: ${{ inputs.lua-version }}
 
-    - run: curl https://github.com/TAServers/lest/releases/download/${{ inputs.lest-version }}/lest.lua -o .lest/lest.lua
+    - run: curl https://github.com/TAServers/lest/releases/download/${{ inputs.lest-version }}/lest.lua -o .lest/lest.lua --create-dirs
       shell: bash
 
     - run: lua .lest/lest.lua ${{ inputs.args }}
