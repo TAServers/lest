@@ -55,3 +55,13 @@ jobs:
 
       - name: Update latest tag
         uses: EndBug/latest-tag@latest
+        if: steps.changelog.outputs.skipped != 'true'
+
+      - name: Push release for latest tag
+        uses: softprops/action-gh-release@v1
+        if: steps.changelog.outputs.skipped != 'true'
+        with:
+          files: dist/lest.lua
+          tag_name: latest
+          name: Lest - ${{ steps.changelog.outputs.tag }}
+          body: ${{ steps.changelog.outputs.clean_changelog }}
