@@ -1,6 +1,9 @@
 name: Run Lest
 author: Total Anarchy Servers
 description: Sets up and runs Lest on the current working directory
+branding:
+  icon: check-circle
+  color: blue
 
 inputs:
   lua-version:
