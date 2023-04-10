@@ -40,6 +40,8 @@ jobs:
         with:
           github-token: ${{ secrets.github_token }}
           output-file: "false"
+          skip-commit: "true"
+          skip-version-file: "true"
 
       - name: Push release
         uses: softprops/action-gh-release@v1
