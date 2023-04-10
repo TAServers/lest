@@ -7,11 +7,13 @@
 		"minify": "lua scripts/minify.lua",
 		"build": "npm run bundle && npm run minify",
 		"test": "lua lest.lua",
-		"clean": "rimraf dist"
+		"clean": "rimraf dist",
+		"prepare": "husky install"
 	},
 	"devDependencies": {
 		"@commitlint/cli": "^17.5.1",
 		"@commitlint/config-conventional": "^17.4.4",
+		"husky": "^8.0.3",
 		"luabundler": "^1.2.2",
 		"luamin": "github:hsandt/luamin#develop",
 		"rimraf": "^5.0.0"
