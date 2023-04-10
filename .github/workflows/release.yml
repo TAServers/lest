@@ -43,6 +43,7 @@ jobs:
 
       - name: Push release
         uses: softprops/action-gh-release@v1
+        if: steps.changelog.outputs.skipped != 'true'
         with:
           files: dist/lest.lua
           tag_name: ${{ steps.changelog.outputs.tag }}

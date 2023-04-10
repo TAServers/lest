@@ -1,7 +1,7 @@
 {
-	"name": "lest",
+	"name": "@taservers/lest",
 	"description": "Lua testing framework in the style of Jest. This package.json is just for scripts and tooling",
-	"version": "0.0.0",
+	"version": "1.0.0",
 	"scripts": {
 		"bundle": "luabundler bundle lest.lua -p \"./?.lua\" -o dist/lest.lua",
 		"minify": "lua scripts/minify.lua",
