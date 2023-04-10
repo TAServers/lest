@@ -1,3 +1,5 @@
+-- Note, this cannot be replaced by an NPM script as luamin doesn't like redirecting output to a file
+
 --- Throws the message if it is not nil
 ---@param message any
 local function throwIfNotNil(message)

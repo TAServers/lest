@@ -12,18 +12,17 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: "npm"
+
       - uses: leafo/gh-actions-lua@v10
         with:
           luaVersion: "5.4.4"
 
-      - name: Install build dependencies
-        run: |
-          lua scripts/install.lua
+      - name: Install dependencies
+        run: npm ci
 
       - name: Build release bundle
-        run: |
-          lua scripts/bundle.lua
-
-      - name: Minify bundle
-        run: |
-          lua scripts/minify.lua
+        run: npm run build
