@@ -4,6 +4,7 @@ local tablex = require("src.utils.tablex")
 local withTimeout = require("src.utils.timeout")
 local NodeType = require("src.interface.testnodetype")
 local assertType = require("src.asserts.type")
+local unpack = require("src.utils.unpack")
 
 lest = lest or {}
 
@@ -37,10 +38,7 @@ local function findTests(testFiles)
 	---@type lest.TestSuite | lest.Describe
 	local currentScope
 
-	--- Registers a new test suite
-	---@param name string
-	---@param func fun()
-	local function describe(name, func)
+	local function runInDescribeScope(name, func)
 		local prevScope = currentScope
 		currentScope = {
 			beforeEach = {},
@@ -61,13 +59,71 @@ local function findTests(testFiles)
 	---@param name string
 	---@param func fun()
 	---@param timeout number
-	local function test(name, func, timeout)
+	local function registerTest(name, func, timeout)
 		tablex.push(currentScope, {
 			func = func,
 			name = name,
 			type = NodeType.Test,
 			timeout = timeout and (timeout / 1000) or currentTimeoutSeconds,
 		})
+	end
+
+	--- Registers a new test group
+	---@class lest.DescribeFunction
+	---@field each fun(testCases: table): fun(name: string, func: fun(...: any))
+	---@overload fun(name: string, func: fun())
+	local describe = {}
+	describe.__index = describe
+
+	function describe:__call(name, func)
+		runInDescribeScope(name, func)
+	end
+
+	--- Generates describe blocks for each value in the array
+	---@param testCases table
+	---@return fun(name: string, func: fun(...: any))
+	function describe.each(testCases)
+		return function(name, func)
+			for _, testCase in ipairs(testCases) do
+				if type(testCase) ~= "table" then
+					testCase = { testCase }
+				end
+
+				local caseName = string.format(name, unpack(testCase))
+				runInDescribeScope(caseName, function()
+					func(unpack(testCase))
+				end)
+			end
+		end
+	end
+
+	--- Registers a new test group
+	---@class lest.TestFunction
+	---@field each fun(testCases: table): fun(name: string, func: fun(...: any), timeout: number)
+	---@overload fun(name: string, func: fun())
+	local test = {}
+	test.__index = test
+
+	function test:__call(name, func, timeout)
+		registerTest(name, func, timeout)
+	end
+
+	--- Generates test cases for each value in the array
+	---@param testCases table
+	---@return fun(name: string, func: fun(...: any), timeout: number)
+	function test.each(testCases)
+		return function(name, func, timeout)
+			for _, testCase in ipairs(testCases) do
+				if type(testCase) ~= "table" then
+					testCase = { testCase }
+				end
+
+				local caseName = string.format(name, unpack(testCase))
+				registerTest(caseName, function()
+					func(unpack(testCase))
+				end, timeout)
+			end
+		end
 	end
 
 	--- Makes a new hook register function
@@ -82,14 +138,20 @@ local function findTests(testFiles)
 		end
 	end
 
-	local cleanup = buildEnvironment({
-		describe = describe,
-		test = test,
-		it = test,
+	local disabledDescribeOrTest = setmetatable({
+		each = function()
+			return function() end
+		end,
+	}, { __call = function() end })
 
-		xdescribe = function() end,
-		xtest = function() end,
-		xit = function() end,
+	local cleanup = buildEnvironment({
+		describe = setmetatable({}, describe),
+		test = setmetatable({}, test),
+		it = setmetatable({}, test),
+
+		xdescribe = disabledDescribeOrTest,
+		xtest = disabledDescribeOrTest,
+		xit = disabledDescribeOrTest,
 
 		beforeEach = makeHook("beforeEach"),
 		beforeAll = makeHook("beforeAll"),

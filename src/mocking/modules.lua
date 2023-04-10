@@ -1,8 +1,6 @@
 local Error = require("src.errors.error")
 local assertType = require("src.asserts.type")
-
----@diagnostic disable-next-line: deprecated
-local unpack = table.unpack or unpack
+local unpack = require("src.utils.unpack")
 
 lest = lest or {}
 
