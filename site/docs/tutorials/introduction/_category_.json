@@ -1,0 +1,12 @@
+{
+	"position": 1,
+	"label": "Introduction",
+	"collapsible": true,
+	"collapsed": false,
+	"link": {
+		"type": "generated-index",
+		"slug": "/tutorials/introduction",
+		"title": "Introduction",
+		"description": "Quick start and introductory material for getting up and running with Lest."
+	}
+}

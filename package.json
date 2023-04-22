@@ -16,6 +16,7 @@
 		"husky": "^8.0.3",
 		"luabundler": "^1.2.2",
 		"luamin": "github:hsandt/luamin#develop",
+		"prettier": "^2.8.7",
 		"rimraf": "^5.0.0"
 	}
 }

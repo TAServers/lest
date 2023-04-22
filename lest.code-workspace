@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"path": ".",
+			"name": "Lest"
+		},
+		{
+			"path": "site",
+			"name": "Docusaurus Site"
+		}
+	],
+	"settings": {}
+}
