@@ -9,6 +9,7 @@ local unpack = table.unpack or unpack
 local function withTimeout(timeout, func, ...)
 	local startTime = os.clock()
 	local timedOut = false
+	local args = { ... }
 
 	local oldSetTimeout = lest.setTimeout
 	function lest.setTimeout(newTimeout)
@@ -19,7 +20,7 @@ local function withTimeout(timeout, func, ...)
 	end
 
 	local results = {
-		xpcall(function(...)
+		xpcall(function()
 			hook.setCountHook(function()
 				if not timedOut and os.clock() - startTime > timeout then
 					timedOut = true
@@ -27,8 +28,8 @@ local function withTimeout(timeout, func, ...)
 				end
 			end)
 
-			return func(...)
-		end, debug.traceback, ...),
+			return func(unpack(args))
+		end, debug.traceback),
 	}
 
 	hook.setCountHook()
