@@ -19,7 +19,7 @@ local function withTimeout(timeout, func, ...)
 	end
 
 	local results = {
-		pcall(function(...)
+		xpcall(function(...)
 			hook.setCountHook(function()
 				if not timedOut and os.clock() - startTime > timeout then
 					timedOut = true
@@ -28,7 +28,7 @@ local function withTimeout(timeout, func, ...)
 			end)
 
 			return func(...)
-		end, ...),
+		end, debug.traceback, ...),
 	}
 
 	hook.setCountHook()

@@ -139,7 +139,7 @@ local function printTestErrors(results, breadcrumbs)
 					)
 				)
 
-				printIndentedBlock(prettyValue(testOrDescribe.error))
+				printIndentedBlock(tostring(testOrDescribe.error))
 				print()
 			end
 		end
