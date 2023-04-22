@@ -1,10 +1,8 @@
 local hook = require("src.utils.hook")
 local TimeoutError = require("src.errors.timeout")
+local unpack = require("src.utils.unpack")
 
 lest = lest or {}
-
----@diagnostic disable-next-line: deprecated
-local unpack = table.unpack or unpack
 
 local function withTimeout(timeout, func, ...)
 	local startTime = os.clock()
