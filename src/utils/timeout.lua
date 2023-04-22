@@ -1,14 +1,13 @@
 local hook = require("src.utils.hook")
 local TimeoutError = require("src.errors.timeout")
+local unpack = require("src.utils.unpack")
 
 lest = lest or {}
-
----@diagnostic disable-next-line: deprecated
-local unpack = table.unpack or unpack
 
 local function withTimeout(timeout, func, ...)
 	local startTime = os.clock()
 	local timedOut = false
+	local args = { ... }
 
 	local oldSetTimeout = lest.setTimeout
 	function lest.setTimeout(newTimeout)
@@ -19,7 +18,7 @@ local function withTimeout(timeout, func, ...)
 	end
 
 	local results = {
-		pcall(function(...)
+		xpcall(function()
 			hook.setCountHook(function()
 				if not timedOut and os.clock() - startTime > timeout then
 					timedOut = true
@@ -27,8 +26,8 @@ local function withTimeout(timeout, func, ...)
 				end
 			end)
 
-			return func(...)
-		end, ...),
+			return func(unpack(args))
+		end, debug.traceback),
 	}
 
 	hook.setCountHook()
