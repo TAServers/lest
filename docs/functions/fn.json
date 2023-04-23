@@ -1,0 +1,16 @@
+{
+	"name": "lest.fn",
+	"description": "Creates a new mock function, optionally giving it an implementation if passed.",
+	"parameters": [
+		{
+			"name": "implementation",
+			"type": "function",
+			"optional": true
+		}
+	],
+	"returns": [
+		{
+			"type": "lest.Mock"
+		}
+	]
+}

@@ -1,0 +1,43 @@
+{
+	"name": "lest.Mock",
+	"description": "Class representing mocked functions.",
+	"fields": [
+		{
+			"name": "mock",
+			"description": [
+				"Data relating to the mocked function such as call arguments and return values.",
+				"You shouldn't need to access this directly. Instead, a range of mock function matchers are provided as abstractions."
+			],
+			"type": "table",
+			"fields": [
+				{
+					"name": "calls",
+					"description": "Array of calls, where each call is an array of the arguments that were passed to the mock function.",
+					"type": "any[][]"
+				},
+				{
+					"name": "lastCall",
+					"description": "Array of arguments that the mock function was last called with, or `nil` if it hasn't been called.",
+					"type": "any[]",
+					"optional": true
+				},
+				{
+					"name": "results",
+					"description": "Array of results that the mock function has returned or thrown.",
+					"type": "lest.MockResult[]"
+				},
+				{
+					"name": "lastResult",
+					"description": "The result that the mock function last returned or threw, or `nil` if it hasn't been called.",
+					"type": "lest.MockResult",
+					"optional": true
+				}
+			]
+		}
+	],
+	"methods": [
+		{
+			"name": ""
+		}
+	]
+}

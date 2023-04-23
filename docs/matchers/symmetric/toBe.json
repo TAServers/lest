@@ -1,0 +1,10 @@
+{
+	"name": "toBe",
+	"description": "Performs a strict equality test between the received and expected value.",
+	"parameters": [
+		{
+			"name": "expected",
+			"type": "any"
+		}
+	]
+}
