@@ -1,4 +1,6 @@
 import React from "react";
+import Heading from "@theme/Heading";
+import Markdown from "markdown-to-jsx";
 import { Parameter, Return, Function } from "../doc-types";
 
 const renderParameterSignature = (parameters: Parameter[]) =>
@@ -23,16 +25,16 @@ const FunctionRenderer: React.FC<FunctionRendererProps> = ({
 	}
 
 	return (
-		<>
-			<h3>
+		<section>
+			<Heading as="h3">
 				<code>
 					{name}({renderParameterSignature(parameters)})
 					{returns.length > 0 && `: ${renderReturnSignature(returns)}`}
 				</code>
-			</h3>
-			<p>{description}</p>
+			</Heading>
+			<Markdown options={{ forceBlock: true }}>{description}</Markdown>
 			{children}
-		</>
+		</section>
 	);
 };
 
