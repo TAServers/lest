@@ -1,0 +1,17 @@
+---
+title: Expect
+---
+
+import FunctionRenderer from "@site/src/components/FunctionRenderer";
+
+import expect from "../../../docs/functions/expect.json";
+
+<FunctionRenderer {...expect}>
+
+```lua
+test("returns hello world", function()
+	expect(someFunction()).toBe("hello world!")
+end)
+```
+
+</FunctionRenderer>

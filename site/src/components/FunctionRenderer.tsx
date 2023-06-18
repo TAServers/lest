@@ -8,7 +8,7 @@ const renderReturnSignature = (returns: Return[]) =>
 	returns.map(({ type, optional }) => `${type}${optional ? "?" : ""}`).join(", ");
 
 interface FunctionRendererProps extends Function {
-	children: JSX.Element;
+	children: React.ReactNode;
 }
 
 const FunctionRenderer: React.FC<FunctionRendererProps> = ({
