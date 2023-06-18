@@ -26,7 +26,7 @@ const FunctionRenderer: React.FC<FunctionRendererProps> = ({
 
 	return (
 		<section>
-			<Heading as="h3">
+			<Heading as="h3" id={name}>
 				<code>
 					{name}({renderParameterSignature(parameters)})
 					{returns.length > 0 && `: ${renderReturnSignature(returns)}`}
