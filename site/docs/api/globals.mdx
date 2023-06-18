@@ -2,4 +2,48 @@
 title: Globals
 ---
 
-Test
+import FunctionRenderer from "@site/src/components/FunctionRenderer";
+
+import afterAll from "../../../docs/functions/afterAll.json";
+
+In your test files, Lest puts each of these methods and objects into the global environment. You don't have to require or import anything to use them.
+
+## Functions
+
+<FunctionRenderer {...afterAll}>
+
+This is often useful if you want to clean up some global setup state that is shared across tests.
+
+For example:
+
+```lua
+local globalDatabase = makeGlobalDatabase()
+
+local function cleanUpDatabase(db)
+  db:cleanUp()
+end
+
+afterAll(function()
+  cleanUpDatabase(globalDatabase)
+end)
+
+test("can find things", function()
+  globalDatabase:find("thing", {}, function(results)
+    expect(results.length).toBeGreaterThan(0)
+  end)
+end)
+
+test("can insert a thing", function()
+  globalDatabase:insert("thing", makeThing(), function(response)
+    expect(response.success).toBeTruthy()
+  end)
+end)
+```
+
+Here the `afterAll` ensures that `cleanUpDatabase` is called after all tests run.
+
+If `afterAll` is inside a `describe` block, it runs at the end of the describe block.
+
+If you want to run some cleanup after every test instead of after all tests, use `afterEach` instead.
+
+</FunctionRenderer>
