@@ -1,6 +1,11 @@
 {
 	"name": "toBe",
-	"description": "Performs a strict equality test between the received and expected value.",
+	"description": [
+		"Performs a referential equality test between the received and expected values.",
+		"",
+		"Two different tables with identical contents are not referentially equal, as the reference to the table stored in the variable is different.",
+		"If you want to perform a deep equality test between tables, use `.toEqual()` instead."
+	],
 	"parameters": [
 		{
 			"name": "expected",
