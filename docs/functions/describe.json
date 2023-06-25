@@ -1,0 +1,19 @@
+{
+	"name": "describe",
+	"description": [
+		"Creates a block that groups related tests together.",
+		"",
+		"If you register a function for any of the setup/teardown hooks (`afterAll`, `afterEach`, `beforeAll` and `beforeEach`)",
+		"inside the `describe`, they'll only exist while running tests defined in that `describe` block (or any nested `describe`s)."
+	],
+	"parameters": [
+		{
+			"name": "name",
+			"type": "string"
+		},
+		{
+			"name": "fn",
+			"type": "function"
+		}
+	]
+}
