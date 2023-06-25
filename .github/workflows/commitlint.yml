@@ -2,7 +2,7 @@ name: Lint commits
 
 on:
   workflow_call:
-  push:
+  pull_request:
 
 jobs:
   commitlint:
