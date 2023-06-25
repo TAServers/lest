@@ -1,0 +1,69 @@
+---
+title: Expect
+---
+
+import FunctionRenderer from "@site/src/components/FunctionRenderer";
+import MatcherRenderer from "@site/src/components/MatcherRenderer";
+
+import expect from "../../../docs/functions/expect.json";
+
+import toBe from "../../../docs/matchers/symmetric/toBe.json";
+
+import toHaveBeenCalled from "../../../docs/matchers/symmetric/toHaveBeenCalled.json";
+import toHaveBeenCalledTimes from "../../../docs/matchers/symmetric/toHaveBeenCalledTimes.json";
+import toHaveBeenCalledWith from "../../../docs/matchers/symmetric/toHaveBeenCalledWith.json";
+import toHaveBeenLastCalledWith from "../../../docs/matchers/symmetric/toHaveBeenLastCalledWith.json";
+import toHaveBeenNthCalledWith from "../../../docs/matchers/symmetric/toHaveBeenNthCalledWith.json";
+import toHaveReturned from "../../../docs/matchers/symmetric/toHaveReturned.json";
+import toHaveReturnedTimes from "../../../docs/matchers/symmetric/toHaveReturnedTimes.json";
+import toHaveReturnedWith from "../../../docs/matchers/symmetric/toHaveReturnedWith.json";
+import toHaveLastReturnedWith from "../../../docs/matchers/symmetric/toHaveLastReturnedWith.json";
+import toHaveNthReturnedWith from "../../../docs/matchers/symmetric/toHaveNthReturnedWith.json";
+
+<FunctionRenderer {...expect}>
+
+```lua
+test("returns hello world", function()
+	expect(someFunction()).toBe("hello world!")
+end)
+```
+
+</FunctionRenderer>
+
+## Modifiers
+
+### `.not`
+
+If you need to invert the result of a matcher you can use the `.not` modifier. For example, the code below tests that the answer to life, the universe, and everything is not 42:
+
+```lua
+test("doesn't return 42", function()
+	expect(deepThought()).not.toBe(42)
+end)
+```
+
+Note that as with calling matchers directly on `expect()`, you use `.` instead of `:` as Lest binds the received value to the function internally.
+
+## Matchers
+
+<MatcherRenderer {...toBe}></MatcherRenderer>
+
+<MatcherRenderer {...toHaveBeenCalled}></MatcherRenderer>
+
+<MatcherRenderer {...toHaveBeenCalledTimes}></MatcherRenderer>
+
+<MatcherRenderer {...toHaveBeenCalledWith}></MatcherRenderer>
+
+<MatcherRenderer {...toHaveBeenLastCalledWith}></MatcherRenderer>
+
+<MatcherRenderer {...toHaveBeenNthCalledWith}></MatcherRenderer>
+
+<MatcherRenderer {...toHaveReturned}></MatcherRenderer>
+
+<MatcherRenderer {...toHaveReturnedTimes}></MatcherRenderer>
+
+<MatcherRenderer {...toHaveReturnedWith}></MatcherRenderer>
+
+<MatcherRenderer {...toHaveLastReturnedWith}></MatcherRenderer>
+
+<MatcherRenderer {...toHaveNthReturnedWith}></MatcherRenderer>

@@ -1,0 +1,26 @@
+name: Site - Deploy
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    uses: ./.github/workflows/site_build.yml
+
+  release:
+    needs: build
+
+    permissions:
+      pages: write
+      id-token: write
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/deploy-pages@v2
+        id: deployment

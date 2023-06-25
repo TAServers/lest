@@ -1,0 +1,11 @@
+{
+  "name": "toHaveBeenCalledTimes",
+  "aliases": ["toBeCalledTimes"],
+  "description": "Tests that a mock function was called a specific number of times.",
+  "parameters": [
+    {
+      "name": "times",
+      "type": "number"
+    }
+  ]
+}

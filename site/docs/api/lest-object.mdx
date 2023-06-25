@@ -1,0 +1,23 @@
+---
+title: The Lest Object
+---
+
+import FunctionRenderer from "@site/src/components/FunctionRenderer";
+
+import lestFn from "../../../docs/functions/fn.json";
+
+## Mock Functions
+
+<FunctionRenderer {...lestFn}>
+
+```lua
+local mockFn = lest.fn()
+mockFn()
+expect(mockFn).toHaveBeenCalled()
+
+-- With a mock implementation:
+local returnsTrue = lest.fn(function() return true end)
+print(returnsTrue()) -- true
+```
+
+</FunctionRenderer>

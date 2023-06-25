@@ -1,0 +1,12 @@
+{
+  "position": 2,
+  "label": "Guides",
+  "collapsible": true,
+  "collapsed": true,
+  "link": {
+    "type": "generated-index",
+    "slug": "/tutorials/guides",
+    "title": "Guides",
+    "description": "Walkthrough-style guides for common use cases with Lest."
+  }
+}

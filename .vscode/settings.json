@@ -1,7 +1,7 @@
 {
-	"editor.formatOnSave": true,
-	"[lua]": {
-		"editor.defaultFormatter": "JohnnyMorganz.stylua",
-	},
-	"Lua.diagnostics.enable": true
+  "editor.formatOnSave": true,
+  "[lua]": {
+    "editor.defaultFormatter": "JohnnyMorganz.stylua"
+  },
+  "Lua.diagnostics.enable": true
 }
