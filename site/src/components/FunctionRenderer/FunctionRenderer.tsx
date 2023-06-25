@@ -3,6 +3,7 @@ import Heading from "@theme/Heading";
 import Markdown from "markdown-to-jsx";
 import { Function } from "../../doc-types";
 import { renderParameterSignature, renderReturnSignature } from "./helpers";
+import { Aliases } from "@site/src/components/FunctionRenderer/components/Aliases";
 
 interface FunctionRendererProps extends Function {
 	children: React.ReactNode;
@@ -10,6 +11,7 @@ interface FunctionRendererProps extends Function {
 
 export const FunctionRenderer: React.FC<FunctionRendererProps> = ({
 	name,
+	aliases,
 	description = "No description provided.",
 	parameters = [],
 	returns = [],
@@ -27,6 +29,7 @@ export const FunctionRenderer: React.FC<FunctionRendererProps> = ({
 					{returns.length > 0 && `: ${renderReturnSignature(returns)}`}
 				</code>
 			</Heading>
+			<Aliases aliases={aliases} />
 			<Markdown options={{ forceBlock: true }}>{description}</Markdown>
 			{children}
 		</section>
