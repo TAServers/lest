@@ -6,7 +6,9 @@
   "scripts": {
     "prepare": "husky install",
     "format:site": "prettier --check packages/site",
-    "build:site": "npm run build --workspace=packages/site"
+    "build:lua": "npm run build --workspace=packages/lua",
+    "build:site": "npm run build --workspace=packages/site",
+    "test:lua": "npm run test --workspace=packages/lua"
   },
   "workspaces": [
     "packages/lua",
