@@ -24,14 +24,11 @@ jobs:
           node-version: 18
           cache: "npm"
 
-      - name: Change directory
-        run: cd site
-
       - name: Install dependencies
-        run: npm ci
+        run: cd site && npm ci
 
       - name: Build site
-        run: npm run build
+        run: npm run build:site
 
       - uses: actions/upload-pages-artifact@v1
         with:
