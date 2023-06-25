@@ -1,10 +1,8 @@
 {
-	"name": "toHaveReturned",
-	"aliases": [
-		"toReturn"
-	],
-	"description": [
-		"Tests that a mock function returned.",
-		"If you want to test that it returned specific values, or a certain number of times, see the other mock function matchers."
-	]
+  "name": "toHaveReturned",
+  "aliases": ["toReturn"],
+  "description": [
+    "Tests that a mock function returned.",
+    "If you want to test that it returned specific values, or a certain number of times, see the other mock function matchers."
+  ]
 }

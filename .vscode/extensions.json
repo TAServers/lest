@@ -1,7 +1,3 @@
 {
-	"recommendations": [
-		"sumneko.lua",
-		"EditorConfig.EditorConfig",
-		"JohnnyMorganz.stylua"
-	]
+  "recommendations": ["sumneko.lua", "EditorConfig.EditorConfig", "JohnnyMorganz.stylua"]
 }

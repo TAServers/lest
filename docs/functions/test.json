@@ -1,27 +1,25 @@
 {
-	"name": "test",
-	"aliases": [
-		"it"
-	],
-	"description": [
-		"Registers a new test with the given name.",
-		"",
-		"You can provide an optional `timeout` (in milliseconds) to specify how long to wait before aborting the callback.",
-		"The default timeout is 5 seconds."
-	],
-	"parameters": [
-		{
-			"name": "name",
-			"type": "string"
-		},
-		{
-			"name": "fn",
-			"type": "function"
-		},
-		{
-			"name": "timeout",
-			"type": "number",
-			"optional": true
-		}
-	]
+  "name": "test",
+  "aliases": ["it"],
+  "description": [
+    "Registers a new test with the given name.",
+    "",
+    "You can provide an optional `timeout` (in milliseconds) to specify how long to wait before aborting the callback.",
+    "The default timeout is 5 seconds."
+  ],
+  "parameters": [
+    {
+      "name": "name",
+      "type": "string"
+    },
+    {
+      "name": "fn",
+      "type": "function"
+    },
+    {
+      "name": "timeout",
+      "type": "number",
+      "optional": true
+    }
+  ]
 }
