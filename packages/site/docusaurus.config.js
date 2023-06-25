@@ -7,7 +7,7 @@ const darkCodeTheme = require("prism-react-renderer/themes/dracula");
 const config = {
 	title: "Lest",
 	tagline: "Zero dependency Lua testing framework in the style of Jest",
-	favicon: "img/favicon.ico",
+	favicon: "img/favicon.svg",
 
 	url: "https://taservers.github.io",
 	baseUrl: "/lest/",
@@ -44,9 +44,8 @@ const config = {
 		/** @type {import('@docusaurus/preset-classic').ThemeConfig} */
 		({
 			// Replace with your project's social card
-			image: "img/docusaurus-social-card.jpg",
+			image: "img/social.svg",
 			navbar: {
-				title: "Lest",
 				logo: {
 					alt: "Lest Logo",
 					src: "img/logo.svg",
