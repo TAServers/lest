@@ -223,6 +223,30 @@
 					"type": "self"
 				}
 			]
+		},
+		{
+			"name": "mockClear",
+			"type": "function",
+			"description": [
+				"Clears all information stored in the `mockFn.mock` table (calls and results).",
+				"",
+				"Note that this replaces `mockFn.mock`, not its contents.",
+				"Make sure you're not storing a stale reference to the old table.",
+				"",
+				"To also reset mocked implementations and return values, call `mockFn:mockReset()`."
+			]
+		},
+		{
+			"name": "mockReset",
+			"type": "function",
+			"description": [
+				"Clears all information stored in the `mockFn.mock` table (calls and results) _and_ removes all mocked implementations and return values.",
+				"",
+				"Note that this replaces `mockFn.mock`, not its contents.",
+				"Make sure you're not storing a stale reference to the old table.",
+				"",
+				"To only reset the calls and results of the mock, use `mockFn:mockClear()` instead."
+			]
 		}
 	]
 }
