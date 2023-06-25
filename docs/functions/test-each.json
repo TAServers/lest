@@ -1,13 +1,15 @@
 {
 	"name": "test.each",
+	"aliases": [
+		"it.each"
+	],
 	"description": [
 		"Data driven variant of `test` to reduce duplication when testing the same code with different data.",
 		"",
 		"The returned function matches regular `test`, except the callback you pass to it will be run for each test case you define.",
 		"The value of each test case will be unpacked and passed to your callback.",
 		"",
-		"This is essentially the same as calling `test` in a for loop.",
-		"Also under the alias `it(testCases)(name, fn, timeout)`."
+		"This is essentially the same as calling `test` in a for loop."
 	],
 	"parameters": [
 		{
