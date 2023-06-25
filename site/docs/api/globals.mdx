@@ -11,6 +11,7 @@ import beforeEach from "../../../docs/functions/beforeEach.json";
 import describe from "../../../docs/functions/describe.json";
 import describeEach from "../../../docs/functions/describe-each.json";
 import test from "../../../docs/functions/test.json";
+import testEach from "../../../docs/functions/test-each.json";
 
 In your test files, Lest puts each of these methods and objects into the global environment. You don't have to require or import anything to use them.
 
@@ -65,3 +66,5 @@ If you want to run some cleanup after every test instead of after all tests, use
 <FunctionRenderer {...describeEach}></FunctionRenderer>
 
 <FunctionRenderer {...test}></FunctionRenderer>
+
+<FunctionRenderer {...testEach}></FunctionRenderer>
