@@ -6,8 +6,8 @@
 		"You can provide an optional `timeout` (in milliseconds) to specify how long to wait before aborting the callback.",
 		"The default timeout is 5 seconds.",
 		"",
-		"Also under the alias `it(name, fn, timeout)`, which is meant to encourage writing test names that form a sentence when combined with `describe`",
-		" - e.g. `it(\"should return blah\", ...)` if placed in a `describe` block called `myClass`, will print `myClass > should return blah` when running the test."
+		"Also under the alias `it(name, fn, timeout)`, which is meant to encourage writing test names that form a sentence when combined with `describe` -",
+		"e.g. `it(\"should return blah\", ...)` if placed in a `describe` block called `myClass`, will print `myClass > should return blah` when running the test."
 	],
 	"parameters": [
 		{
