@@ -2,7 +2,7 @@ import React, { createContext, useContext } from "react";
 import Heading from "@theme/Heading";
 import Description from "../Description";
 import { Class } from "../../doc-types/class";
-import { isTableProperty, Property, TableProperty } from "../../doc-types";
+import { isTableProperty, Property } from "../../doc-types";
 
 interface ObjectContextProps {
 	object?: Class;
