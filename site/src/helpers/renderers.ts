@@ -1,4 +1,4 @@
-import { FunctionProperty, ArrayProperty, Property, isFunctionProperty, isArrayProperty } from "../../doc-types";
+import { FunctionProperty, Property, isFunctionProperty, isArrayProperty, ArrayItems } from "../doc-types";
 
 const renderFunctionType = ({ parameters = [], returns = [] }: FunctionProperty) => {
 	const paramSignature = parameters.length > 0 ? renderParameterSignature(parameters) : "";
@@ -7,18 +7,26 @@ const renderFunctionType = ({ parameters = [], returns = [] }: FunctionProperty)
 	return `fun(${paramSignature})${returnSignature}`;
 };
 
-const renderArrayType = ({ items }: ArrayProperty) => `${items}[]`;
-
-const renderType = (parameter: Property): string => {
-	if (isFunctionProperty(parameter)) {
-		return renderFunctionType(parameter);
+const renderArrayType = (items: ArrayItems): string => {
+	let arrayBrackets = "[]";
+	while (typeof items === "object") {
+		arrayBrackets += "[]";
+		items = items.items;
 	}
 
-	if (isArrayProperty(parameter)) {
-		return renderArrayType(parameter);
+	return `${items}${arrayBrackets}`;
+};
+
+export const renderType = (property: Property): string => {
+	if (isFunctionProperty(property)) {
+		return renderFunctionType(property);
 	}
 
-	return parameter.type;
+	if (isArrayProperty(property)) {
+		return renderArrayType(property.items);
+	}
+
+	return property.type;
 };
 
 export const renderParameterSignature = (parameters: Property[]) =>

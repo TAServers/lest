@@ -1,0 +1,22 @@
+---
+title: Mock Functions
+---
+
+import { ObjectRenderer, FieldRenderer } from "@site/src/components/object-renderer";
+
+import mock from "../../../docs/types/mock.json";
+
+Mock functions allow stubbing and/or inspecting functions when testing.
+This is especially used when unit testing, where you'll likely need to mock unrelated units of your code or code from other packages or libraries.allow
+
+You can create a mock function with `lest.fn()`. If no implementation is given, the mock function will return `nil` when called.
+
+## Reference
+
+<ObjectRenderer {...mock} memberPrefix="mockFn">
+
+<FieldRenderer path="mock.calls"></FieldRenderer>
+
+<FieldRenderer path="mock.lastCall"></FieldRenderer>
+
+</ObjectRenderer>

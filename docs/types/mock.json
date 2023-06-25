@@ -13,18 +13,24 @@
 				{
 					"name": "calls",
 					"description": "Array of calls, where each call is an array of the arguments that were passed to the mock function.",
-					"type": "any[][]"
+					"type": "array",
+					"items": {
+						"type": "array",
+						"items": "any"
+					}
 				},
 				{
 					"name": "lastCall",
 					"description": "Array of arguments that the mock function was last called with, or `nil` if it hasn't been called.",
-					"type": "any[]",
+					"type": "array",
+					"items": "any",
 					"optional": true
 				},
 				{
 					"name": "results",
 					"description": "Array of results that the mock function has returned or thrown.",
-					"type": "lest.MockResult[]"
+					"type": "array",
+					"items": "lest.MockResult"
 				},
 				{
 					"name": "lastResult",
@@ -33,11 +39,6 @@
 					"optional": true
 				}
 			]
-		}
-	],
-	"methods": [
-		{
-			"name": ""
 		}
 	]
 }

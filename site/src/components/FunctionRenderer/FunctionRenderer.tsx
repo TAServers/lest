@@ -1,36 +1,34 @@
 import React from "react";
 import Heading from "@theme/Heading";
-import Markdown from "markdown-to-jsx";
 import { Function } from "../../doc-types";
-import { renderParameterSignature, renderReturnSignature } from "./helpers";
-import { Aliases } from "@site/src/components/FunctionRenderer/components/Aliases";
+import { renderParameterSignature, renderReturnSignature } from "../../helpers/renderers";
+import { Aliases } from "./components/Aliases";
+import Description from "../Description";
 
 interface FunctionRendererProps extends Function {
+	headingLevel: "h1" | "h2" | "h3" | "h4" | "h5";
 	children: React.ReactNode;
 }
 
 export const FunctionRenderer: React.FC<FunctionRendererProps> = ({
 	name,
 	aliases,
-	description = "No description provided.",
+	description,
 	parameters = [],
 	returns = [],
+	headingLevel = "h3",
 	children,
 }) => {
-	if (description instanceof Array) {
-		description = description.join("\n");
-	}
-
 	return (
 		<section>
-			<Heading as="h3" id={name}>
+			<Heading as={headingLevel} id={name}>
 				<code>
 					{name}({parameters.length > 0 && renderParameterSignature(parameters)})
 					{returns.length > 0 && `: ${renderReturnSignature(returns)}`}
 				</code>
 			</Heading>
 			<Aliases aliases={aliases} />
-			<Markdown options={{ forceBlock: true }}>{description}</Markdown>
+			<Description text={description} />
 			{children}
 		</section>
 	);
