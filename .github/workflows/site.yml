@@ -3,6 +3,8 @@ name: Site CI
 on:
   workflow_call:
   push:
+    branches-ignore:
+      - master
     paths:
       - site/**
       - docs/**

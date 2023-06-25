@@ -3,6 +3,8 @@ name: Lua CI
 on:
   workflow_call:
   push:
+    branches-ignore:
+      - master
     paths:
       - packages/lua/**
       - .github/workflows/**
