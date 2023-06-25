@@ -1,0 +1,19 @@
+{
+	"name": "toHaveBeenCalledWith",
+	"aliases": [
+		"toBeCalledWith"
+	],
+	"description": [
+		"Tests that a mock function was called with a specific set of arguments.",
+		"Performs a deep equality test when comparing arguments.",
+		"",
+		"If the mock was called multiple times, this will pass as long as it was called with the given argument(s) _any_ of those times.",
+		"If you want to test that it was called with certain arguments on a _specific_ call, see `.toHaveBeenLastCalledWith()` and `.toHaveBeenNthCalledWith()`."
+	],
+	"parameters": [
+		{
+			"name": "...",
+			"type": "any"
+		}
+	]
+}

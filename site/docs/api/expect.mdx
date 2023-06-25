@@ -7,6 +7,11 @@ import MatcherRenderer from "@site/src/components/MatcherRenderer";
 
 import expect from "../../../docs/functions/expect.json";
 import toBe from "../../../docs/matchers/symmetric/toBe.json";
+import toHaveBeenCalled from "../../../docs/matchers/symmetric/toHaveBeenCalled.json";
+import toHaveBeenCalledTimes from "../../../docs/matchers/symmetric/toHaveBeenCalledTimes.json";
+import toHaveBeenCalledWith from "../../../docs/matchers/symmetric/toHaveBeenCalledWith.json";
+import toHaveBeenLastCalledWith from "../../../docs/matchers/symmetric/toHaveBeenLastCalledWith.json";
+import toHaveBeenNthCalledWith from "../../../docs/matchers/symmetric/toHaveBeenNthCalledWith.json";
 
 <FunctionRenderer {...expect}>
 
@@ -35,3 +40,13 @@ Note that as with calling matchers directly on `expect()`, you use `.` instead o
 ## Matchers
 
 <MatcherRenderer {...toBe}></MatcherRenderer>
+
+<MatcherRenderer {...toHaveBeenCalled}></MatcherRenderer>
+
+<MatcherRenderer {...toHaveBeenCalledTimes}></MatcherRenderer>
+
+<MatcherRenderer {...toHaveBeenCalledWith}></MatcherRenderer>
+
+<MatcherRenderer {...toHaveBeenLastCalledWith}></MatcherRenderer>
+
+<MatcherRenderer {...toHaveBeenNthCalledWith}></MatcherRenderer>

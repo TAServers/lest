@@ -1,0 +1,10 @@
+{
+	"name": "toHaveBeenCalled",
+	"aliases": [
+		"toBeCalled"
+	],
+	"description": [
+		"Tests that a mock function has been called.",
+		"If you want to test that it was called with specific arguments, or a certain number of times, see the other mock function matchers."
+	]
+}

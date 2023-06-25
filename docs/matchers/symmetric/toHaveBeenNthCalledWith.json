@@ -1,0 +1,22 @@
+{
+	"name": "toHaveBeenNthCalledWith",
+	"aliases": [
+		"nthCalledWith"
+	],
+	"description": [
+		"Tests that a function was called with specific arguments on its Nth call.",
+		"",
+		"If you want to test that a mock function was called with specific arguments, but don't care when, see `.toHaveBeenCalledWith()`.",
+		"If you want to test that a mock function was called with arguments on its _most recent_ call, see `.toHaveBeenLastCalledWith()`."
+	],
+	"parameters": [
+		{
+			"name": "nthCall",
+			"type": "number"
+		},
+		{
+			"name": "...",
+			"type": "any"
+		}
+	]
+}

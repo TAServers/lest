@@ -1,0 +1,18 @@
+{
+	"name": "toHaveBeenLastCalledWith",
+	"aliases": [
+		"lastCalledWith"
+	],
+	"description": [
+		"Tests that a mock function was called with specific arguments on its _most recent_ call.",
+		"",
+		"If you want to test that a mock function was called with specific arguments, but don't care when, see `.toHaveBeenCalledWith()`.",
+		"If you want to test that a mock function was called with arguments on a _specific call_, see `.toHaveBeenNthCalledWith()`."
+	],
+	"parameters": [
+		{
+			"name": "...",
+			"type": "any"
+		}
+	]
+}
