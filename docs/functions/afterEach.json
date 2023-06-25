@@ -13,7 +13,8 @@
 		},
 		{
 			"name": "timeout",
-			"type": "number"
+			"type": "number",
+			"optional": true
 		}
 	]
 }
