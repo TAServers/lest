@@ -1,6 +1,7 @@
-name: Site - Test
+name: Site CI
 
 on:
+  workflow_call:
   push:
     paths:
       - site/**
@@ -8,16 +9,15 @@ on:
       - package.json
       - package-lock.json
       - .prettierrc
+      - .prettierignore
       - .github/workflows/**
-  workflow_call:
 
 jobs:
-  build:
+  lint:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
 
       - uses: actions/setup-node@v3
         with:
@@ -25,11 +25,27 @@ jobs:
           cache: "npm"
 
       - name: Install dependencies
-        run: cd site && npm ci
+        run: npm ci
+
+      - name: Run prettier
+        run: npm run format:site
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
 
       - name: Build site
         run: npm run build:site
 
       - uses: actions/upload-pages-artifact@v1
         with:
-          path: "site/build/"
+          path: "packages/site/build"

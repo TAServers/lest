@@ -5,8 +5,8 @@
   "license": "MIT",
   "scripts": {
     "prepare": "husky install",
-    "format": "prettier --check .",
-    "build:site": "cd site && npm run build"
+    "format:site": "prettier --check packages/site",
+    "build:site": "npm run build --workspace=packages/site"
   },
   "workspaces": [
     "packages/lua",
