@@ -3,12 +3,12 @@ name: Site - Test
 on:
   push:
     paths:
-      - site
-      - docs
+      - site/**
+      - docs/**
       - package.json
       - package-lock.json
       - .prettierrc
-      - .github
+      - .github/workflows/**
   workflow_call:
 
 jobs:
