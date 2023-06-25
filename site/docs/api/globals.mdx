@@ -5,6 +5,11 @@ title: Globals
 import FunctionRenderer from "@site/src/components/FunctionRenderer";
 
 import afterAll from "../../../docs/functions/afterAll.json";
+import afterEach from "../../../docs/functions/afterEach.json";
+import beforeAll from "../../../docs/functions/beforeAll.json";
+import beforeEach from "../../../docs/functions/beforeEach.json";
+import describe from "../../../docs/functions/describe.json";
+import test from "../../../docs/functions/test.json";
 
 In your test files, Lest puts each of these methods and objects into the global environment. You don't have to require or import anything to use them.
 
@@ -47,3 +52,13 @@ If `afterAll` is inside a `describe` block, it runs at the end of the describe b
 If you want to run some cleanup after every test instead of after all tests, use `afterEach` instead.
 
 </FunctionRenderer>
+
+<FunctionRenderer {...afterEach}></FunctionRenderer>
+
+<FunctionRenderer {...beforeAll}></FunctionRenderer>
+
+<FunctionRenderer {...beforeEach}></FunctionRenderer>
+
+<FunctionRenderer {...describe}></FunctionRenderer>
+
+<FunctionRenderer {...test}></FunctionRenderer>
