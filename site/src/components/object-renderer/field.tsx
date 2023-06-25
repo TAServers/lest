@@ -15,9 +15,9 @@ export const FieldRenderer: React.FC<FieldRendererProps> = ({ path, children }) 
 	const memberPrefix = useMemberPrefix();
 	const field = useField(path);
 
-	const nameWithPrefix = `${memberPrefix}.${path}`;
-
 	if (isFunctionProperty(field)) {
+		const nameWithPrefix = `${memberPrefix}${field.static ? "." : ":"}${path}`;
+
 		return (
 			<section>
 				<FunctionRenderer {...field} headingLevel="h4" name={nameWithPrefix}>
@@ -26,6 +26,8 @@ export const FieldRenderer: React.FC<FieldRendererProps> = ({ path, children }) 
 			</section>
 		);
 	}
+
+	const nameWithPrefix = `${memberPrefix}.${path}`;
 
 	return (
 		<section>

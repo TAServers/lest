@@ -39,6 +39,126 @@
 					"optional": true
 				}
 			]
+		},
+		{
+			"name": "mockName",
+			"type": "function",
+			"description": "Sets the name that will be used for the mock in test output (or other prints).",
+			"parameters": [
+				{
+					"name": "name",
+					"type": "string"
+				}
+			],
+			"returns": [
+				{
+					"type": "self"
+				}
+			]
+		},
+		{
+			"name": "getMockName",
+			"type": "function",
+			"description": "Gets the name that will be used for the mock in test output (or other prints).",
+			"returns": [
+				{
+					"type": "string"
+				}
+			]
+		},
+		{
+			"name": "mockImplementation",
+			"type": "function",
+			"description": [
+				"Mocks the function's implementation.",
+				"This is the same as passing a function to `lest.fn()`, and will override any function that was passed there.",
+				"",
+				"If you've pushed a one-time implementation with `mockImplementationOnce`, then this function will not override it.",
+				"This is because the persistent implementation is a fallback and stored separately."
+			],
+			"parameters": [
+				{
+					"name": "fn",
+					"type": "function",
+					"parameters": [
+						{
+							"name": "...",
+							"type": "any"
+						}
+					],
+					"returns": [
+						{
+							"type": "any"
+						}
+					]
+				}
+			],
+			"returns": [
+				{
+					"type": "self"
+				}
+			]
+		},
+		{
+			"name": "getMockImplementation",
+			"type": "function",
+			"description": [
+				"Gets the mock function's implementation.",
+				"This is the function that's called whenever the mock is called.",
+				"",
+				"If you've pushed a one-time implementation with `mockImplementationOnce`,",
+				"then this function will still return the persistent implementation.",
+				"This is because the persistent implementation is a fallback and stored separately."
+			],
+			"returns": [
+				{
+					"type": "function",
+					"parameters": [
+						{
+							"name": "...",
+							"type": "any"
+						}
+					],
+					"returns": [
+						{
+							"type": "any"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "mockImplementationOnce",
+			"type": "function",
+			"description": [
+				"Mocks the function's implementation for one call.",
+				"The one-time implementations will be consumed in the order they were given (first in, first out).",
+				"",
+				"`getMockImplementation` will still return the persistent implementation regardless of any one-time implementations pushed.",
+				"This is because the persistent implementation is a fallback and stored separately."
+			],
+			"parameters": [
+				{
+					"name": "fn",
+					"type": "function",
+					"parameters": [
+						{
+							"name": "...",
+							"type": "any"
+						}
+					],
+					"returns": [
+						{
+							"type": "any"
+						}
+					]
+				}
+			],
+			"returns": [
+				{
+					"type": "self"
+				}
+			]
 		}
 	]
 }

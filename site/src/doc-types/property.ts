@@ -7,6 +7,7 @@ export interface Property {
 
 export interface FunctionProperty extends Property {
 	type: "function";
+	static?: boolean;
 	parameters?: Property[];
 	returns?: Property[];
 }
