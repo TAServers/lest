@@ -1,23 +1,24 @@
 {
   "name": "@taservers/lest",
-  "description": "Lua testing framework in the style of Jest. This package.json is just for scripts and tooling",
+  "description": "Lua testing framework in the style of Jest.",
   "version": "1.0.0",
+  "license": "MIT",
   "scripts": {
-    "bundle": "luabundler bundle lest.lua -p \"./?.lua\" -o dist/lest.lua",
-    "minify": "lua scripts/minify.lua",
-    "build": "npm run bundle && npm run minify",
-    "test": "lua lest.lua",
-    "clean": "rimraf dist",
     "prepare": "husky install",
-    "format": "prettier --check .",
-    "build:site": "cd site && npm run build"
+    "format:site": "prettier --check packages/site",
+    "build:lua": "npm run build --workspace=packages/lua",
+    "build:site": "npm run build --workspace=packages/site",
+    "test:lua": "npm run test --workspace=packages/lua"
   },
+  "workspaces": [
+    "packages/lua",
+    "packages/docs",
+    "packages/site"
+  ],
   "devDependencies": {
     "@commitlint/cli": "^17.5.1",
     "@commitlint/config-conventional": "^17.4.4",
     "husky": "^8.0.3",
-    "luabundler": "^1.2.2",
-    "luamin": "github:hsandt/luamin#develop",
     "prettier": "^2.8.7",
     "rimraf": "^5.0.0"
   }

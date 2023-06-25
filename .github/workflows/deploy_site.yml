@@ -1,4 +1,4 @@
-name: Site - Deploy
+name: Deploy Site
 
 on:
   push:
@@ -6,11 +6,11 @@ on:
       - master
 
 jobs:
-  build:
-    uses: ./.github/workflows/site_build.yml
+  site:
+    uses: ./.github/workflows/site.yml
 
-  release:
-    needs: build
+  deploy:
+    needs: site
 
     permissions:
       pages: write
