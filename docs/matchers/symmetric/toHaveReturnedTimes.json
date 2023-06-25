@@ -1,0 +1,13 @@
+{
+	"name": "toHaveReturnedTimes",
+	"aliases": [
+		"toReturnTimes"
+	],
+	"description": "Tests that a mock function returned a specific number of times.",
+	"parameters": [
+		{
+			"name": "times",
+			"type": "number"
+		}
+	]
+}

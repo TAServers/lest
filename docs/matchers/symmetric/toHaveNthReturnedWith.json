@@ -1,0 +1,22 @@
+{
+	"name": "toHaveNthReturnedWith",
+	"aliases": [
+		"nthReturnedWith"
+	],
+	"description": [
+		"Tests that a function returned specific values on its Nth call.",
+		"",
+		"If you want to test that a mock function returned specific values, but don't care when, see `.toHaveReturnedWith()`.",
+		"If you want to test that a mock function returned values on its _most recent_ call, see `.toHaveLastReturnedWith()`."
+	],
+	"parameters": [
+		{
+			"name": "nthCall",
+			"type": "number"
+		},
+		{
+			"name": "...",
+			"type": "any"
+		}
+	]
+}

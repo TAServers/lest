@@ -1,0 +1,19 @@
+{
+	"name": "toHaveReturnedWith",
+	"aliases": [
+		"toReturnWith"
+	],
+	"description": [
+		"Tests that a mock function returned a specific set of values.",
+		"Performs a deep equality test when comparing values.",
+		"",
+		"If the mock returned multiple times, this will pass as long as it returned the given value(s) _any_ of those times.",
+		"If you want to test that it returned certain values on a _specific_ call, see `.toHaveLastReturnedWith()` and `.toHaveNthReturnedWith()`."
+	],
+	"parameters": [
+		{
+			"name": "...",
+			"type": "any"
+		}
+	]
+}
