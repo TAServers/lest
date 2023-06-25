@@ -159,6 +159,70 @@
 					"type": "self"
 				}
 			]
+		},
+		{
+			"name": "mockReturnValue",
+			"type": "function",
+			"description": [
+				"Mocks the function's return value.",
+				"This is shorthand for `mockFn:mockImplementation(function() return ... end)`",
+				"",
+				"See `mockImplementation`'s documentation for more information."
+			],
+			"parameters": [
+				{
+					"name": "...",
+					"type": "any"
+				}
+			],
+			"returns": [
+				{
+					"type": "self"
+				}
+			]
+		},
+		{
+			"name": "mockReturnValueOnce",
+			"type": "function",
+			"description": [
+				"Mocks the function's return value for a single call.",
+				"This is shorthand for `mockFn:mockImplementationOnce(function() return ... end)`",
+				"",
+				"See `mockImplementationOnce`'s documentation for more information."
+			],
+			"parameters": [
+				{
+					"name": "...",
+					"type": "any"
+				}
+			],
+			"returns": [
+				{
+					"type": "self"
+				}
+			]
+		},
+		{
+			"name": "mockReturnThis",
+			"type": "function",
+			"description": [
+				"Mocks the function's implementation to return `self`.",
+				"This is shorthand for `mockFn:mockImplementation(function(self) return self end)`",
+				"",
+				"This is useful for mocking functions that chain.",
+				"See `mockImplementation`'s documentation for more information."
+			],
+			"parameters": [
+				{
+					"name": "...",
+					"type": "any"
+				}
+			],
+			"returns": [
+				{
+					"type": "self"
+				}
+			]
 		}
 	]
 }

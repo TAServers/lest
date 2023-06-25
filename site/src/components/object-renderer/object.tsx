@@ -62,7 +62,7 @@ export const ObjectRenderer: React.FC<ObjectRendererProps> = ({
 	return (
 		<ObjectContext.Provider value={{ memberPrefix, object: { name, description, ...rest } }}>
 			<section>
-				<Heading as="h3" id={name}>
+				<Heading as="h2" id={name}>
 					<code>{name}</code>
 				</Heading>
 				<Description text={description} />

@@ -20,7 +20,7 @@ export const FieldRenderer: React.FC<FieldRendererProps> = ({ path, children }) 
 
 		return (
 			<section>
-				<FunctionRenderer {...field} headingLevel="h4" name={nameWithPrefix}>
+				<FunctionRenderer {...field} headingLevel="h3" name={nameWithPrefix}>
 					{children}
 				</FunctionRenderer>
 			</section>
@@ -31,7 +31,7 @@ export const FieldRenderer: React.FC<FieldRendererProps> = ({ path, children }) 
 
 	return (
 		<section>
-			<Heading as="h4" id={nameWithPrefix}>
+			<Heading as="h3" id={nameWithPrefix}>
 				<code>
 					{nameWithPrefix}
 					{field.optional && "?"}: {renderType(field)}

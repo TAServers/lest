@@ -12,8 +12,6 @@ This is especially used when unit testing, where you'll likely need to mock unre
 
 You can create a mock function with `lest.fn()`. If no implementation is given, the mock function will return `nil` when called.
 
-## Reference
-
 <ObjectRenderer {...mock} memberPrefix="mockFn">
 
 <FieldRenderer path="mock.calls"></FieldRenderer>
@@ -33,6 +31,12 @@ You can create a mock function with `lest.fn()`. If no implementation is given, 
 <FieldRenderer path="getMockImplementation"></FieldRenderer>
 
 <FieldRenderer path="mockImplementationOnce"></FieldRenderer>
+
+<FieldRenderer path="mockReturnValue"></FieldRenderer>
+
+<FieldRenderer path="mockReturnValueOnce"></FieldRenderer>
+
+<FieldRenderer path="mockReturnThis"></FieldRenderer>
 
 </ObjectRenderer>
 
