@@ -1,3 +1,2 @@
-export { Function } from "./Function";
-export { Parameter } from "./Parameter";
-export { Return } from "./Return";
+export * from "./property";
+export * from "./function";

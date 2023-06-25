@@ -1,0 +1,44 @@
+{
+	"name": "describe.each",
+	"description": [
+		"Data driven variant of `describe` to reduce duplication when testing the same code with different data.",
+		"",
+		"The returned function matches regular `describe`, except the callback you pass to it will be run for each test case you define.",
+		"The callback you pass to the returned function will be called for each test case, and the value of that test case will be unpacked and passed to your callback.",
+		"",
+		"This is essentially the same as calling `describe` in a for loop."
+	],
+	"parameters": [
+		{
+			"name": "testCases",
+			"type": "array",
+			"items": "any"
+		}
+	],
+	"returns": [
+		{
+			"type": "function",
+			"parameters": [
+				{
+					"name": "name",
+					"type": "string"
+				},
+				{
+					"name": "fn",
+					"type": "function",
+					"parameters": [
+						{
+							"name": "...",
+							"type": "any"
+						}
+					]
+				},
+				{
+					"name": "timeout",
+					"type": "number",
+					"optional": true
+				}
+			]
+		}
+	]
+}

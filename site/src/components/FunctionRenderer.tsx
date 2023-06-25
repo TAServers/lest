@@ -1,13 +1,36 @@
 import React from "react";
 import Heading from "@theme/Heading";
 import Markdown from "markdown-to-jsx";
-import { Parameter, Return, Function } from "../doc-types";
+import { Function, Property, FunctionProperty, ArrayProperty, isFunctionProperty, isArrayProperty } from "../doc-types";
 
-const renderParameterSignature = (parameters: Parameter[]) =>
-	parameters.map(({ name, type, optional }) => `${name}${optional ? "?" : ""}: ${type}`).join(", ");
+const renderFunctionType = ({ parameters = [], returns = [] }: FunctionProperty) => {
+	const paramSignature = parameters.length > 0 ? renderParameterSignature(parameters) : "";
+	const returnSignature = returns.length > 0 ? `: ${renderReturnSignature(returns)}` : "";
 
-const renderReturnSignature = (returns: Return[]) =>
-	returns.map(({ type, optional }) => `${type}${optional ? "?" : ""}`).join(", ");
+	return `fun(${paramSignature})${returnSignature}`;
+};
+
+const renderArrayType = ({ items }: ArrayProperty) => `${items}[]`;
+
+const renderType = (parameter: Property): string => {
+	if (isFunctionProperty(parameter)) {
+		return renderFunctionType(parameter);
+	}
+
+	if (isArrayProperty(parameter)) {
+		return renderArrayType(parameter);
+	}
+
+	return parameter.type;
+};
+
+const renderParameterSignature = (parameters: Property[]) =>
+	parameters
+		.map((parameter) => `${parameter.name}${parameter.optional ? "?" : ""}: ${renderType(parameter)}`)
+		.join(", ");
+
+const renderReturnSignature = (returns: Property[]) =>
+	returns.map((value) => `${renderType(value)}${value.optional ? "?" : ""}`).join(", ");
 
 interface FunctionRendererProps extends Function {
 	children: React.ReactNode;
@@ -28,7 +51,7 @@ const FunctionRenderer: React.FC<FunctionRendererProps> = ({
 		<section>
 			<Heading as="h3" id={name}>
 				<code>
-					{name}({renderParameterSignature(parameters)})
+					{name}({parameters.length > 0 && renderParameterSignature(parameters)})
 					{returns.length > 0 && `: ${renderReturnSignature(returns)}`}
 				</code>
 			</Heading>
