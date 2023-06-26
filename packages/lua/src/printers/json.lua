@@ -1,0 +1,68 @@
+local NodeType = require("src.interface.testnodetype")
+local tablex = require("src.utils.tablex")
+local printTable = require("src.utils.printTable")
+
+local function convertPassToString(pass)
+	return pass and "passed" or "failed"
+end
+
+--- Prints the test results in JSON format, similar to Jest. The point of this printer is to convey information
+--- about the results that is not opinionated or specific to a particular output.
+--- This makes it much easier to integrate in other applications, IDEs, etc.
+---@param results lest.TestSuiteResults[]
+return function(results)
+	--- Builds a flattened list of assertion results from the Lest results.
+	---@param node lest.DescribeResults | lest.TestSuiteResults
+	---@param ancestorTitles any
+	local function buildAssertionResults(node, ancestorTitles)
+		local assertionResults = {}
+
+		local function cloneTitlesTable()
+			local titles = {}
+			for _, title in ipairs(ancestorTitles) do
+				tablex.push(titles, title)
+			end
+
+			return titles
+		end
+
+		for _, childNode in ipairs(node) do
+			if childNode.type == NodeType.Describe then
+				local titles = cloneTitlesTable()
+				tablex.push(titles, childNode.name)
+
+				local childAssertionResults =
+					buildAssertionResults(childNode, titles)
+
+				assertionResults =
+					tablex.merge(assertionResults, childAssertionResults)
+			elseif childNode.type == NodeType.Test then
+				local assertionResult = {
+					title = childNode.name,
+					status = convertPassToString(childNode.pass),
+					ancestorTitles = cloneTitlesTable(),
+				}
+
+				if not childNode.pass then
+					assertionResult.failureMessages = { childNode.error }
+				end
+
+				tablex.push(assertionResults, assertionResult)
+			end
+		end
+
+		return assertionResults
+	end
+
+	local testResults = {}
+
+	for _, testSuiteNode in ipairs(results) do
+		tablex.push(testResults, {
+			assertionResults = buildAssertionResults(testSuiteNode, {}),
+			status = convertPassToString(testSuiteNode.pass),
+			name = testSuiteNode.name,
+		})
+	end
+
+	printTable(testResults)
+end
