@@ -1,4 +1,5 @@
 local tablex = require("src.utils.tablex")
+
 --- Calculates if the real length of a table is zero. This is used to check for empty dictionaries and arrays.
 ---@param tbl table
 ---@return boolean
@@ -42,7 +43,7 @@ local function printJSON(tbl, visitedTables)
 	local function printValue(value)
 		local typeOfValue = type(value)
 		if typeOfValue == "string" then
-			return ('"%s"'):format(value)
+			return ('"%s"'):format(value:gsub('"', '\\"'))
 		elseif typeOfValue == "number" then
 			return tostring(value)
 		elseif typeOfValue == "boolean" then

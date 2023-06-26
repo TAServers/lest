@@ -98,6 +98,14 @@ describe("printJSON", function()
 				"[1,2,4,3]",
 			},
 		},
+		{
+			{
+				test = '"hello my darling"',
+			},
+			{
+				'"test":"\\"hello my darling\\""',
+			},
+		},
 	})(
 		"should print valid JSON given a lua table",
 		function(testTable, expectedElements)
