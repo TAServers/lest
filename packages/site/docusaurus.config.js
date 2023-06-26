@@ -31,7 +31,7 @@ const config = {
 				docs: {
 					path: "./docs",
 					sidebarPath: require.resolve("./sidebars.js"),
-					editUrl: "https://github.com/TAServers/lest/tree/master/site/",
+					editUrl: "https://github.com/TAServers/lest/tree/master/packages/site/",
 				},
 				theme: {
 					customCss: require.resolve("./src/css/custom.css"),
