@@ -32,17 +32,23 @@ end)
 
 ## Modifiers
 
-### `.not`
+### `.never`
 
-If you need to invert the result of a matcher you can use the `.not` modifier. For example, the code below tests that the answer to life, the universe, and everything is not 42:
+If you need to invert the result of a matcher you can use the `.never` modifier. For example, the code below tests that the answer to life, the universe, and everything is _never_ 42:
 
 ```lua
 test("doesn't return 42", function()
-	expect(deepThought()).not.toBe(42)
+	expect(deepThought()).never.toBe(42)
 end)
 ```
 
 Note that as with calling matchers directly on `expect()`, you use `.` instead of `:` as Lest binds the received value to the function internally.
+
+:::info
+
+This is the same as the `.not` modifier in Jest. We had to use `never` as `not` is a reserved keyword in Lua.
+
+:::
 
 ## Matchers
 
