@@ -33,7 +33,7 @@ end
 ---@return boolean
 local function isNumericallyInconsistent(tbl)
 	local lastKey = 0
-	for key, _ in pairs(tbl) do
+	for key, _ in ipairs(tbl) do
 		if type(key) ~= "number" then
 			return false
 		end
