@@ -12,6 +12,7 @@ end
 ---@param results lest.TestSuiteResults[]
 return function(results)
 	--- Builds a flattened list of assertion results from the Lest results.
+	--- Also has a side effect of counting the number of passed and failed tests.
 	---@param node lest.DescribeResults | lest.TestSuiteResults
 	---@param ancestorTitles any
 	local function buildAssertionResults(node, ancestorTitles)
@@ -44,7 +45,8 @@ return function(results)
 				}
 
 				if not childNode.pass then
-					assertionResult.failureMessages = { childNode.error }
+					assertionResult.failureMessages =
+						{ tostring(childNode.error) }
 				end
 
 				tablex.push(assertionResults, assertionResult)
