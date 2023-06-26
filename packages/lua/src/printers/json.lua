@@ -11,6 +11,9 @@ end
 --- This makes it much easier to integrate in other applications, IDEs, etc.
 ---@param results lest.TestSuiteResults[]
 return function(results)
+	local passedTests, failedTests, totalTests, passedSuites, failedSuites, totalSuites =
+		0, 0, 0, 0, 0, 0
+
 	--- Builds a flattened list of assertion results from the Lest results.
 	--- Also has a side effect of counting the number of passed and failed tests.
 	---@param node lest.DescribeResults | lest.TestSuiteResults
@@ -47,8 +50,12 @@ return function(results)
 				if not childNode.pass then
 					assertionResult.failureMessages =
 						{ tostring(childNode.error) }
+					failedTests = failedTests + 1
+				else
+					passedTests = passedTests + 1
 				end
 
+				totalTests = totalTests + 1
 				tablex.push(assertionResults, assertionResult)
 			end
 		end
@@ -56,15 +63,32 @@ return function(results)
 		return assertionResults
 	end
 
-	local testResults = {}
+	local report = {
+		testResults = {},
+	}
 
 	for _, testSuiteNode in ipairs(results) do
-		tablex.push(testResults, {
+		tablex.push(report.testResults, {
 			assertionResults = buildAssertionResults(testSuiteNode, {}),
 			status = convertPassToString(testSuiteNode.pass),
 			name = testSuiteNode.name,
 		})
+
+		if not testSuiteNode.pass then
+			failedSuites = failedSuites + 1
+		else
+			passedSuites = passedSuites + 1
+		end
+
+		totalSuites = totalSuites + 1
 	end
 
-	print(printJSON(testResults))
+	report.numFailedTestSuites = failedSuites
+	report.numFailedTests = failedTests
+	report.numPassedTestSuites = passedSuites
+	report.numPassedTests = passedTests
+	report.numTotalTestSuites = totalSuites
+	report.numTotalTests = totalTests
+
+	print(printJSON(report))
 end
