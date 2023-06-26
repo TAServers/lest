@@ -26,6 +26,14 @@ import toHaveReturnedWith from "@lest/docs/matchers/symmetric/toHaveReturnedWith
 import toHaveLastReturnedWith from "@lest/docs/matchers/symmetric/toHaveLastReturnedWith.json";
 import toHaveNthReturnedWith from "@lest/docs/matchers/symmetric/toHaveNthReturnedWith.json";
 
+import toBeCloseTo from "@lest/docs/matchers/symmetric/toBeCloseTo.json";
+import toBeGreaterThan from "@lest/docs/matchers/symmetric/toBeGreaterThan.json";
+import toBeGreaterThanOrEqual from "@lest/docs/matchers/symmetric/toBeGreaterThanOrEqual.json";
+import toBeLessThan from "@lest/docs/matchers/symmetric/toBeLessThan.json";
+import toBeLessThanOrEqual from "@lest/docs/matchers/symmetric/toBeLessThanOrEqual.json";
+import toBeNaN from "@lest/docs/matchers/symmetric/toBeNaN.json";
+import toBeInfinity from "@lest/docs/matchers/symmetric/toBeInfinity.json";
+
 <FunctionRenderer {...expect}>
 
 ```lua
@@ -93,3 +101,19 @@ This is the same as the `.not` modifier in Jest. We had to use `never` as `not` 
 <MatcherRenderer {...toHaveLastReturnedWith}></MatcherRenderer>
 
 <MatcherRenderer {...toHaveNthReturnedWith}></MatcherRenderer>
+
+## Number Matchers
+
+<MatcherRenderer {...toBeCloseTo}></MatcherRenderer>
+
+<MatcherRenderer {...toBeGreaterThan}></MatcherRenderer>
+
+<MatcherRenderer {...toBeGreaterThanOrEqual}></MatcherRenderer>
+
+<MatcherRenderer {...toBeLessThan}></MatcherRenderer>
+
+<MatcherRenderer {...toBeLessThanOrEqual}></MatcherRenderer>
+
+<MatcherRenderer {...toBeNaN}></MatcherRenderer>
+
+<MatcherRenderer {...toBeInfinity}></MatcherRenderer>
