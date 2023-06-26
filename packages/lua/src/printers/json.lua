@@ -1,6 +1,6 @@
 local NodeType = require("src.interface.testnodetype")
 local tablex = require("src.utils.tablex")
-local printTable = require("src.utils.printTable")
+local printJSON = require("src.utils.printJSON")
 
 local function convertPassToString(pass)
 	return pass and "passed" or "failed"
@@ -64,5 +64,5 @@ return function(results)
 		})
 	end
 
-	printTable(testResults)
+	return printJSON(testResults)
 end
