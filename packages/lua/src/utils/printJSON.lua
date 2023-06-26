@@ -27,27 +27,6 @@ local function isMixed(tbl)
 	return false
 end
 
---- Returns true if a table is numerically inconsistent. This means that the table has holes or nonsequential indices.
---- Because arrays are emulated in Lua using tables, this function can be used to determine if a table is an array or not.
----@param tbl any
----@return boolean
-local function isNumericallyInconsistent(tbl)
-	local lastKey = 0
-	for key, _ in ipairs(tbl) do
-		if type(key) ~= "number" then
-			return false
-		end
-
-		if key ~= lastKey + 1 then
-			return true
-		end
-
-		lastKey = key
-	end
-
-	return false
-end
-
 --- Prints a table as JSON.
 --- Unsupported types: userdata, function, thread, nonsequential numerically indexed tables (tables with holes or nonsequential indices, since there are no arrays in lua).
 --- Cyclic tables are NOT supported.
@@ -55,10 +34,6 @@ end
 local function printJSON(tbl, visitedTables)
 	if type(tbl) ~= "table" then
 		error(("Expected table, got %s"):format(type(tbl)))
-	end
-
-	if isNumericallyInconsistent(tbl) then
-		error("Nonsequential numerically indexed tables are not supported.")
 	end
 
 	if isMixed(tbl) then
@@ -96,7 +71,8 @@ local function printJSON(tbl, visitedTables)
 	end
 
 	local json = startCharacter
-	for key, value in pairs(tbl) do
+	local iterator = isDictionary(tbl) and pairs or ipairs
+	for key, value in iterator(tbl) do
 		local keyString = isDictionary(tbl) and ('"%s":'):format(key) or ""
 		local valueString = printValue(value)
 		json = ("%s%s%s,"):format(json, keyString, valueString)

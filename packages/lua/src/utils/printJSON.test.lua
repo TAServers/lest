@@ -2,25 +2,6 @@ local printJSON = require("src.utils.printJSON")
 
 describe("printJSON", function()
 	describe("should refuse", function()
-		test("numerically inconsistent tables", function()
-			-- Arrange
-			local tbl = {
-				[1] = "foo",
-				[2] = "bar",
-				[4] = "baz",
-				[3] = "bar",
-			}
-
-			-- Act
-			local success, err = pcall(printJSON, tbl)
-
-			-- Assert
-			expect(success).toBe(false)
-			expect(err).toContain(
-				"Nonsequential numerically indexed tables are not supported."
-			)
-		end)
-
 		test("cyclic tables", function()
 			-- Arrange
 			local tbl = {}
@@ -104,6 +85,17 @@ describe("printJSON", function()
 				'"iq":20',
 				'"height":45',
 				'"weeklySleepTimes":[1,3,4,2,3]',
+			},
+		},
+		{
+			{
+				[1] = 1,
+				[2] = 2,
+				[4] = 3,
+				[3] = 4,
+			},
+			{
+				"[1,2,4,3]",
 			},
 		},
 	})(
