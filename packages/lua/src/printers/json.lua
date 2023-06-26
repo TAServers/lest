@@ -39,7 +39,7 @@ return function(results)
 					buildAssertionResults(childNode, titles)
 
 				assertionResults =
-					tablex.merge(assertionResults, childAssertionResults)
+					tablex.squash(assertionResults, childAssertionResults)
 			elseif childNode.type == NodeType.Test then
 				local assertionResult = {
 					title = childNode.name,
