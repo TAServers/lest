@@ -64,5 +64,5 @@ return function(results)
 		})
 	end
 
-	return printJSON(testResults)
+	print(printJSON(testResults))
 end

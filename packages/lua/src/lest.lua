@@ -4,6 +4,7 @@ local cli = require("src.cli")
 local filesInFolder = require("src.utils.filesInFolder")
 local runtime = require("src.runtime")
 local prettyPrint = require("src.printers.prettyprint")
+local jsonPrint = require("src.printers.json")
 
 local options = cli(arg)
 local config = dofile(options.config)
@@ -30,6 +31,10 @@ end
 local tests = runtime.findTests(testFiles)
 local success, results = runtime.runTests(tests)
 
-prettyPrint(results)
+if options.json then
+	jsonPrint(results)
+else
+	prettyPrint(results)
+end
 
 os.exit(success and 0 or 1)

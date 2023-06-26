@@ -11,6 +11,9 @@ local OPTIONS = {
 			return num
 		end,
 	},
+	json = {
+		takesArg = false,
+	},
 }
 
 local PREFIXED_OPTIONS = {}
