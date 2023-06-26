@@ -8,6 +8,12 @@ import MatcherRenderer from "@site/src/components/MatcherRenderer";
 import expect from "@lest/docs/functions/expect.json";
 
 import toBe from "@lest/docs/matchers/symmetric/toBe.json";
+import toBeDefined from "@lest/docs/matchers/symmetric/toBeDefined.json";
+import toBeUndefined from "@lest/docs/matchers/symmetric/toBeUndefined.json";
+import toBeFalsy from "@lest/docs/matchers/symmetric/toBeFalsy.json";
+import toBeTruthy from "@lest/docs/matchers/symmetric/toBeTruthy.json";
+import toBeInstanceOf from "@lest/docs/matchers/symmetric/toBeInstanceOf.json";
+import toEqual from "@lest/docs/matchers/symmetric/toEqual.json";
 
 import toHaveBeenCalled from "@lest/docs/matchers/symmetric/toHaveBeenCalled.json";
 import toHaveBeenCalledTimes from "@lest/docs/matchers/symmetric/toHaveBeenCalledTimes.json";
@@ -50,9 +56,23 @@ This is the same as the `.not` modifier in Jest. We had to use `never` as `not` 
 
 :::
 
-## Matchers
+## Equality Matchers
 
 <MatcherRenderer {...toBe}></MatcherRenderer>
+
+<MatcherRenderer {...toEqual}></MatcherRenderer>
+
+<MatcherRenderer {...toBeDefined}></MatcherRenderer>
+
+<MatcherRenderer {...toBeUndefined}></MatcherRenderer>
+
+<MatcherRenderer {...toBeTruthy}></MatcherRenderer>
+
+<MatcherRenderer {...toBeFalsy}></MatcherRenderer>
+
+<MatcherRenderer {...toBeInstanceOf}></MatcherRenderer>
+
+## Mock Function Matchers
 
 <MatcherRenderer {...toHaveBeenCalled}></MatcherRenderer>
 

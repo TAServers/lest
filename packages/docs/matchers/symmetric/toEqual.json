@@ -1,0 +1,15 @@
+{
+  "name": "toEqual",
+  "description": [
+    "Performs a deep equality test between the received and expected values. This only affects table comparison.",
+    "",
+    "If you want to check that two variables contain a reference to the _same_ table",
+    "and not that they have the same _contents_, use `.toBe()`."
+  ],
+  "parameters": [
+    {
+      "name": "expected",
+      "type": "any"
+    }
+  ]
+}
