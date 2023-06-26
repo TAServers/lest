@@ -1,3 +1,4 @@
+local tablex = require("src.utils.tablex")
 --- Calculates if the real length of a table is zero. This is used to check for empty dictionaries and arrays.
 ---@param tbl table
 ---@return boolean
@@ -70,16 +71,15 @@ local function printJSON(tbl, visitedTables)
 		return startCharacter .. endCharacter
 	end
 
-	local json = startCharacter
+	local members = {}
 	for key, value in iterator(tbl) do
 		local keyString = isDictionary(tbl) and ('"%s":'):format(key) or ""
 		local valueString = printValue(value)
-		json = table.concat({ json, keyString, valueString, "," }, "")
+		tablex.push(members, table.concat({ keyString, valueString }))
 	end
 
-	json = json:sub(1, -2) -- Remove trailing comma
-
-	return json .. endCharacter
+	local json = startCharacter .. table.concat(members, ",") .. endCharacter
+	return json
 end
 
 return printJSON
