@@ -60,8 +60,10 @@ local function printJSON(tbl, visitedTables)
 	end
 
 	local startCharacter, endCharacter = "[", "]"
+	local iterator = ipairs
 	if isDictionary(tbl) then
 		startCharacter, endCharacter = "{", "}"
+		iterator = pairs
 	end
 
 	if isEmpty(tbl) then
@@ -69,11 +71,10 @@ local function printJSON(tbl, visitedTables)
 	end
 
 	local json = startCharacter
-	local iterator = isDictionary(tbl) and pairs or ipairs
 	for key, value in iterator(tbl) do
 		local keyString = isDictionary(tbl) and ('"%s":'):format(key) or ""
 		local valueString = printValue(value)
-		json = ("%s%s%s,"):format(json, keyString, valueString)
+		json = table.concat({ json, keyString, valueString, "," }, "")
 	end
 
 	json = json:sub(1, -2) -- Remove trailing comma
