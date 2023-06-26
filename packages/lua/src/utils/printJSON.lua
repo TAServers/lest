@@ -2,12 +2,7 @@
 ---@param tbl table
 ---@return boolean
 local function isEmpty(tbl)
-	local length = 0
-	for _, _ in pairs(tbl) do
-		length = length + 1
-	end
-
-	return length == 0
+	return next(tbl) == nil
 end
 
 local function isDictionary(tbl)
@@ -44,13 +39,14 @@ local function printJSON(tbl, visitedTables)
 	visitedTables[tbl] = true
 
 	local function printValue(value)
-		if type(value) == "string" then
+		local typeOfValue = type(value)
+		if typeOfValue == "string" then
 			return ('"%s"'):format(value)
-		elseif type(value) == "number" then
+		elseif typeOfValue == "number" then
 			return tostring(value)
-		elseif type(value) == "boolean" then
+		elseif typeOfValue == "boolean" then
 			return value and "true" or "false"
-		elseif type(value) == "table" then
+		elseif typeOfValue == "table" then
 			if visitedTables[value] then
 				error(
 					"Cyclic table member found! Cyclic tables are not supported."
@@ -59,12 +55,14 @@ local function printJSON(tbl, visitedTables)
 
 			return printJSON(value, visitedTables)
 		else
-			error(("Unsupported type: %s"):format(type(value)))
+			error(("Unsupported type: %s"):format(typeOfValue))
 		end
 	end
 
-	local startCharacter = isDictionary(tbl) and "{" or "["
-	local endCharacter = isDictionary(tbl) and "}" or "]"
+	local startCharacter, endCharacter = "[", "]"
+	if isDictionary(tbl) then
+		startCharacter, endCharacter = "{", "}"
+	end
 
 	if isEmpty(tbl) then
 		return startCharacter .. endCharacter
