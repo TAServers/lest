@@ -13,7 +13,8 @@
   "workspaces": [
     "packages/lua",
     "packages/docs",
-    "packages/site"
+    "packages/site",
+    "packages/luals-annotations"
   ],
   "devDependencies": {
     "@commitlint/cli": "^17.5.1",
