@@ -1,17 +1,11 @@
 {
-  "include": ["src/__tests__/**/*.json", "src/**/*.ts"],
+  "include": ["src/tests/**/*.json", "src/**/*.ts"],
   "compilerOptions": {
     "module": "CommonJS",
     "target": "ES2020",
     "composite": true,
     "moduleResolution": "Node",
-    "paths": {
-      "@/*": ["./src/*"]
-    },
     "outDir": "./dist",
     "resolveJsonModule": true
-  },
-  "ts-node": {
-    "require": ["tsconfig-paths/register"]
   }
 }

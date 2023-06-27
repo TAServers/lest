@@ -7,7 +7,7 @@
     "start:ts-node": "ts-node src/index.ts",
     "start": "node dist/src/index.js",
     "dev": "npm run start:ts-node && onchange \"src/**/*.ts\" -- npm run start:ts-node",
-    "build": "tsc && tsc-alias",
+    "build": "tsc -p tsconfig.build.json",
     "test": "jest"
   },
   "devDependencies": {

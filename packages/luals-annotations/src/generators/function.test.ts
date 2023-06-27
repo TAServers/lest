@@ -1,8 +1,8 @@
 import makeFunctionAnnotation from "./function";
-import * as mock_function_doc1 from "@/__tests__/mock_function_doc1.json";
-import * as mock_function_doc2 from "@/__tests__/mock_function_doc2.json";
+import * as mock_function_doc1 from "../tests/mock_function_doc1.json";
+import * as mock_function_doc2 from "../tests/mock_function_doc2.json";
 
-import { Docs } from "@/json-docs";
+import { Docs } from "../json-docs";
 
 describe("makeFunctionAnnotation", () => {
 	test.each([
@@ -12,7 +12,7 @@ describe("makeFunctionAnnotation", () => {
 			[
 				...mock_function_doc1.parameters.map((param) => `---@param ${param.name} ${param.type}`),
 				...mock_function_doc1.returns.map((ret) => `---@return ${ret.type} ${ret.name}`),
-				`function ${mock_function_doc1.name} end`,
+				`function ${mock_function_doc1.name}`,
 			],
 		],
 		[

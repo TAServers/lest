@@ -63,6 +63,12 @@ export namespace Docs {
 		type: "table";
 		fields: Property[];
 	}
+
+	export const isFunctionProperty = (prop: Property): prop is FunctionProperty => prop.type === "function";
+
+	export const isArrayProperty = (prop: Property): prop is ArrayProperty => prop.type === "array";
+
+	export const isTableProperty = (prop: Property): prop is TableProperty => prop.type === "table";
 }
 
 export const functionsList: Docs.Function[] = [
