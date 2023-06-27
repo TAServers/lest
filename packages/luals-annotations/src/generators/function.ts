@@ -15,13 +15,7 @@ export default function makeFunctionAnnotation(func: Docs.Function): string {
 	const params = func.parameters ?? [];
 	const returns = func.returns ?? [];
 	const signature = makeSignature(func.name, params);
-	//
-	//
-	// TODO: Add convertToLuaLS(type: string): string;
-	// TODO: Reflect this in the tests, and also fix the signature being 1 line
-	// TODO: away from the annotations.
-	//
-	//
+
 	let paramAnnotation = params.map((param) => `---@param ${param.name} ${param.type}`).join("\n");
 	let returnAnnotation = returns.map((ret) => `---@return ${ret.type} ${ret.name ?? ""}`).join("\n");
 
