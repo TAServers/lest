@@ -1,0 +1,16 @@
+{
+  "name": "testFunction",
+  "description": "Important test function. Test test test.",
+  "parameters": [
+    {
+      "name": "testVariable",
+      "type": "number"
+    }
+  ],
+  "returns": [
+    {
+      "name": "testReturn",
+      "type": "boolean"
+    }
+  ]
+}

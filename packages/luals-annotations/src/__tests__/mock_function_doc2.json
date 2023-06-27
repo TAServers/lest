@@ -1,0 +1,11 @@
+{
+  "name": "trustworthyFunction",
+  "aliases": ["evilFunction"],
+  "description": ["Hello!", "", "Good morning!"],
+  "parameters": [
+    {
+      "name": "...",
+      "type": "any"
+    }
+  ]
+}
