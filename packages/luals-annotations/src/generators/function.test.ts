@@ -12,7 +12,7 @@ describe("makeFunctionAnnotation", () => {
 			[
 				...mock_function_doc1.parameters.map((param) => `---@param ${param.name} ${param.type}`),
 				...mock_function_doc1.returns.map((ret) => `---@return ${ret.type} ${ret.name}`),
-				`function ${mock_function_doc1.name}`,
+				`function ${mock_function_doc1.name} end`,
 			],
 		],
 		[
