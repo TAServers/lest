@@ -80,4 +80,8 @@ export default class AnnotationBuilder {
 	build(): string {
 		return this.generatedAnnotations.join("\n");
 	}
+
+	toString(): string {
+		return this.build();
+	}
 }
