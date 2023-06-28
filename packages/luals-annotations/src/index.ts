@@ -33,6 +33,11 @@ document.withClass("lest.InverseMatchers", "Inverse matchers", true, () => {
 	matchers.forEach((matcher) => document.addFunction(matcher));
 });
 
+if (process.env["npm_config_debug"]) {
+	console.log(document.toString());
+	process.exit(0);
+}
+
 const targetFilePath = process.argv[2];
 if (!targetFilePath) {
 	console.error("No target file path provided");
