@@ -5,9 +5,7 @@ import combine from "./combine";
 
 export default function makeFunctionAnnotation(func: Docs.Function, parentClass?: string): string {
 	function makeSignature(name: string, params: Docs.Property[]): string {
-		return `function ${parentClass ? parentClass + ":" : ""}${name}(${params
-			.map((param) => param.name)
-			.join(",")}) end`;
+		return `function ${parentClass ? parentClass : ""}${name}(${params.map((param) => param.name).join(",")}) end`;
 	}
 
 	let descriptionAnnotation = createDescriptionAnnotation(func.description);
