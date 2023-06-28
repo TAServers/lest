@@ -1,5 +1,5 @@
 import { Docs } from "./json-docs";
-import luaLSType from "./luals/luaLSType";
+import luaLSType from "./luaLSType";
 
 export default class AnnotationBuilder {
 	generatedAnnotations: string[] = [];

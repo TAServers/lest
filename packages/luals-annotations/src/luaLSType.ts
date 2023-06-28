@@ -1,4 +1,4 @@
-import { Docs } from "../json-docs";
+import { Docs } from "./json-docs";
 
 function convertFunctionProperty(property: Docs.FunctionProperty): string {
 	if (!property.parameters && !property.returns) {
