@@ -1,17 +1,23 @@
-import { classList, functionsList } from "./json-docs";
-import makeFunctionAnnotation from "./generators/function";
-import makeClassAnnotation from "./generators/class";
-import makeMatcherClass from "./generators/matchers";
+import { classList, functionsList, matcherFunctions } from "./json-docs";
+import AnnotationBuilder from "./annotationBuilder";
 
-const document = ["---@meta", "-- auto-generated annotations file for Lest types"];
-for (const func of functionsList) {
-	document.push(makeFunctionAnnotation(func));
-}
+const document = new AnnotationBuilder();
 
-for (const cls of classList) {
-	document.push(makeClassAnnotation(cls));
-}
+classList.forEach((classDef) => {
+	document.startClass(classDef.name, classDef.description);
+	classDef.fields?.forEach((field) => document.addField(field));
+	document.addClassDeclaration();
+	classDef.methods?.forEach((method) => document.addFunction(method));
+	document.endClass();
+});
 
-document.push(makeClassAnnotation(makeMatcherClass(), true));
+functionsList.forEach((func) => {
+	document.addFunction(func);
+});
 
-console.log(document.join("\n"));
+document.startClass("lest.Matchers", "Matchers for expect()", true);
+document.addClassDeclaration();
+matcherFunctions.forEach((func) => document.addFunction(func));
+document.endClass();
+
+console.log(document.build());
