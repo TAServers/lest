@@ -87,7 +87,7 @@ describe("convertType", () => {
 		const luaLSType = convertType(testProperty);
 
 		// Assert
-		expect(luaLSType).toEqual("function");
+		expect(luaLSType).toEqual("fun()");
 	});
 
 	it("should handle multiple string literal types", () => {

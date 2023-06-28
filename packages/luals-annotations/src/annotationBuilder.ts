@@ -43,13 +43,6 @@ export default class AnnotationBuilder {
 		this.add(...paramList, ...returnList, signature);
 	}
 
-	startClass(name: string, description: string | string[], staticMethod: boolean = false) {
-		this.currentClass = name;
-		this.staticMethod = staticMethod;
-
-		this.add(`---@class ${name}`);
-	}
-
 	addClassDeclaration() {
 		if (!this.currentClass) {
 			throw new Error("Cannot add class declaration without a class");
@@ -72,9 +65,22 @@ export default class AnnotationBuilder {
 		this.add(`---@field ${property.name} ${convertType(property)} ${description}`);
 	}
 
-	endClass() {
+	private startClass(name: string, description: string | string[], staticMethod: boolean = false) {
+		this.currentClass = name;
+		this.staticMethod = staticMethod;
+
+		this.add(`---@class ${name}`);
+	}
+
+	private endClass() {
 		this.currentClass = "";
 		this.staticMethod = false;
+	}
+
+	withClass(name: string, description: string | string[], staticMethod: boolean, classFn: () => void) {
+		this.startClass(name, description, staticMethod);
+		classFn();
+		this.endClass();
 	}
 
 	build(): string {
