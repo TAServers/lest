@@ -65,7 +65,7 @@ export namespace Docs {
 	}
 }
 
-export const functionsList: Docs.Function[] = [
+export const functions: Docs.Function[] = [
 	afterAll,
 	afterEach,
 	beforeAll,
@@ -77,7 +77,7 @@ export const functionsList: Docs.Function[] = [
 	test,
 	fn,
 ];
-export const matcherFunctions: Docs.Function[] = [
+export const matchers: Docs.Function[] = [
 	toBe,
 	toHaveBeenCalled,
 	toHaveBeenCalledTimes,
@@ -90,4 +90,4 @@ export const matcherFunctions: Docs.Function[] = [
 	toHaveReturnedTimes,
 	toHaveReturnedWith,
 ];
-export const classList: Docs.Class[] = [mock, mock_result];
+export const classes: Docs.Class[] = [mock, mock_result];
