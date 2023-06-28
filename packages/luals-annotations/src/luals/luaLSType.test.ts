@@ -1,7 +1,7 @@
-import convertType from "./convertType";
+import luaLSType from "./luaLSType";
 import { Docs } from "../json-docs";
 
-describe("convertType", () => {
+describe("luaLSType", () => {
 	it("should handle untyped arrays", () => {
 		// Arrange
 		const testProperty: Docs.ArrayProperty = {
@@ -11,10 +11,10 @@ describe("convertType", () => {
 		};
 
 		// Act
-		const luaLSType = convertType(testProperty);
+		const generatedType = luaLSType(testProperty);
 
 		// Assert
-		expect(luaLSType).toEqual("any[]");
+		expect(generatedType).toEqual("any[]");
 	});
 
 	it("should handle typed arrays", () => {
@@ -26,10 +26,10 @@ describe("convertType", () => {
 		};
 
 		// Act
-		const luaLSType = convertType(testProperty);
+		const generatedType = luaLSType(testProperty);
 
 		// Assert
-		expect(luaLSType).toEqual("lest.MockResult[]");
+		expect(generatedType).toEqual("lest.MockResult[]");
 	});
 
 	it("should handle untyped arrays of arrays", () => {
@@ -44,10 +44,10 @@ describe("convertType", () => {
 		};
 
 		// Act
-		const luaLSType = convertType(testProperty);
+		const generatedType = luaLSType(testProperty);
 
 		// Assert
-		expect(luaLSType).toEqual("any[][]");
+		expect(generatedType).toEqual("any[][]");
 	});
 
 	it("should handle specified function types", () => {
@@ -70,10 +70,10 @@ describe("convertType", () => {
 		};
 
 		// Act
-		const luaLSType = convertType(testProperty);
+		const generatedType = luaLSType(testProperty);
 
 		// Assert
-		expect(luaLSType).toEqual("fun(a:string):number");
+		expect(generatedType).toEqual("fun(a:string):number");
 	});
 
 	it("should handle unspecified function types", () => {
@@ -84,10 +84,10 @@ describe("convertType", () => {
 		};
 
 		// Act
-		const luaLSType = convertType(testProperty);
+		const generatedType = luaLSType(testProperty);
 
 		// Assert
-		expect(luaLSType).toEqual("fun()");
+		expect(generatedType).toEqual("fun()");
 	});
 
 	it("should handle multiple string literal types", () => {
@@ -99,10 +99,10 @@ describe("convertType", () => {
 		};
 
 		// Act
-		const luaLSType = convertType(testProperty);
+		const generatedType = luaLSType(testProperty);
 
 		// Assert
-		expect(luaLSType).toEqual('"test" | "test2"');
+		expect(generatedType).toEqual('"test" | "test2"');
 	});
 
 	it("should handle tables", () => {
@@ -143,9 +143,9 @@ describe("convertType", () => {
 		};
 
 		// Act
-		const luaLSType = convertType(testProperty);
+		const generatedType = luaLSType(testProperty);
 
 		// Assert
-		expect(luaLSType).toEqual("{foo:string,bar:number,baz:boolean,qux:fun(a:string):number}");
+		expect(generatedType).toEqual("{foo:string,bar:number,baz:boolean,qux:fun(a:string):number}");
 	});
 });

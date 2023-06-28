@@ -8,8 +8,8 @@ function convertFunctionProperty(property: Docs.FunctionProperty): string {
 	const params = property.parameters ?? [];
 	const returns = property.returns ?? [];
 
-	const paramList = params.map((param) => `${param.name}${(param.optional && "?") || ""}:${convertType(param)}`);
-	const returnList = returns.map((ret) => `${convertType(ret)}`);
+	const paramList = params.map((param) => `${param.name}${(param.optional && "?") || ""}:${luaLSType(param)}`);
+	const returnList = returns.map((ret) => `${luaLSType(ret)}`);
 
 	if (returnList.length === 0) {
 		return `fun(${paramList})`;
@@ -22,15 +22,15 @@ function convertArrayProperty(property: Docs.ArrayProperty) {
 	if (typeof property.items === "string") {
 		return `${property.items}[]`;
 	} else {
-		return `${convertType(property.items)}[]`;
+		return `${luaLSType(property.items)}[]`;
 	}
 }
 
 function convertTableProperty(property: Docs.TableProperty) {
-	return `{${property.fields.map((field) => `${field.name}:${convertType(field)}`).join(",")}}`;
+	return `{${property.fields.map((field) => `${field.name}:${luaLSType(field)}`).join(",")}}`;
 }
 
-export default function convertType(docType: Docs.Property): string {
+export default function luaLSType(docType: Docs.Property): string {
 	switch (docType.type) {
 		case "function":
 			return convertFunctionProperty(docType as Docs.FunctionProperty);

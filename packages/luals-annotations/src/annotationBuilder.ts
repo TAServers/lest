@@ -1,5 +1,5 @@
 import { Docs } from "./json-docs";
-import convertType from "./luals/convertType";
+import luaLSType from "./luals/luaLSType";
 
 export default class AnnotationBuilder {
 	generatedAnnotations: string[] = [];
@@ -30,9 +30,9 @@ export default class AnnotationBuilder {
 		const returns = func.returns ?? [];
 
 		const paramList = params.map(
-			(param) => `---@param ${param.name}${(param.optional && "?") || ""} ${convertType(param)}`
+			(param) => `---@param ${param.name}${(param.optional && "?") || ""} ${luaLSType(param)}`
 		);
-		const returnList = returns.map((ret) => `---@return ${convertType(ret)} ${ret.name ?? ""}`);
+		const returnList = returns.map((ret) => `---@return ${luaLSType(ret)} ${ret.name ?? ""}`);
 
 		const functionCharacter = this.staticMethod ? "." : ":";
 		const functionPrefix = this.currentClass ? `${this.currentClass}${functionCharacter}` : "";
@@ -62,7 +62,7 @@ export default class AnnotationBuilder {
 			description = description.join(" ");
 		}
 
-		this.add(`---@field ${property.name} ${convertType(property)} ${description}`);
+		this.add(`---@field ${property.name} ${luaLSType(property)} ${description}`);
 	}
 
 	private startClass(name: string, description: string | string[], staticMethod: boolean = false) {
