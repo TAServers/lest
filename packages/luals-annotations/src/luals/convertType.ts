@@ -8,8 +8,14 @@ export default function convertType(docType: Docs.Property): string {
 
 		const params = docType.parameters ?? [];
 		const returns = docType.returns ?? [];
-		const paramList = params.map((param) => `${param.name}:${convertType(param)}`).join(",");
+		const paramList = params
+			.map((param) => `${param.name}${(param.optional && "?") || ""}:${convertType(param)}`)
+			.join(",");
 		const returnList = returns.map((ret) => `${convertType(ret)}`).join(",");
+
+		if (returnList.length === 0) {
+			return `fun(${paramList})`;
+		}
 
 		return `fun(${paramList}):${returnList}`;
 	} else if (Docs.isArrayProperty(docType)) {

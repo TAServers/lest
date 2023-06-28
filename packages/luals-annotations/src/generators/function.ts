@@ -1,27 +1,26 @@
 import { Docs } from "../json-docs";
+import convertType from "../luals/convertType";
+import createDescriptionAnnotation from "./description";
+import combine from "./combine";
 
-function makeSignature(name: string, params: Docs.Property[]): string {
-	return `function ${name}(${params.map((param) => param.name).join(",")}) end`;
-}
-
-export default function makeFunctionAnnotation(func: Docs.Function): string {
-	let descriptionAnnotation = "";
-	if (typeof func.description === "string") {
-		descriptionAnnotation = `--- ${func.description}`;
-	} else {
-		descriptionAnnotation = func.description.map((descLine) => `--- ${descLine}`).join("\n");
+export default function makeFunctionAnnotation(func: Docs.Function, parentClass?: string): string {
+	function makeSignature(name: string, params: Docs.Property[]): string {
+		return `function ${parentClass ? parentClass + ":" : ""}${name}(${params
+			.map((param) => param.name)
+			.join(",")}) end`;
 	}
 
+	let descriptionAnnotation = createDescriptionAnnotation(func.description);
 	const params = func.parameters ?? [];
 	const returns = func.returns ?? [];
 	const signature = makeSignature(func.name, params);
 
-	let paramAnnotation = params.map((param) => `---@param ${param.name} ${param.type}`).join("\n");
-	let returnAnnotation = returns.map((ret) => `---@return ${ret.type} ${ret.name ?? ""}`).join("\n");
-
-	const fullAnnotation = [descriptionAnnotation, paramAnnotation, returnAnnotation]
-		.filter((annotation) => annotation.length > 0)
+	let paramAnnotation = params
+		.map((param) => `---@param ${param.name}${param.optional ? "?" : ""} ${convertType(param)}`)
 		.join("\n");
+	let returnAnnotation = returns.map((ret) => `---@return ${convertType(ret)} ${ret.name ?? ""}`).join("\n");
+
+	const fullAnnotation = combine(descriptionAnnotation, paramAnnotation, returnAnnotation);
 
 	if (!func.aliases) {
 		return fullAnnotation + "\n" + signature;
