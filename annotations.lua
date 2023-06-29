@@ -77,7 +77,24 @@ function expect(received) end
 --- This is essentially the same as calling `test` in a for loop.
 ---@param testCases any[]
 ---@return fun(name:string,fn:fun(...:any),timeout?:number) 
+function it.each(testCases) end
+--- Data driven variant of `test` to reduce duplication when testing the same code with different data.
+--- 
+--- The returned function matches regular `test`, except the callback you pass to it will be run for each test case you define.
+--- The value of each test case will be unpacked and passed to your callback.
+--- 
+--- This is essentially the same as calling `test` in a for loop.
+---@param testCases any[]
+---@return fun(name:string,fn:fun(...:any),timeout?:number) 
 function test.each(testCases) end
+--- Registers a new test with the given name.
+--- 
+--- You can provide an optional `timeout` (in milliseconds) to specify how long to wait before aborting the callback.
+--- The default timeout is 5 seconds.
+---@param name string
+---@param fn fun()
+---@param timeout? number
+function it(name,fn,timeout) end
 --- Registers a new test with the given name.
 --- 
 --- You can provide an optional `timeout` (in milliseconds) to specify how long to wait before aborting the callback.
@@ -102,10 +119,23 @@ lest.Matchers = {}
 function lest.Matchers.toBe(expected) end
 --- Tests that a mock function has been called.
 --- If you want to test that it was called with specific arguments, or a certain number of times, see the other mock function matchers.
+function lest.Matchers.toBeCalled() end
+--- Tests that a mock function has been called.
+--- If you want to test that it was called with specific arguments, or a certain number of times, see the other mock function matchers.
 function lest.Matchers.toHaveBeenCalled() end
 --- Tests that a mock function was called a specific number of times.
 ---@param times number
+function lest.Matchers.toBeCalledTimes(times) end
+--- Tests that a mock function was called a specific number of times.
+---@param times number
 function lest.Matchers.toHaveBeenCalledTimes(times) end
+--- Tests that a mock function was called with a specific set of arguments.
+--- Performs a deep equality test when comparing arguments.
+--- 
+--- If the mock was called multiple times, this will pass as long as it was called with the given argument(s) _any_ of those times.
+--- If you want to test that it was called with certain arguments on a _specific_ call, see `.toHaveBeenLastCalledWith()` and `.toHaveBeenNthCalledWith()`.
+---@param ... any
+function lest.Matchers.toBeCalledWith(...) end
 --- Tests that a mock function was called with a specific set of arguments.
 --- Performs a deep equality test when comparing arguments.
 --- 
@@ -118,7 +148,20 @@ function lest.Matchers.toHaveBeenCalledWith(...) end
 --- If you want to test that a mock function was called with specific arguments, but don't care when, see `.toHaveBeenCalledWith()`.
 --- If you want to test that a mock function was called with arguments on a _specific call_, see `.toHaveBeenNthCalledWith()`.
 ---@param ... any
+function lest.Matchers.lastCalledWith(...) end
+--- Tests that a mock function was called with specific arguments on its _most recent_ call.
+--- 
+--- If you want to test that a mock function was called with specific arguments, but don't care when, see `.toHaveBeenCalledWith()`.
+--- If you want to test that a mock function was called with arguments on a _specific call_, see `.toHaveBeenNthCalledWith()`.
+---@param ... any
 function lest.Matchers.toHaveBeenLastCalledWith(...) end
+--- Tests that a function was called with specific arguments on its Nth call.
+--- 
+--- If you want to test that a mock function was called with specific arguments, but don't care when, see `.toHaveBeenCalledWith()`.
+--- If you want to test that a mock function was called with arguments on its _most recent_ call, see `.toHaveBeenLastCalledWith()`.
+---@param nthCall number
+---@param ... any
+function lest.Matchers.nthCalledWith(nthCall,...) end
 --- Tests that a function was called with specific arguments on its Nth call.
 --- 
 --- If you want to test that a mock function was called with specific arguments, but don't care when, see `.toHaveBeenCalledWith()`.
@@ -131,7 +174,20 @@ function lest.Matchers.toHaveBeenNthCalledWith(nthCall,...) end
 --- If you want to test that a mock function returned specific values, but don't care when, see `.toHaveReturnedWith()`.
 --- If you want to test that a mock function returned values on a _specific call_, see `.toHaveNthReturnedWith()`.
 ---@param ... any
+function lest.Matchers.lastReturnedWith(...) end
+--- Tests that a mock function returned specific values on its _most recent_ call.
+--- 
+--- If you want to test that a mock function returned specific values, but don't care when, see `.toHaveReturnedWith()`.
+--- If you want to test that a mock function returned values on a _specific call_, see `.toHaveNthReturnedWith()`.
+---@param ... any
 function lest.Matchers.toHaveLastReturnedWith(...) end
+--- Tests that a function returned specific values on its Nth call.
+--- 
+--- If you want to test that a mock function returned specific values, but don't care when, see `.toHaveReturnedWith()`.
+--- If you want to test that a mock function returned values on its _most recent_ call, see `.toHaveLastReturnedWith()`.
+---@param nthCall number
+---@param ... any
+function lest.Matchers.nthReturnedWith(nthCall,...) end
 --- Tests that a function returned specific values on its Nth call.
 --- 
 --- If you want to test that a mock function returned specific values, but don't care when, see `.toHaveReturnedWith()`.
@@ -141,10 +197,23 @@ function lest.Matchers.toHaveLastReturnedWith(...) end
 function lest.Matchers.toHaveNthReturnedWith(nthCall,...) end
 --- Tests that a mock function returned.
 --- If you want to test that it returned specific values, or a certain number of times, see the other mock function matchers.
+function lest.Matchers.toReturn() end
+--- Tests that a mock function returned.
+--- If you want to test that it returned specific values, or a certain number of times, see the other mock function matchers.
 function lest.Matchers.toHaveReturned() end
 --- Tests that a mock function returned a specific number of times.
 ---@param times number
+function lest.Matchers.toReturnTimes(times) end
+--- Tests that a mock function returned a specific number of times.
+---@param times number
 function lest.Matchers.toHaveReturnedTimes(times) end
+--- Tests that a mock function returned a specific set of values.
+--- Performs a deep equality test when comparing values.
+--- 
+--- If the mock returned multiple times, this will pass as long as it returned the given value(s) _any_ of those times.
+--- If you want to test that it returned certain values on a _specific_ call, see `.toHaveLastReturnedWith()` and `.toHaveNthReturnedWith()`.
+---@param ... any
+function lest.Matchers.toReturnWith(...) end
 --- Tests that a mock function returned a specific set of values.
 --- Performs a deep equality test when comparing values.
 --- 
@@ -163,10 +232,23 @@ lest.InverseMatchers = {}
 function lest.InverseMatchers.toBe(expected) end
 --- Tests that a mock function has been called.
 --- If you want to test that it was called with specific arguments, or a certain number of times, see the other mock function matchers.
+function lest.InverseMatchers.toBeCalled() end
+--- Tests that a mock function has been called.
+--- If you want to test that it was called with specific arguments, or a certain number of times, see the other mock function matchers.
 function lest.InverseMatchers.toHaveBeenCalled() end
 --- Tests that a mock function was called a specific number of times.
 ---@param times number
+function lest.InverseMatchers.toBeCalledTimes(times) end
+--- Tests that a mock function was called a specific number of times.
+---@param times number
 function lest.InverseMatchers.toHaveBeenCalledTimes(times) end
+--- Tests that a mock function was called with a specific set of arguments.
+--- Performs a deep equality test when comparing arguments.
+--- 
+--- If the mock was called multiple times, this will pass as long as it was called with the given argument(s) _any_ of those times.
+--- If you want to test that it was called with certain arguments on a _specific_ call, see `.toHaveBeenLastCalledWith()` and `.toHaveBeenNthCalledWith()`.
+---@param ... any
+function lest.InverseMatchers.toBeCalledWith(...) end
 --- Tests that a mock function was called with a specific set of arguments.
 --- Performs a deep equality test when comparing arguments.
 --- 
@@ -179,7 +261,20 @@ function lest.InverseMatchers.toHaveBeenCalledWith(...) end
 --- If you want to test that a mock function was called with specific arguments, but don't care when, see `.toHaveBeenCalledWith()`.
 --- If you want to test that a mock function was called with arguments on a _specific call_, see `.toHaveBeenNthCalledWith()`.
 ---@param ... any
+function lest.InverseMatchers.lastCalledWith(...) end
+--- Tests that a mock function was called with specific arguments on its _most recent_ call.
+--- 
+--- If you want to test that a mock function was called with specific arguments, but don't care when, see `.toHaveBeenCalledWith()`.
+--- If you want to test that a mock function was called with arguments on a _specific call_, see `.toHaveBeenNthCalledWith()`.
+---@param ... any
 function lest.InverseMatchers.toHaveBeenLastCalledWith(...) end
+--- Tests that a function was called with specific arguments on its Nth call.
+--- 
+--- If you want to test that a mock function was called with specific arguments, but don't care when, see `.toHaveBeenCalledWith()`.
+--- If you want to test that a mock function was called with arguments on its _most recent_ call, see `.toHaveBeenLastCalledWith()`.
+---@param nthCall number
+---@param ... any
+function lest.InverseMatchers.nthCalledWith(nthCall,...) end
 --- Tests that a function was called with specific arguments on its Nth call.
 --- 
 --- If you want to test that a mock function was called with specific arguments, but don't care when, see `.toHaveBeenCalledWith()`.
@@ -192,7 +287,20 @@ function lest.InverseMatchers.toHaveBeenNthCalledWith(nthCall,...) end
 --- If you want to test that a mock function returned specific values, but don't care when, see `.toHaveReturnedWith()`.
 --- If you want to test that a mock function returned values on a _specific call_, see `.toHaveNthReturnedWith()`.
 ---@param ... any
+function lest.InverseMatchers.lastReturnedWith(...) end
+--- Tests that a mock function returned specific values on its _most recent_ call.
+--- 
+--- If you want to test that a mock function returned specific values, but don't care when, see `.toHaveReturnedWith()`.
+--- If you want to test that a mock function returned values on a _specific call_, see `.toHaveNthReturnedWith()`.
+---@param ... any
 function lest.InverseMatchers.toHaveLastReturnedWith(...) end
+--- Tests that a function returned specific values on its Nth call.
+--- 
+--- If you want to test that a mock function returned specific values, but don't care when, see `.toHaveReturnedWith()`.
+--- If you want to test that a mock function returned values on its _most recent_ call, see `.toHaveLastReturnedWith()`.
+---@param nthCall number
+---@param ... any
+function lest.InverseMatchers.nthReturnedWith(nthCall,...) end
 --- Tests that a function returned specific values on its Nth call.
 --- 
 --- If you want to test that a mock function returned specific values, but don't care when, see `.toHaveReturnedWith()`.
@@ -202,10 +310,23 @@ function lest.InverseMatchers.toHaveLastReturnedWith(...) end
 function lest.InverseMatchers.toHaveNthReturnedWith(nthCall,...) end
 --- Tests that a mock function returned.
 --- If you want to test that it returned specific values, or a certain number of times, see the other mock function matchers.
+function lest.InverseMatchers.toReturn() end
+--- Tests that a mock function returned.
+--- If you want to test that it returned specific values, or a certain number of times, see the other mock function matchers.
 function lest.InverseMatchers.toHaveReturned() end
 --- Tests that a mock function returned a specific number of times.
 ---@param times number
+function lest.InverseMatchers.toReturnTimes(times) end
+--- Tests that a mock function returned a specific number of times.
+---@param times number
 function lest.InverseMatchers.toHaveReturnedTimes(times) end
+--- Tests that a mock function returned a specific set of values.
+--- Performs a deep equality test when comparing values.
+--- 
+--- If the mock returned multiple times, this will pass as long as it returned the given value(s) _any_ of those times.
+--- If you want to test that it returned certain values on a _specific_ call, see `.toHaveLastReturnedWith()` and `.toHaveNthReturnedWith()`.
+---@param ... any
+function lest.InverseMatchers.toReturnWith(...) end
 --- Tests that a mock function returned a specific set of values.
 --- Performs a deep equality test when comparing values.
 --- 
