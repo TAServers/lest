@@ -1,5 +1,4 @@
-name: luals_annotations_release
-run-name: LuaLS Annotations
+name: LuaLS Annotations
 on:
   push:
     branches:
