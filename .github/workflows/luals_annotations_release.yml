@@ -1,0 +1,27 @@
+name: luals_annotations_release
+run-name: LuaLS Annotations Release
+on:
+  push:
+    branches:
+      - master
+jobs:
+  deploy-annotations:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 20
+      - run: npm install
+      - name: Build LuaLS-annotations
+        run: npm run build:luals-annotations
+      - name: Generate annotations
+        run: npm run annotate:luals -- /tmp/annotations.lua
+      - name: Checkout to new branch
+        run: git checkout -b luals-annotations
+      - name: Push annotations
+        uses: EndBug/add-and-commit@v9
+        with:
+          add: "/tmp/annotations.lua"
+          default_author: github_actions
+          message: "update annotations"
