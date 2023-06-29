@@ -19,7 +19,9 @@ jobs:
       - name: Generate annotations
         run: npm run annotate:luals -- /tmp/annotations.lua
       - name: Checkout to new branch
-        run: git checkout -b luals-annotations
+        run: |
+          git checkout --orphan luals-annotations
+          git rm --cached -r .
       - name: Copy annotations
         run: cp /tmp/annotations.lua .
       - name: Push annotations
