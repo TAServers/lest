@@ -20,6 +20,8 @@ jobs:
       - name: Checkout to new branch
         run: |
           git checkout luals-annotations || git checkout --orphan luals-annotations && git rm --cached -r .
+      - name: Pull changes
+        run: git pull origin luals-annotations
       - name: Copy annotations
         run: cp /tmp/annotations.lua .
       - name: Push annotations
