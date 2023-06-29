@@ -1,9 +1,10 @@
 name: luals_annotations_release
-run-name: LuaLS Annotations Release
+run-name: LuaLS Annotations
 on:
   push:
     branches:
       - master
+      - LEST-71-LuaLS-annotations
 jobs:
   deploy-annotations:
     runs-on: ubuntu-latest
