@@ -70,6 +70,7 @@ export default class AnnotationBuilder {
 		this.staticMethod = staticMethod;
 
 		this.add(`---@class ${name}`);
+		this.addDescription(description);
 	}
 
 	private endClass() {

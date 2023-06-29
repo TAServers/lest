@@ -90,6 +90,51 @@ describe("luaLSType", () => {
 		expect(generatedType).toEqual("fun()");
 	});
 
+	it("should handle functions with no returns", () => {
+		// Arrange
+		const testProperty: Docs.FunctionProperty = {
+			name: "test",
+			type: "function",
+			parameters: [
+				{
+					name: "a",
+					type: "string",
+				},
+			],
+		};
+
+		// Act
+		const generatedType = luaLSType(testProperty);
+
+		// Assert
+		expect(generatedType).toEqual("fun(a:string)");
+	});
+
+	it("should handle functions with optional parameters", () => {
+		// Arrange
+		const testProperty: Docs.FunctionProperty = {
+			name: "test",
+			type: "function",
+			parameters: [
+				{
+					name: "a",
+					type: "string",
+				},
+				{
+					name: "b",
+					type: "string",
+					optional: true,
+				},
+			],
+		};
+
+		// Act
+		const generatedType = luaLSType(testProperty);
+
+		// Assert
+		expect(generatedType).toEqual("fun(a:string,b?:string)");
+	});
+
 	it("should handle multiple string literal types", () => {
 		// These are actually valid in LuaLS. So we don't need to do anything special.
 		// Arrange
