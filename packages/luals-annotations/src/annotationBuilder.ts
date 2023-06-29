@@ -37,10 +37,20 @@ export default class AnnotationBuilder {
 		const functionCharacter = this.staticMethod ? "." : ":";
 		const functionPrefix = this.currentClass ? `${this.currentClass}${functionCharacter}` : "";
 
-		const signature = `function ${functionPrefix}${func.name}(${params.map((param) => param.name)}) end`;
+		const renderFunction = (signature: string) => {
+			this.addDescription(func.description);
+			this.add(...paramList, ...returnList, signature);
+		};
 
-		this.addDescription(func.description);
-		this.add(...paramList, ...returnList, signature);
+		if (func.aliases) {
+			func.aliases.forEach((alias) => {
+				const signature = `function ${functionPrefix}${alias}(${params.map((param) => param.name)}) end`;
+				renderFunction(signature);
+			});
+		}
+
+		const signature = `function ${functionPrefix}${func.name}(${params.map((param) => param.name)}) end`;
+		renderFunction(signature);
 	}
 
 	addClassDeclaration() {

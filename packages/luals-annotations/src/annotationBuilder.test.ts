@@ -156,6 +156,30 @@ describe("annotationBuilder", () => {
 		expect(generatedAnnotations).toContain(expectedElement);
 	});
 
+	it("should generate aliases of a function", () => {
+		// Arrange
+		const document = new AnnotationBuilder();
+		document.addFunction({
+			name: "test",
+			description: "test function description",
+			aliases: ["test2", "test3"],
+			parameters: [
+				{
+					name: "a",
+					type: "string",
+				},
+			],
+		});
+
+		const expectedElements = ["function test(a) end", "function test2(a) end", "function test3(a) end"];
+
+		// Act
+		const generatedAnnotations = document.toString();
+
+		// Assert
+		expectedElements.forEach((element) => expect(generatedAnnotations).toContain(element));
+	});
+
 	describe("should error", () => {
 		test("on creating a class declaration without a current class", () => {
 			const document = new AnnotationBuilder();
