@@ -1,0 +1,4 @@
+{
+  "name": "toBeDefined",
+  "description": "Tests whether the value is defined (not equal to `nil`)."
+}

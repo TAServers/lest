@@ -1,0 +1,10 @@
+{
+  "name": "toMatch",
+  "description": "Tests that the value matches the given Lua pattern.",
+  "parameters": [
+    {
+      "name": "pattern",
+      "type": "string"
+    }
+  ]
+}

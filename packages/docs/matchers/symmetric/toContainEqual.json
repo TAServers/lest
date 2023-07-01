@@ -1,0 +1,17 @@
+{
+  "name": "toContainEqual",
+  "description": [
+    "Tests that the received value contains the given item.",
+    "Unlike `.toContain()`, this only works with tables.",
+    "",
+    "This enumerates all properties of the table and passes if any are deeply equal to `item`.",
+    "It performs the same deep equality test on each property as `.toEqual()`.",
+    "If you want to test if any of the table's properties are _referentially equal_ to `item`, use `.toContain()` instead."
+  ],
+  "parameters": [
+    {
+      "name": "item",
+      "type": "any"
+    }
+  ]
+}

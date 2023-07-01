@@ -1,0 +1,10 @@
+{
+  "name": "toBeLessThan",
+  "description": "Tests whether the received value is less than the expected value.",
+  "parameters": [
+    {
+      "name": "expected",
+      "type": "number"
+    }
+  ]
+}

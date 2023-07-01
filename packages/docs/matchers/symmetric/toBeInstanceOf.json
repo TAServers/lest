@@ -1,0 +1,13 @@
+{
+  "name": "toBeInstanceOf",
+  "description": [
+    "Tests whether the received value is an instance of the given metatable.",
+    "Under the hood, this does `getmetatable(received) == metatable`."
+  ],
+  "parameters": [
+    {
+      "name": "metatable",
+      "type": "table"
+    }
+  ]
+}
