@@ -1,0 +1,5 @@
+{
+  "name": "toBeUndefined",
+  "aliases": ["toBeNil"],
+  "description": "Tests whether the value is undefined (equal to `nil`)."
+}

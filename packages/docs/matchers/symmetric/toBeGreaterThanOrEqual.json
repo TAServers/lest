@@ -1,0 +1,10 @@
+{
+  "name": "toBeGreaterThanOrEqual",
+  "description": "Tests whether the received value is greater than or equal to the expected value.",
+  "parameters": [
+    {
+      "name": "expected",
+      "type": "number"
+    }
+  ]
+}

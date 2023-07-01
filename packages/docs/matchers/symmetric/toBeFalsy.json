@@ -1,0 +1,4 @@
+{
+  "name": "toBeFalsy",
+  "description": "Tests whether the value is falsy. In Lua, the only falsy values are `nil` and `false`."
+}

@@ -1,0 +1,7 @@
+{
+  "name": "toBeInfinity",
+  "description": [
+    "Tests if the received value is positive or negative infinity.",
+    "Internally this checks that the type of the received value is `number`, and that `math.abs(received)` equals `math.huge`."
+  ]
+}

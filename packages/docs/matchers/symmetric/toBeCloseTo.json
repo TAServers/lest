@@ -1,0 +1,20 @@
+{
+  "name": "toBeCloseTo",
+  "description": [
+    "Use `toBeCloseTo` to compare floating point numbers for approximate equality.",
+    "",
+    "You can optionally specify `numDigits` to set the precision to compare at (default is `2`).",
+    "Internally it performs the following comparison: `math.abs(expected - received) <  math.pow(10, -numDigits) / 2`."
+  ],
+  "parameters": [
+    {
+      "name": "expected",
+      "type": "number"
+    },
+    {
+      "name": "numDigits",
+      "type": "number",
+      "optional": true
+    }
+  ]
+}

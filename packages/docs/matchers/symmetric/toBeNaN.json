@@ -1,0 +1,7 @@
+{
+  "name": "toBeNaN",
+  "description": [
+    "Tests if the received value is `NaN` (not a number).",
+    "Internally this checks if the value is not equal to itself, and also if its type is `number`."
+  ]
+}

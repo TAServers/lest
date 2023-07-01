@@ -1,0 +1,13 @@
+{
+  "name": "toHaveLength",
+  "description": [
+    "Tests that the received value is of the given length.",
+    "This works with strings, tables and any other value that supports the Lua length operator (`#`)."
+  ],
+  "parameters": [
+    {
+      "name": "length",
+      "type": "number"
+    }
+  ]
+}
