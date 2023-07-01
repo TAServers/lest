@@ -5,42 +5,39 @@ title: Expect
 import FunctionRenderer from "@site/src/components/FunctionRenderer";
 import MatcherRenderer from "@site/src/components/MatcherRenderer";
 
-import expect from "@lest/docs/functions/expect.json";
-
-import toBe from "@lest/docs/matchers/symmetric/toBe.json";
-import toBeDefined from "@lest/docs/matchers/symmetric/toBeDefined.json";
-import toBeUndefined from "@lest/docs/matchers/symmetric/toBeUndefined.json";
-import toBeFalsy from "@lest/docs/matchers/symmetric/toBeFalsy.json";
-import toBeTruthy from "@lest/docs/matchers/symmetric/toBeTruthy.json";
-import toBeInstanceOf from "@lest/docs/matchers/symmetric/toBeInstanceOf.json";
-import toEqual from "@lest/docs/matchers/symmetric/toEqual.json";
-
-import toHaveBeenCalled from "@lest/docs/matchers/symmetric/toHaveBeenCalled.json";
-import toHaveBeenCalledTimes from "@lest/docs/matchers/symmetric/toHaveBeenCalledTimes.json";
-import toHaveBeenCalledWith from "@lest/docs/matchers/symmetric/toHaveBeenCalledWith.json";
-import toHaveBeenLastCalledWith from "@lest/docs/matchers/symmetric/toHaveBeenLastCalledWith.json";
-import toHaveBeenNthCalledWith from "@lest/docs/matchers/symmetric/toHaveBeenNthCalledWith.json";
-import toHaveReturned from "@lest/docs/matchers/symmetric/toHaveReturned.json";
-import toHaveReturnedTimes from "@lest/docs/matchers/symmetric/toHaveReturnedTimes.json";
-import toHaveReturnedWith from "@lest/docs/matchers/symmetric/toHaveReturnedWith.json";
-import toHaveLastReturnedWith from "@lest/docs/matchers/symmetric/toHaveLastReturnedWith.json";
-import toHaveNthReturnedWith from "@lest/docs/matchers/symmetric/toHaveNthReturnedWith.json";
-
-import toBeCloseTo from "@lest/docs/matchers/symmetric/toBeCloseTo.json";
-import toBeGreaterThan from "@lest/docs/matchers/symmetric/toBeGreaterThan.json";
-import toBeGreaterThanOrEqual from "@lest/docs/matchers/symmetric/toBeGreaterThanOrEqual.json";
-import toBeLessThan from "@lest/docs/matchers/symmetric/toBeLessThan.json";
-import toBeLessThanOrEqual from "@lest/docs/matchers/symmetric/toBeLessThanOrEqual.json";
-import toBeNaN from "@lest/docs/matchers/symmetric/toBeNaN.json";
-import toBeInfinity from "@lest/docs/matchers/symmetric/toBeInfinity.json";
-
-import toHaveLength from "@lest/docs/matchers/symmetric/toHaveLength.json";
-import toContain from "@lest/docs/matchers/symmetric/toContain.json";
-import toContainEqual from "@lest/docs/matchers/symmetric/toContainEqual.json";
-import toMatchObject from "@lest/docs/matchers/symmetric/toMatchObject.json";
-
-import toMatch from "@lest/docs/matchers/symmetric/toMatch.json";
-import toThrow from "@lest/docs/matchers/symmetric/toThrow.json";
+import {
+	expect,
+	toBe,
+	toBeDefined,
+	toBeUndefined,
+	toBeFalsy,
+	toBeTruthy,
+	toBeInstanceOf,
+	toEqual,
+	toHaveBeenCalled,
+	toHaveBeenCalledTimes,
+	toHaveBeenCalledWith,
+	toHaveBeenLastCalledWith,
+	toHaveBeenNthCalledWith,
+	toHaveReturned,
+	toHaveReturnedTimes,
+	toHaveReturnedWith,
+	toHaveLastReturnedWith,
+	toHaveNthReturnedWith,
+	toBeCloseTo,
+	toBeGreaterThan,
+	toBeGreaterThanOrEqual,
+	toBeLessThan,
+	toBeLessThanOrEqual,
+	toBeNaN,
+	toBeInfinity,
+	toHaveLength,
+	toContain,
+	toContainEqual,
+	toMatchObject,
+	toMatch,
+	toThrow,
+} from "@lest/docs";
 
 <FunctionRenderer {...expect} headingLevel="h2">
 
