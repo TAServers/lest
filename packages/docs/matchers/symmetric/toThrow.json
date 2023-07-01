@@ -1,0 +1,19 @@
+{
+  "name": "toThrow",
+  "aliases": ["toThrowError"],
+  "description": [
+    "Tests whether the received function throws when called.",
+    "",
+    "By default, this will pass as long as the function throws an error.",
+    "You can additionally pass a value for `message` which will cause the test to pass only if the thrown error matches.",
+    "",
+    "Internally this does `string.match(tostring(error), message)`, so you can use Lua patterns to test more dynamic errors reliably."
+  ],
+  "parameters": [
+    {
+      "name": "message",
+      "type": "string",
+      "optional": true
+    }
+  ]
+}

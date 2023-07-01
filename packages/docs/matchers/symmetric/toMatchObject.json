@@ -1,0 +1,21 @@
+{
+  "name": "toMatchObject",
+  "aliases": ["toMatchTable"],
+  "description": [
+    "Tests whether the received table's properties are a superset of the properties defined in `object`.",
+    "",
+    "For example, if the received table is `{ a = 1, b = 2 }` and `object` is `{ b = 2 }`,",
+    "then the test passes as `{ a = 1, b = 2 }` is a superset of `{ b = 2 }`.",
+    "However, if `object` was `{ b = 2, c = 3 }` then the test would fail as",
+    "the received table does not contain the property `c = 3`.",
+    "",
+    "If the length of the received table does not equal `object`'s then this test will fail.",
+    "This is useful for matching an array of tables without allowing additional tables to be present."
+  ],
+  "parameters": [
+    {
+      "name": "object",
+      "type": "table"
+    }
+  ]
+}

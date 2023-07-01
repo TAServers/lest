@@ -1,0 +1,18 @@
+{
+  "name": "toContain",
+  "description": [
+    "Tests that the received value contains the given item.",
+    "",
+    "If the received value is a string, this tests whether the substring `item` is contained within the string.",
+    "",
+    "If the received value is a table, this enumerates all properties of the table and passes if any are referentially equal to `item`.",
+    "If you want to test if any of the table's properties are _deeply equal_ to `item`, use `.toContainEqual()` instead",
+    "which performs the same equality test as `.toEqual()` on each property."
+  ],
+  "parameters": [
+    {
+      "name": "item",
+      "type": "any"
+    }
+  ]
+}

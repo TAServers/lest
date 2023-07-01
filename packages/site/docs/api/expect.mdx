@@ -34,6 +34,14 @@ import toBeLessThanOrEqual from "@lest/docs/matchers/symmetric/toBeLessThanOrEqu
 import toBeNaN from "@lest/docs/matchers/symmetric/toBeNaN.json";
 import toBeInfinity from "@lest/docs/matchers/symmetric/toBeInfinity.json";
 
+import toHaveLength from "@lest/docs/matchers/symmetric/toHaveLength.json";
+import toContain from "@lest/docs/matchers/symmetric/toContain.json";
+import toContainEqual from "@lest/docs/matchers/symmetric/toContainEqual.json";
+import toMatchObject from "@lest/docs/matchers/symmetric/toMatchObject.json";
+
+import toMatch from "@lest/docs/matchers/symmetric/toMatch.json";
+import toThrow from "@lest/docs/matchers/symmetric/toThrow.json";
+
 <FunctionRenderer {...expect}>
 
 ```lua
@@ -117,3 +125,25 @@ This is the same as the `.not` modifier in Jest. We had to use `never` as `not` 
 <MatcherRenderer {...toBeNaN}></MatcherRenderer>
 
 <MatcherRenderer {...toBeInfinity}></MatcherRenderer>
+
+## String Matchers
+
+:::info
+Some [table matchers](#table-matchers) also work with strings - e.g. [`.toHaveLength()`](#.toHaveLength)
+:::
+
+<MatcherRenderer {...toMatch}></MatcherRenderer>
+
+## Table Matchers
+
+<MatcherRenderer {...toHaveLength}></MatcherRenderer>
+
+<MatcherRenderer {...toContain}></MatcherRenderer>
+
+<MatcherRenderer {...toContainEqual}></MatcherRenderer>
+
+<MatcherRenderer {...toMatchObject}></MatcherRenderer>
+
+## Function Matchers
+
+<MatcherRenderer {...toThrow}></MatcherRenderer>
