@@ -25,7 +25,7 @@ function renderFunctionDeclaration(
 
 	const annotations = functionNames.map((name) => {
 		const signature = `function ${functionPrefix}${name}(${params.map((param) => param.name)}) end`;
-		const description = func.description instanceof Array ? func.description : [func.description];
+		const description = Array.isArray(func.description) ? func.description : [func.description];
 
 		return [...description.map((line) => `--- ${line}`), ...paramList, ...returnList, signature].join("\n");
 	});
