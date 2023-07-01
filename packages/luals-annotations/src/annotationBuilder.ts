@@ -13,9 +13,7 @@ function renderFunctionDeclaration(
 	const params = func.parameters ?? [];
 	const returns = func.returns ?? [];
 
-	const paramList = params.map(
-		(param) => `---@param ${param.name}${(param.optional && "?") || ""} ${luaLSType(param)}`
-	);
+	const paramList = params.map((param) => `---@param ${param.name}${param.optional ? "?" : ""} ${luaLSType(param)}`);
 	const returnList = returns.map((ret) => `---@return ${luaLSType(ret)} ${ret.name ?? ""}`);
 
 	const functionCharacter = staticMethod ? "." : ":";
