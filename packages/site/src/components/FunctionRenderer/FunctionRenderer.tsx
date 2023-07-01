@@ -18,18 +18,16 @@ export const FunctionRenderer: React.FC<FunctionRendererProps> = ({
 	returns = [],
 	headingLevel = "h3",
 	children,
-}) => {
-	return (
-		<section>
-			<Heading as={headingLevel} id={name}>
-				<code>
-					{name}({parameters.length > 0 && renderParameterSignature(parameters)})
-					{returns.length > 0 && `: ${renderReturnSignature(returns)}`}
-				</code>
-			</Heading>
-			<Aliases aliases={aliases} />
-			<Description text={description} />
-			{children}
-		</section>
-	);
-};
+}) => (
+	<section>
+		<Heading as={headingLevel} id={name}>
+			<code>
+				{name}({parameters.length > 0 && renderParameterSignature(parameters)})
+				{returns.length > 0 && `: ${renderReturnSignature(returns)}`}
+			</code>
+		</Heading>
+		<Aliases aliases={aliases} />
+		<Description text={description} />
+		{children}
+	</section>
+);
