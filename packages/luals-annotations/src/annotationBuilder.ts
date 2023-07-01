@@ -1,5 +1,6 @@
 import { Docs } from "./json-docs";
 import luaLSType from "./luaLSType";
+import description from "@lest/site/src/components/Description";
 
 type FunctionRenderOptions = {
 	staticMethod?: boolean;
@@ -81,12 +82,8 @@ export class ClassBuilder extends DocumentBuilder {
 	}
 
 	addField(property: Docs.Property) {
-		let description = property.description;
-		if (description instanceof Array) {
-			// Unfortunately, we can't really have multi-line descriptions for fields
-			description = description.join(" ");
-		}
-
+		// LuaLS has no support for multi line field descriptions, so that is why we join them with a space
+		const description = Array.isArray(property.description) ? property.description.join(" ") : property.description;
 		this.add(`---@field ${property.name} ${luaLSType(property)} ${description}`);
 	}
 
