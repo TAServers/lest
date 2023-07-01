@@ -1,6 +1,5 @@
 import { Docs } from "./json-docs";
 import luaLSType from "./luaLSType";
-import description from "@lest/site/src/components/Description";
 
 type FunctionRenderOptions = {
 	staticMethod?: boolean;
