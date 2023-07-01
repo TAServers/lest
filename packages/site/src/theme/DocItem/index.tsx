@@ -30,7 +30,6 @@ export default function DocItem({ content: DocContent }: Props) {
 	const [toc, setToc] = useState<TOCItem[]>([]);
 
 	useEffect(() => {
-		console.log("BLAH");
 		const headings = document.querySelectorAll("h2, h3, h4, h5, h6");
 
 		setToc(Array.from(headings).map(transformHeading));
