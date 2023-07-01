@@ -5,7 +5,7 @@ function convertFunctionProperty(property: Docs.FunctionProperty): string {
 	const returns = property.returns ?? [];
 
 	const paramList = params.map((param) => `${param.name}${(param.optional && "?") || ""}:${luaLSType(param)}`);
-	const returnList = returns.map((ret) => `${luaLSType(ret)}`);
+	const returnList = returns.map((ret) => luaLSType(ret));
 
 	if (returnList.length === 0) {
 		return `fun(${paramList})`;
