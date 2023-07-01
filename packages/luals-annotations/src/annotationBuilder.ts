@@ -1,16 +1,71 @@
 import { Docs } from "./json-docs";
 import luaLSType from "./luaLSType";
 
-export default class AnnotationBuilder {
-	generatedAnnotations: string[] = [];
+type FunctionRenderOptions = {
+	staticMethod?: boolean;
+	className?: string;
+};
 
-	currentClass: string = "";
-	staticMethod: boolean = false;
+function renderFunctionDeclaration(
+	func: Docs.Function,
+	{ staticMethod, className }: FunctionRenderOptions = {}
+): string {
+	const params = func.parameters ?? [];
+	const returns = func.returns ?? [];
 
-	constructor() {}
+	const paramList = params.map(
+		(param) => `---@param ${param.name}${(param.optional && "?") || ""} ${luaLSType(param)}`
+	);
+	const returnList = returns.map((ret) => `---@return ${luaLSType(ret)} ${ret.name ?? ""}`);
 
-	add(...lines: string[]) {
-		this.generatedAnnotations.push(...lines);
+	const functionCharacter = staticMethod ? "." : ":";
+	const functionPrefix = className ? `${className}${functionCharacter}` : "";
+
+	const functionNames = [func.name, ...(func.aliases ?? [])];
+
+	const annotations = functionNames.map((name) => {
+		const signature = `function ${functionPrefix}${name}(${params.map((param) => param.name)}) end`;
+		const description = func.description instanceof Array ? func.description : [func.description];
+
+		return [...description.map((line) => `--- ${line}`), ...paramList, ...returnList, signature].join("\n");
+	});
+
+	return annotations.join("\n");
+}
+
+export class DocumentBuilder {
+	lines: string[] = [];
+
+	add(line: string) {
+		this.lines.push(line);
+	}
+
+	build(): string {
+		return this.lines.join("\n");
+	}
+
+	buildToLines(): string[] {
+		return this.lines;
+	}
+}
+
+type ClassOptions = {
+	name: string;
+	description?: string | string[];
+};
+
+export class ClassBuilder extends DocumentBuilder {
+	name: string;
+	description?: string | string[];
+
+	constructor(options: ClassOptions) {
+		super();
+
+		this.name = options.name;
+		this.description = options.description;
+
+		this.add(`---@class ${this.name}`);
+		this.addDescription(this.description);
 	}
 
 	addComment(comment: string) {
@@ -18,56 +73,16 @@ export default class AnnotationBuilder {
 	}
 
 	addDescription(description: string | string[]) {
-		if (typeof description === "string") {
-			this.addComment(description);
-		} else {
-			description.forEach((line) => this.addComment(line));
-		}
+		(description instanceof Array ? description : [description]).forEach((line) => this.addComment(line));
 	}
 
-	addFunction(func: Docs.Function) {
-		const params = func.parameters ?? [];
-		const returns = func.returns ?? [];
-
-		const paramList = params.map(
-			(param) => `---@param ${param.name}${(param.optional && "?") || ""} ${luaLSType(param)}`
-		);
-		const returnList = returns.map((ret) => `---@return ${luaLSType(ret)} ${ret.name ?? ""}`);
-
-		const functionCharacter = this.staticMethod ? "." : ":";
-		const functionPrefix = this.currentClass ? `${this.currentClass}${functionCharacter}` : "";
-
-		const renderFunction = (signature: string) => {
-			this.addDescription(func.description);
-			this.add(...paramList, ...returnList, signature);
-		};
-
-		if (func.aliases) {
-			func.aliases.forEach((alias) => {
-				const signature = `function ${functionPrefix}${alias}(${params.map((param) => param.name)}) end`;
-				renderFunction(signature);
-			});
-		}
-
-		const signature = `function ${functionPrefix}${func.name}(${params.map((param) => param.name)}) end`;
-		renderFunction(signature);
-	}
-
-	addClassDeclaration() {
-		if (!this.currentClass) {
-			throw new Error("Cannot add class declaration without a class");
-		}
-
-		this.add(`${this.currentClass} = {}`);
+	addFunction(func: Docs.Function, staticMethod: boolean = false) {
+		this.add(renderFunctionDeclaration(func, { staticMethod: staticMethod, className: this.name }));
 	}
 
 	addField(property: Docs.Property) {
-		if (!this.currentClass) {
-			throw new Error("Cannot add field without a class");
-		}
-
 		let description = property.description;
-		if (typeof description !== "string") {
+		if (description instanceof Array) {
 			// Unfortunately, we can't really have multi-line descriptions for fields
 			description = description.join(" ");
 		}
@@ -75,30 +90,22 @@ export default class AnnotationBuilder {
 		this.add(`---@field ${property.name} ${luaLSType(property)} ${description}`);
 	}
 
-	private startClass(name: string, description: string | string[], staticMethod: boolean = false) {
-		this.currentClass = name;
-		this.staticMethod = staticMethod;
+	addDeclaration() {
+		this.add(`${this.name} = {}`);
+	}
+}
 
-		this.add(`---@class ${name}`);
-		this.addDescription(description);
+export default class AnnotationBuilder extends DocumentBuilder {
+	constructor() {
+		super();
+		this.add("---@meta");
 	}
 
-	private endClass() {
-		this.currentClass = "";
-		this.staticMethod = false;
+	addFunction(func: Docs.Function) {
+		this.add(renderFunctionDeclaration(func));
 	}
 
-	withClass(name: string, description: string | string[], staticMethod: boolean, classFn: () => void) {
-		this.startClass(name, description, staticMethod);
-		classFn();
-		this.endClass();
-	}
-
-	build(): string {
-		return this.generatedAnnotations.join("\n");
-	}
-
-	toString(): string {
-		return this.build();
+	addClass(cls: ClassBuilder) {
+		cls.buildToLines().forEach((line) => this.add(line));
 	}
 }

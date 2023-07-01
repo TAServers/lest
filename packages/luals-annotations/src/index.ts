@@ -1,40 +1,51 @@
 import { classes, functions, matchers } from "./json-docs";
-import AnnotationBuilder from "./annotationBuilder";
+import AnnotationBuilder, { ClassBuilder } from "./annotationBuilder";
 import * as fs from "fs";
 
 const document = new AnnotationBuilder();
-document.add("---@meta");
 
 classes.forEach((classDef) => {
-	document.withClass(classDef.name, classDef.description, false, () => {
-		classDef.fields?.forEach((field) => document.addField(field));
-		document.addClassDeclaration();
-		classDef.methods?.forEach((method) => document.addFunction(method));
+	const cls = new ClassBuilder({
+		name: classDef.name,
+		description: classDef.description,
 	});
+
+	classDef.fields?.forEach((field) => cls.addField(field));
+	cls.addDeclaration();
+	classDef.methods?.forEach((method) => cls.addFunction(method));
+	document.addClass(cls);
 });
 
 functions.forEach((func) => {
 	document.addFunction(func);
 });
 
-document.withClass("lest.Matchers", "Matchers for expect()", true, () => {
-	document.addField({
-		name: "never",
-		type: "lest.InverseMatchers",
-		description: "Inverse matchers",
-	});
-
-	document.addClassDeclaration();
-	matchers.forEach((matcher) => document.addFunction(matcher));
+const matchersClass = new ClassBuilder({
+	name: "lest.Matchers",
+	description: "Matchers for expect()",
 });
 
-document.withClass("lest.InverseMatchers", "Inverse matchers", true, () => {
-	document.addClassDeclaration();
-	matchers.forEach((matcher) => document.addFunction(matcher));
+matchersClass.addField({
+	name: "never",
+	type: "lest.InverseMatchers",
+	description: "Inverse matchers",
 });
+
+matchersClass.addDeclaration();
+matchers.forEach((matcher) => matchersClass.addFunction(matcher, true));
+document.addClass(matchersClass);
+
+const inverseMatchersClass = new ClassBuilder({
+	name: "lest.InverseMatchers",
+	description: "Inverse matchers for expect()",
+});
+
+inverseMatchersClass.addDeclaration();
+matchers.forEach((matcher) => inverseMatchersClass.addFunction(matcher, true));
+document.addClass(inverseMatchersClass);
 
 if (process.env["npm_config_debug"]) {
-	console.log(document.toString());
+	console.log(document.build());
 	process.exit(0);
 }
 
@@ -44,4 +55,4 @@ if (!targetFilePath) {
 	process.exit(1);
 }
 
-fs.writeFileSync(targetFilePath, document.toString());
+fs.writeFileSync(targetFilePath, document.build());

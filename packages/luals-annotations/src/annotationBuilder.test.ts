@@ -1,4 +1,4 @@
-import AnnotationBuilder from "./annotationBuilder";
+import AnnotationBuilder, { ClassBuilder } from "./annotationBuilder";
 
 describe("annotationBuilder", () => {
 	it("should generate correct function annotations", () => {
@@ -29,7 +29,7 @@ describe("annotationBuilder", () => {
 		];
 
 		// Act
-		const generatedAnnotations = document.toString();
+		const generatedAnnotations = document.build();
 
 		// Assert
 		expectedElements.forEach((element) => expect(generatedAnnotations).toContain(element));
@@ -38,32 +38,36 @@ describe("annotationBuilder", () => {
 	it("should generate correct class annotations", () => {
 		// Arrange
 		const document = new AnnotationBuilder();
-		document.withClass("test", "my class", false, () => {
-			document.addField({
-				name: "test",
-				type: "string",
-				description: "test class description",
-			});
-
-			document.addClassDeclaration();
-
-			document.addFunction({
-				name: "test",
-				description: "test function description",
-				parameters: [
-					{
-						name: "a",
-						type: "string",
-					},
-				],
-				returns: [
-					{
-						name: "b",
-						type: "number",
-					},
-				],
-			});
+		const cls = new ClassBuilder({
+			name: "test",
+			description: "my class",
 		});
+
+		cls.addField({
+			name: "test",
+			type: "string",
+			description: "test class description",
+		});
+
+		cls.addDeclaration();
+		cls.addFunction({
+			name: "test",
+			description: "test function description",
+			parameters: [
+				{
+					name: "a",
+					type: "string",
+				},
+			],
+			returns: [
+				{
+					name: "b",
+					type: "number",
+				},
+			],
+		});
+
+		document.addClass(cls);
 
 		const expectedElements = [
 			"---@class test",
@@ -78,7 +82,7 @@ describe("annotationBuilder", () => {
 		];
 
 		// Act
-		const generatedAnnotations = document.toString();
+		const generatedAnnotations = document.build();
 
 		// Assert
 		expectedElements.forEach((element) => expect(generatedAnnotations).toContain(element));
@@ -101,7 +105,7 @@ describe("annotationBuilder", () => {
 		const expectedElements = ["---@param a string", "--- Hello!", "--- World!", "function test(a) end"];
 
 		// Act
-		const generatedAnnotations = document.toString();
+		const generatedAnnotations = document.build();
 
 		// Assert
 		expectedElements.forEach((element) => expect(generatedAnnotations).toContain(element));
@@ -110,20 +114,43 @@ describe("annotationBuilder", () => {
 	it("should handle multi-line descriptions for fields properly", () => {
 		// Arrange
 		const document = new AnnotationBuilder();
-		document.withClass("test", "e", false, () => {
-			document.addField({
-				name: "test",
-				type: "string",
-				description: ["Hello!", "World!"],
-			});
-
-			document.addClassDeclaration();
+		const cls = new ClassBuilder({
+			name: "test",
+			description: "my class",
 		});
+
+		cls.addField({
+			name: "test",
+			type: "string",
+			description: ["Hello!", "World!"],
+		});
+
+		cls.addDeclaration();
+		document.addClass(cls);
 
 		const expectedElement = "---@field test string Hello! World!";
 
 		// Act
-		const generatedAnnotations = document.toString();
+		const generatedAnnotations = document.build();
+
+		// Assert
+		expect(generatedAnnotations).toContain(expectedElement);
+	});
+
+	it("should handle single line descriptions", () => {
+		// Arrange
+		const document = new AnnotationBuilder();
+		document.addFunction({
+			name: "test",
+			description: "Hello!",
+			parameters: [],
+			returns: [],
+		});
+
+		const expectedElement = "--- Hello!";
+
+		// Act
+		const generatedAnnotations = document.build();
 
 		// Assert
 		expect(generatedAnnotations).toContain(expectedElement);
@@ -132,8 +159,14 @@ describe("annotationBuilder", () => {
 	it("should handle static methods on classes", () => {
 		// Arrange
 		const document = new AnnotationBuilder();
-		document.withClass("test", "static class", true, () => {
-			document.addFunction({
+		const cls = new ClassBuilder({
+			name: "test",
+			description: "static class",
+		});
+
+		cls.addDeclaration();
+		cls.addFunction(
+			{
 				name: "test",
 				description: "test function description",
 				parameters: [
@@ -142,15 +175,15 @@ describe("annotationBuilder", () => {
 						type: "string",
 					},
 				],
-			});
+			},
+			true
+		);
 
-			document.addClassDeclaration();
-		});
-
+		document.addClass(cls);
 		const expectedElement = "function test.test(a) end";
 
 		// Act
-		const generatedAnnotations = document.toString();
+		const generatedAnnotations = document.build();
 
 		// Assert
 		expect(generatedAnnotations).toContain(expectedElement);
@@ -174,21 +207,9 @@ describe("annotationBuilder", () => {
 		const expectedElements = ["function test(a) end", "function test2(a) end", "function test3(a) end"];
 
 		// Act
-		const generatedAnnotations = document.toString();
+		const generatedAnnotations = document.build();
 
 		// Assert
 		expectedElements.forEach((element) => expect(generatedAnnotations).toContain(element));
-	});
-
-	describe("should error", () => {
-		test("on creating a class declaration without a current class", () => {
-			const document = new AnnotationBuilder();
-			expect(() => document.addClassDeclaration()).toThrowError();
-		});
-
-		test("on making a field without a current class", () => {
-			const document = new AnnotationBuilder();
-			expect(() => document.addField({ name: "test", type: "string" })).toThrowError();
-		});
 	});
 });

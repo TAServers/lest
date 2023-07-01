@@ -1,10 +1,6 @@
 import { Docs } from "./json-docs";
 
 function convertFunctionProperty(property: Docs.FunctionProperty): string {
-	if (!property.parameters && !property.returns) {
-		return "fun()";
-	}
-
 	const params = property.parameters ?? [];
 	const returns = property.returns ?? [];
 
