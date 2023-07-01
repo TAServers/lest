@@ -1,6 +1,5 @@
 {
   "name": "@lest/luals-annotations",
-  "version": "1.0.0",
   "description": "Package to automatically create LuaLS annotations for Lest",
   "main": "dist/index.js",
   "scripts": {
