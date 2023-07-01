@@ -111,7 +111,7 @@ describe("annotationBuilder", () => {
 		expectedElements.forEach((element) => expect(generatedAnnotations).toContain(element));
 	});
 
-	it("should handle multi-line descriptions for fields properly", () => {
+	it("should handle multi-line descriptions for fields", () => {
 		// Arrange
 		const document = new AnnotationBuilder();
 		const cls = new ClassBuilder({
@@ -135,6 +135,26 @@ describe("annotationBuilder", () => {
 
 		// Assert
 		expect(generatedAnnotations).toContain(expectedElement);
+	});
+
+	it("should handle multi-line descriptions for classes", () => {
+		// Arrange
+		const document = new AnnotationBuilder();
+		const cls = new ClassBuilder({
+			name: "test",
+			description: ["Hello!", "World!"],
+		});
+
+		cls.addDeclaration();
+		document.addClass(cls);
+
+		const expectedElements = ["---@class test", "--- Hello!", "--- World!", "test = {}"];
+
+		// Act
+		const generatedAnnotations = document.build();
+
+		// Assert
+		expectedElements.forEach((element) => expect(generatedAnnotations).toContain(element));
 	});
 
 	it("should handle single line descriptions", () => {
@@ -205,6 +225,80 @@ describe("annotationBuilder", () => {
 		});
 
 		const expectedElements = ["function test(a) end", "function test2(a) end", "function test3(a) end"];
+
+		// Act
+		const generatedAnnotations = document.build();
+
+		// Assert
+		expectedElements.forEach((element) => expect(generatedAnnotations).toContain(element));
+	});
+
+	it("should handle functions with no parameters", () => {
+		// Arrange
+		const document = new AnnotationBuilder();
+
+		document.addFunction({
+			name: "test",
+			description: "test function description",
+			returns: [
+				{
+					name: "b",
+					type: "number",
+				},
+			],
+		});
+
+		const expectedElements = ["---@return number b", "function test() end"];
+		const unexpectedElement = "---@param";
+
+		// Act
+		const generatedAnnotations = document.build();
+
+		// Assert
+		expectedElements.forEach((element) => expect(generatedAnnotations).toContain(element));
+		expect(generatedAnnotations).not.toContain(unexpectedElement);
+	});
+
+	it("should handle functions with optional parameters", () => {
+		// Arrange
+		const document = new AnnotationBuilder();
+
+		document.addFunction({
+			name: "test",
+			description: "test function description",
+			parameters: [
+				{
+					name: "a",
+					type: "string",
+					optional: true,
+				},
+			],
+		});
+
+		const expectedElements = ["---@param a? string", "function test(a) end"];
+
+		// Act
+		const generatedAnnotations = document.build();
+
+		// Assert
+		expectedElements.forEach((element) => expect(generatedAnnotations).toContain(element));
+	});
+
+	it("should handle functions with unnamed return values", () => {
+		// Arrange
+		const document = new AnnotationBuilder();
+
+		document.addFunction({
+			name: "test",
+			description: "test function description",
+			returns: [
+				{
+					type: "number",
+				},
+			],
+		});
+
+		const expectedElements = ["---@return number", "function test() end"];
 
 		// Act
 		const generatedAnnotations = document.build();

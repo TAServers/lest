@@ -73,7 +73,7 @@ export class ClassBuilder extends DocumentBuilder {
 	}
 
 	addDescription(description: string | string[]) {
-		(description instanceof Array ? description : [description]).forEach((line) => this.addComment(line));
+		(Array.isArray(description) ? description : [description]).forEach((line) => this.addComment(line));
 	}
 
 	addFunction(func: Docs.Function, staticMethod: boolean = false) {
