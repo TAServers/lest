@@ -44,6 +44,8 @@ inverseMatchersClass.addDeclaration();
 matchers.forEach((matcher) => inverseMatchersClass.addFunction(matcher, true));
 document.addClass(inverseMatchersClass);
 
+// This environment variable is set by NPM when you pass a double dashed argument to it.
+// The dev script passes --debug to the start:ts-node script, so this code is ran when you run `npm run dev`.
 if (process.env["npm_config_debug"]) {
 	console.log(document.build());
 	process.exit(0);
