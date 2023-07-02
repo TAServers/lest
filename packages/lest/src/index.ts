@@ -27,7 +27,7 @@ const getLuaExecutablePath = async (): Promise<string> => {
 		return foundPath;
 	}
 
-	throw new Error("Failed to detect Lua executable. Use --luaCommand to specify an executable manually.");
+	throw new Error("Failed to detect Lua executable. Use --luaCommand to manually specify an executable.");
 };
 
 getLuaExecutablePath().then((executablePath) => {
