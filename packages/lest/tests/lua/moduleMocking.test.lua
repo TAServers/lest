@@ -1,22 +1,22 @@
 local testCases = {
 	require = {
 		importer = require,
-		moduleName = "tests.data.moduleToMock",
-		secondModuleName = "tests.data.moduleToMock2",
+		moduleName = "tests.lua.data.moduleToMock",
+		secondModuleName = "tests.lua.data.moduleToMock2",
 		invalidModuleName = "this.is.not.real",
 	},
 	loadfile = {
 		importer = function(moduleName)
 			return loadfile(moduleName)()
 		end,
-		moduleName = "tests/data/moduleToMock.lua",
-		secondModuleName = "tests/data/moduleToMock2.lua",
+		moduleName = "tests/lua/data/moduleToMock.lua",
+		secondModuleName = "tests/lua/data/moduleToMock2.lua",
 		invalidModuleName = "this/is/not/real.lua",
 	},
 	dofile = {
 		importer = dofile,
-		moduleName = "tests/data/moduleToMock.lua",
-		secondModuleName = "tests/data/moduleToMock2.lua",
+		moduleName = "tests/lua/data/moduleToMock.lua",
+		secondModuleName = "tests/lua/data/moduleToMock2.lua",
 		invalidModuleName = "this/is/not/real.lua",
 	},
 }
