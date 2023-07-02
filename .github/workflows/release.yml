@@ -6,31 +6,23 @@ on:
       - master
 
 jobs:
-  lua:
-    uses: ./.github/workflows/lua.yml
+  lest:
+    uses: ./.github/workflows/lest.yml
 
   release:
     runs-on: ubuntu-latest
-    needs: lua
+    needs: lest
+
+    permissions:
+      id-token: write
 
     steps:
       - uses: actions/checkout@v3
 
-      - uses: actions/setup-node@v3
+      - uses: actions/download-artifact@v3
         with:
-          node-version: 18
-          cache: "npm"
-
-      - name: Install Lua
-        uses: leafo/gh-actions-lua@v10
-        with:
-          luaVersion: "5.4.4"
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build release bundle
-        run: npm run build:lua
+          name: lest
+          path: packages/lest/dist
 
       - name: Generate changelog
         id: changelog
@@ -40,13 +32,13 @@ jobs:
           output-file: "false"
           skip-commit: "true"
           skip-version-file: "true"
-          git-path: "packages/lua"
+          git-path: "packages/lest"
 
       - name: Push release
         uses: softprops/action-gh-release@v1
         if: steps.changelog.outputs.skipped != 'true'
         with:
-          files: packages/lua/dist/lest.lua
+          files: packages/lest/dist/lua/lest.lua
           tag_name: ${{ steps.changelog.outputs.tag }}
           name: Lest - ${{ steps.changelog.outputs.tag }}
           body: ${{ steps.changelog.outputs.clean_changelog }}
@@ -59,7 +51,16 @@ jobs:
         uses: softprops/action-gh-release@v1
         if: steps.changelog.outputs.skipped != 'true'
         with:
-          files: packages/lua/dist/lest.lua
+          files: packages/lest/dist/lua/lest.lua
           tag_name: latest
           name: Lest - ${{ steps.changelog.outputs.tag }}
           body: ${{ steps.changelog.outputs.clean_changelog }}
+
+      - name: Update package.json version
+        run: "sed -i 's/{{VERSION}}/${{ steps.changelog.outputs.tag }}/g' packages/lest/package.json"
+
+      - name: Publish to NPM
+        working-directory: packages/lest
+        run: npm publish --provenance
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
