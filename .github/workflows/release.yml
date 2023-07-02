@@ -64,10 +64,11 @@ jobs:
           body: ${{ steps.changelog.outputs.clean_changelog }}
 
       - name: Update package.json version
-        run: "sed -i 's/{{VERSION}}/1.2.0/g' packages/lest/package.json"
-        #run: "sed -i 's/{{VERSION}}/${{ steps.changelog.outputs.tag }}/g' packages/lest/package.json"
+        if: steps.changelog.outputs.skipped != 'true'
+        run: "sed -i 's/{{VERSION}}/${{ steps.changelog.outputs.tag }}/g' packages/lest/package.json"
 
       - name: Publish to NPM
+        if: steps.changelog.outputs.skipped != 'true'
         working-directory: packages/lest
         run: npm publish --provenance
         env:
