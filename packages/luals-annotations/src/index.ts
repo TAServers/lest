@@ -4,7 +4,7 @@ import * as matchers from "@lest/docs/matchers";
 
 import AnnotationBuilder, { ClassBuilder } from "./annotationBuilder";
 import * as fs from "fs";
-import { Docs } from "./json-docs";
+import { Docs } from "./docTypes";
 
 const document = new AnnotationBuilder();
 Object.values<Docs.Class>(classes).forEach((classDef) => {

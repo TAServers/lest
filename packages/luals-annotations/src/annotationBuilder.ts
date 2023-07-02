@@ -1,4 +1,4 @@
-import { Docs } from "./json-docs";
+import { Docs } from "./docTypes";
 import luaLSType from "./luaLSType";
 
 type FunctionRenderOptions = {

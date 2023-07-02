@@ -1,3 +1,6 @@
+/* istanbul ignore file */
+// This file is mainly used for typing the docs. It has a function which is really just an equality check and a typecast, so no testing is required.
+
 export namespace Docs {
 	export interface Function {
 		name: string;
