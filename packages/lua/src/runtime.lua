@@ -68,7 +68,6 @@ local function findTests(testFiles)
 		})
 	end
 
-
 	local disabledDescribeOrTest = setmetatable({
 		each = function()
 			return function() end
