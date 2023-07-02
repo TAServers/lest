@@ -1,0 +1,23 @@
+{
+  "name": "test.skip",
+  "aliases": ["it.skip", "xtest", "xit"],
+  "description": [
+    "Dummy version of `test()` which doesn't run the given test.",
+    "It will appear in test results as being skipped (this is not implemented yet, see LEST-88)."
+  ],
+  "parameters": [
+    {
+      "name": "name",
+      "type": "string"
+    },
+    {
+      "name": "fn",
+      "type": "function"
+    },
+    {
+      "name": "timeout",
+      "type": "number",
+      "optional": true
+    }
+  ]
+}

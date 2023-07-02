@@ -1,4 +1,5 @@
 import React from "react";
+import Markdown from "markdown-to-jsx";
 
 interface AliasesProps {
 	aliases?: string[];
@@ -17,17 +18,11 @@ export const Aliases: React.FC<AliasesProps> = ({ aliases }) => {
 		);
 	}
 
-	const lastAlias = aliases.pop();
+	const formattedAliases = aliases.map((alias) => `\`${alias}\``);
 
 	return (
-		<p>
-			Also under the aliases:{" "}
-			{aliases.map((alias, index) => (
-				<React.Fragment key={index}>
-					<code>{alias}</code>,{" "}
-				</React.Fragment>
-			))}{" "}
-			and <code>{lastAlias}</code>
-		</p>
+		<Markdown options={{ forceBlock: true }}>
+			{`Also under the aliases: ${formattedAliases.slice(0, -1).join(", ")} and ${formattedAliases.at(-1)}.`}
+		</Markdown>
 	);
 };
