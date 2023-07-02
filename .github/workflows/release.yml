@@ -25,6 +25,12 @@ jobs:
           name: lest
           path: packages/lest/dist
 
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: "npm"
+          registry-url: "https://registry.npmjs.org"
+
       - name: Generate changelog
         id: changelog
         uses: TriPSs/conventional-changelog-action@v3
@@ -58,7 +64,8 @@ jobs:
           body: ${{ steps.changelog.outputs.clean_changelog }}
 
       - name: Update package.json version
-        run: "sed -i 's/{{VERSION}}/${{ steps.changelog.outputs.tag }}/g' packages/lest/package.json"
+        run: "sed -i 's/{{VERSION}}/1.2.0/g' packages/lest/package.json"
+        #run: "sed -i 's/{{VERSION}}/${{ steps.changelog.outputs.tag }}/g' packages/lest/package.json"
 
       - name: Publish to NPM
         working-directory: packages/lest
