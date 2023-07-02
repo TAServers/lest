@@ -68,12 +68,19 @@ local function findTests(testFiles)
 		})
 	end
 
+	local disabledDescribeOrTest = setmetatable({
+		each = function()
+			return function() end
+		end,
+	}, { __call = function() end })
+
 	--- Registers a new test group
 	---@class lest.DescribeFunction
 	---@field each fun(testCases: table): fun(name: string, func: fun(...: any))
 	---@overload fun(name: string, func: fun())
 	local describe = {}
 	describe.__index = describe
+	describe.skip = disabledDescribeOrTest
 
 	function describe:__call(name, func)
 		runInDescribeScope(name, func)
@@ -103,6 +110,7 @@ local function findTests(testFiles)
 	---@overload fun(name: string, func: fun())
 	local test = {}
 	test.__index = test
+	test.skip = disabledDescribeOrTest
 
 	function test:__call(name, func, timeout)
 		registerTest(name, func, timeout)
@@ -137,12 +145,6 @@ local function findTests(testFiles)
 			})
 		end
 	end
-
-	local disabledDescribeOrTest = setmetatable({
-		each = function()
-			return function() end
-		end,
-	}, { __call = function() end })
 
 	local cleanup = buildEnvironment({
 		describe = setmetatable({}, describe),
