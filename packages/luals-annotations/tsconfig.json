@@ -6,6 +6,8 @@
     "composite": true,
     "moduleResolution": "Node",
     "outDir": "./dist",
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "allowJs": true
   }
 }

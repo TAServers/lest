@@ -23,6 +23,10 @@ function convertArrayProperty(property: Docs.ArrayProperty) {
 }
 
 function convertTableProperty(property: Docs.TableProperty) {
+	if (!property.fields) {
+		return "table";
+	}
+
 	return `{${property.fields.map((field) => `${field.name}:${luaLSType(field)}`).join(",")}}`;
 }
 

@@ -1,25 +1,32 @@
-import { classes, functions, matchers } from "./json-docs";
+import * as functions from "@lest/docs/functions";
+import * as classes from "@lest/docs/types";
+import * as matchers from "@lest/docs/matchers";
+
 import AnnotationBuilder, { ClassBuilder } from "./annotationBuilder";
 import * as fs from "fs";
+import { Docs } from "./json-docs";
 
 const document = new AnnotationBuilder();
-
-classes.forEach((classDef) => {
+Object.values<Docs.Class>(classes).forEach((classDef) => {
 	const cls = new ClassBuilder({
 		name: classDef.name,
 		description: classDef.description,
 	});
 
-	classDef.fields?.forEach((field) => cls.addField(field));
+	const methods = classDef.fields.filter((method) => Docs.isFunctionProperty(method)) as Docs.Function[];
+	const fields = classDef.fields.filter((property) => property.type !== "function");
+
+	fields.forEach((field) => cls.addField(field));
 	cls.addDeclaration();
-	classDef.methods?.forEach((method) => cls.addFunction(method));
+	methods.forEach((method) => cls.addFunction(method));
 	document.addClass(cls);
 });
 
-functions.forEach((func) => {
+Object.values<Docs.Function>(functions).forEach((func) => {
 	document.addFunction(func);
 });
 
+const matcherFunctions = Object.values<Docs.Function>(matchers);
 const matchersClass = new ClassBuilder({
 	name: "lest.Matchers",
 	description: "Matchers for expect()",
@@ -32,7 +39,7 @@ matchersClass.addField({
 });
 
 matchersClass.addDeclaration();
-matchers.forEach((matcher) => matchersClass.addFunction(matcher, true));
+matcherFunctions.forEach((matcher) => matchersClass.addFunction(matcher, true));
 document.addClass(matchersClass);
 
 const inverseMatchersClass = new ClassBuilder({
@@ -41,7 +48,7 @@ const inverseMatchersClass = new ClassBuilder({
 });
 
 inverseMatchersClass.addDeclaration();
-matchers.forEach((matcher) => inverseMatchersClass.addFunction(matcher, true));
+matcherFunctions.forEach((matcher) => inverseMatchersClass.addFunction(matcher, true));
 document.addClass(inverseMatchersClass);
 
 // This environment variable is set by NPM when you pass a double dashed argument to it.

@@ -193,4 +193,18 @@ describe("luaLSType", () => {
 		// Assert
 		expect(generatedType).toEqual("{foo:string,bar:number,baz:boolean,qux:fun(a:string):number}");
 	});
+
+	it("should handle generic table types", () => {
+		// Arrange
+		const testProperty: Docs.Property = {
+			name: "test",
+			type: "table",
+		};
+
+		// Act
+		const generatedType = luaLSType(testProperty);
+
+		// Assert
+		expect(generatedType).toEqual("table");
+	});
 });
