@@ -60,6 +60,7 @@ jobs:
         run: "sed -i 's/{{VERSION}}/${{ steps.changelog.outputs.tag }}/g' packages/lest/package.json"
 
       - name: Publish to NPM
+        working-directory: packages/lest
         run: npm publish --provenance
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
