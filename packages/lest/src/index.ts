@@ -1,10 +1,11 @@
 import minimist from "minimist";
 import { lookpath } from "lookpath";
+import path from "path";
 import luaExecutableNames from "./lua-executable-names.json";
 
 const getCliArgs = () => minimist(process.argv.slice(2));
 
-const getLestLuaPath = () => `${__dirname}/lest.lua`;
+const getLestLuaPath = () => path.join(__dirname, "lest.lua");
 
 const getLuaExecutablePath = async (): Promise<string> => {
 	const { luaCommand } = getCliArgs();
