@@ -2,11 +2,12 @@ import * as functions from "@lest/docs/functions";
 import * as classes from "@lest/docs/types";
 import * as matchers from "@lest/docs/matchers";
 
-import AnnotationBuilder, { ClassBuilder } from "./annotationBuilder";
+import AnnotationBuilder, { ClassBuilder } from "./annotationBuilder.js";
 import * as fs from "fs";
-import { Docs } from "./docTypes";
+import { Docs } from "./docTypes.js";
 
 const document = new AnnotationBuilder();
+
 Object.values<Docs.Class>(classes).forEach((classDef) => {
 	const cls = new ClassBuilder({
 		name: classDef.name,

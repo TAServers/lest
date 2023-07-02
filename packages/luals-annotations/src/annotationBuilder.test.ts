@@ -1,4 +1,4 @@
-import AnnotationBuilder, { ClassBuilder } from "./annotationBuilder";
+import AnnotationBuilder, { ClassBuilder } from "./annotationBuilder.js";
 
 describe("annotationBuilder", () => {
 	it("should generate correct function annotations", () => {

@@ -1,4 +1,4 @@
-import { Docs } from "./docTypes";
+import { Docs } from "./docTypes.js";
 
 function convertFunctionProperty(property: Docs.FunctionProperty): string {
 	const params = property.parameters ?? [];

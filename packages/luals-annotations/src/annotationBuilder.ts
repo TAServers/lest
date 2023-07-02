@@ -1,5 +1,5 @@
-import { Docs } from "./docTypes";
-import luaLSType from "./luaLSType";
+import { Docs } from "./docTypes.js";
+import luaLSType from "./luaLSType.js";
 
 type FunctionRenderOptions = {
 	staticMethod?: boolean;
