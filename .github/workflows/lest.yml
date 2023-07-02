@@ -1,0 +1,81 @@
+name: Lest CI
+
+on:
+  workflow_call:
+  push:
+    branches-ignore:
+      - master
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run prettier
+        run: npm run format:lest
+
+      - uses: JohnnyMorganz/stylua-action@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          version: latest
+          args: --check ./packages/lest
+
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        luaVersion: ["5.1.5", "5.2.4", "5.3.6", "5.4.4", "luajit-openresty", "luajit-2.0.5", "luajit-2.1.0-beta3"]
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: "npm"
+
+      - uses: leafo/gh-actions-lua@v10
+        with:
+          luaVersion: ${{ matrix.luaVersion }}
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm run test:lest
+
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: "npm"
+
+      - uses: leafo/gh-actions-lua@v10
+        with:
+          luaVersion: "5.4.4"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build:lest
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: lest
+          path: packages/lest/dist

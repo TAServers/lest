@@ -1,4 +1,7 @@
 packages/**/dist
 node_modules
-.idea
+.idea/vcs.xml
+.idea/workspace.xml
+.idea/runConfigurations
+.idea/codeStyles
 packages/**/coverage

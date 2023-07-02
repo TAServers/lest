@@ -1,20 +1,22 @@
 {
-  "name": "@taservers/lest",
-  "description": "Lua testing framework in the style of Jest.",
-  "version": "1.0.0",
+  "name": "@lest/monorepo",
+  "private": true,
+  "description": "Monorepo package for Lest.",
   "license": "MIT",
   "scripts": {
     "prepare": "husky install",
+    "format:lest": "prettier --check packages/lest",
     "format:site": "prettier --check packages/site",
-    "build:lua": "npm run build --workspace=packages/lua",
+    "build:lest": "npm run build --workspace=packages/lest",
     "build:site": "npm run build --workspace=packages/site",
     "build:luals-annotations": "npm run build --workspace=packages/luals-annotations",
     "test:luals-annotations": "npm run test --workspace=packages/luals-annotations",
-    "test:lua": "npm run test --workspace=packages/lua",
-    "annotate:luals": "npm run start --workspace=packages/luals-annotations"
+    "annotate:luals": "npm run start --workspace=packages/luals-annotations",
+    "test:lest": "npm run test --workspace=packages/lest",
+    "start:site": "npm run start --workspace=packages/site"
   },
   "workspaces": [
-    "packages/lua",
+    "packages/lest",
     "packages/docs",
     "packages/site",
     "packages/luals-annotations"
