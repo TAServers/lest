@@ -9,7 +9,7 @@ See our [Code of Conduct](https://github.com/TAServers/lest/blob/master/CODE_OF_
 ## Repository structure
 
 The Lest monorepo is split into a number of smaller *packages* which you can find in the `/packages` directory:
-- `lua` - The testing framework itself
+- `lest` - The testing framework itself
 - `docs` - API documentation in plain JSON format
 - `site` - Docusaurus site (https://taservers.github.io/lest)
 

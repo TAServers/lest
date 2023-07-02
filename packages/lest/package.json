@@ -1,6 +1,9 @@
 {
-  "name": "@lest/lua",
-  "description": "This package.json is just for scripts and tooling.",
+  "name": "@taservers/lest",
+  "version": "1.1.0",
+  "license": "MIT",
+  "description": "Painless Lua testing inspired by Jest.",
+  "main": "dist/index.js",
   "scripts": {
     "bundle": "luabundler bundle src/lest.lua -p \"./?.lua\" -o dist/lest.lua",
     "minify": "lua scripts/minify.lua",
@@ -9,9 +12,6 @@
     "clean": "rimraf dist"
   },
   "devDependencies": {
-    "@commitlint/cli": "^17.5.1",
-    "@commitlint/config-conventional": "^17.4.4",
-    "husky": "^8.0.3",
     "luabundler": "^1.2.2",
     "luamin": "github:hsandt/luamin#develop",
     "prettier": "^2.8.7",

@@ -17,7 +17,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           version: latest
-          args: --check .
+          args: --check ./packages/lest
 
   test:
     runs-on: ubuntu-latest

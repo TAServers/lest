@@ -1,4 +1,5 @@
 {
   "name": "@lest/docs",
+  "private": true,
   "description": "API documentation in JSON form."
 }
