@@ -46,7 +46,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         if: steps.changelog.outputs.skipped != 'true'
         with:
-          files: dist/lest.lua
+          files: packages/lua/dist/lest.lua
           tag_name: ${{ steps.changelog.outputs.tag }}
           name: Lest - ${{ steps.changelog.outputs.tag }}
           body: ${{ steps.changelog.outputs.clean_changelog }}
@@ -59,7 +59,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         if: steps.changelog.outputs.skipped != 'true'
         with:
-          files: dist/lest.lua
+          files: packages/lua/dist/lest.lua
           tag_name: latest
           name: Lest - ${{ steps.changelog.outputs.tag }}
           body: ${{ steps.changelog.outputs.clean_changelog }}
