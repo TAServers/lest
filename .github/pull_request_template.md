@@ -10,7 +10,7 @@ PR pre-flight checks:
 
 ## Ticket
 
-<!-- Add a link to the ticket below -->
+<!-- Add a link to the ticket below (remove this section if the PR has no related ticket) -->
 
 Resolves [LEST-](https://taservers.atlassian.net/browse/LEST-)
 
@@ -20,7 +20,7 @@ Resolves [LEST-](https://taservers.atlassian.net/browse/LEST-)
 
 ## Impact
 
-<!-- How does impact other developers? What are the improvements or drawbacks of this change? -->
+<!-- How do these changes impact other developers? What are the improvements or drawbacks of these changes? -->
 
 ## Testing
 
