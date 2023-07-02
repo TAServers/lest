@@ -5,10 +5,11 @@
   "license": "MIT",
   "scripts": {
     "prepare": "husky install",
+    "format:lest": "prettier --check packages/lest",
     "format:site": "prettier --check packages/site",
-    "build:lua": "npm run build --workspace=packages/lest",
+    "build:lest": "npm run build --workspace=packages/lest",
     "build:site": "npm run build --workspace=packages/site",
-    "test:lua": "npm run test --workspace=packages/lest",
+    "test:lest": "npm run test --workspace=packages/lest",
     "start:site": "npm run start --workspace=packages/site"
   },
   "workspaces": [
