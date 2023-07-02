@@ -4,7 +4,20 @@ title: Globals
 
 import FunctionRenderer from "@site/src/components/FunctionRenderer";
 
-import { afterAll, afterEach, beforeAll, beforeEach, describe, describeEach, test, testEach } from "@lest/docs";
+import {
+	afterAll,
+	afterEach,
+	beforeAll,
+	beforeEach,
+	describe,
+	describeEach,
+	describeSkip,
+	describeSkipEach,
+	test,
+	testEach,
+	testSkip,
+	testSkipEach,
+} from "@lest/docs";
 
 In your test files, Lest puts each of these methods and objects into the global environment. You don't have to require or import anything to use them.
 
@@ -58,6 +71,14 @@ If you want to run some cleanup after every test instead of after all tests, use
 
 <FunctionRenderer {...describeEach}></FunctionRenderer>
 
+<FunctionRenderer {...describeSkip}></FunctionRenderer>
+
+<FunctionRenderer {...describeSkipEach}></FunctionRenderer>
+
 <FunctionRenderer {...test}></FunctionRenderer>
 
 <FunctionRenderer {...testEach}></FunctionRenderer>
+
+<FunctionRenderer {...testSkip}></FunctionRenderer>
+
+<FunctionRenderer {...testSkipEach}></FunctionRenderer>

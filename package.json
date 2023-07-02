@@ -8,7 +8,8 @@
     "format:site": "prettier --check packages/site",
     "build:lua": "npm run build --workspace=packages/lua",
     "build:site": "npm run build --workspace=packages/site",
-    "test:lua": "npm run test --workspace=packages/lua"
+    "test:lua": "npm run test --workspace=packages/lua",
+    "start:site": "npm run start --workspace=packages/site"
   },
   "workspaces": [
     "packages/lua",
