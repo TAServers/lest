@@ -2,9 +2,21 @@
   "name": "@taservers/lest",
   "version": "1.1.0",
   "license": "MIT",
-  "description": "Painless Lua testing inspired by Jest.",
+  "description": "Painless Lua testing.",
+  "homepage": "https://taservers.github.io/lest/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TAServers/lest",
+    "directory": "packages/lest"
+  },
   "main": "dist/index.js",
+  "exports": {
+    ".": "dist/index.js"
+  },
   "types": "dist/index.d.ts",
+  "bin": {
+    "lest": "dist/index.js"
+  },
   "scripts": {
     "bundle": "luabundler bundle src/lua/lest.lua -p \"./?.lua\" -o dist/lua/lest.lua",
     "minify": "lua scripts/minify.lua",
@@ -34,5 +46,20 @@
   "dependencies": {
     "lookpath": "^1.2.2",
     "minimist": "^1.2.8"
-  }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "lua",
+    "test",
+    "testing",
+    "lest",
+    "coverage",
+    "runner",
+    "painless",
+    "mock",
+    "mocking",
+    "expect"
+  ]
 }
