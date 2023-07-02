@@ -1,5 +1,7 @@
 -- Note, this cannot be replaced by an NPM script as luamin doesn't like redirecting output to a file
 
+local BUNDLE_PATH = "dist/lua/lest.lua"
+
 --- Throws the message if it is not nil
 ---@param message any
 local function throwIfNotNil(message)
@@ -8,7 +10,7 @@ local function throwIfNotNil(message)
 	end
 end
 
-local handle, popenError = io.popen([[luamin -f dist/lest.lua]])
+local handle, popenError = io.popen("luamin -f " .. BUNDLE_PATH)
 throwIfNotNil(popenError)
 
 if not handle then
@@ -22,7 +24,7 @@ if string.match(minified, "Error:") then
 	error(minified)
 end
 
-local file, fileError = io.open("dist/lest.lua", "w+")
+local file, fileError = io.open(BUNDLE_PATH, "w+")
 throwIfNotNil(fileError)
 
 if not file then

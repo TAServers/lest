@@ -6,7 +6,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "bundle": "luabundler bundle src/lua/lest.lua -p \"./?.lua\" -o dist/lest.lua",
+    "bundle": "luabundler bundle src/lua/lest.lua -p \"./?.lua\" -o dist/lua/lest.lua",
     "minify": "lua scripts/minify.lua",
     "build:lua": "npm run bundle && npm run minify",
     "build:ts": "tsc -p tsconfig.build.json",
