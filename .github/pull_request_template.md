@@ -1,3 +1,13 @@
+<!--
+PR pre-flight checks:
+- Have you updated any relevant documentation?
+- Have you used appropriate conventional commit names, and have you tagged breaking changes?
+  - https://cheatography.com/albelop/cheat-sheets/conventional-commits/
+- Have you done a brief self-review of your changes to check if you've missed anything?
+- If working on a ticket with defined scope and/or acceptance criteria, have you checked that you've hit everything?
+  - If you intentionally haven't followed the ticket's requirements, please describe which requirements haven't been hit and why
+-->
+
 ## Ticket
 
 <!-- Add a link to the ticket below -->
