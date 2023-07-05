@@ -2,10 +2,9 @@
   "name": "@lest/docs",
   "private": true,
   "description": "API documentation in JSON form.",
-  "main": "dist/src/index.js",
+  "main": "dist/index.js",
   "type": "commonjs",
   "scripts": {
-    "build": "tsc",
-    "preinstall": "npm run build"
+    "build": "tsc"
   }
 }
