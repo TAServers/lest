@@ -6,6 +6,6 @@
   "type": "commonjs",
   "scripts": {
     "build": "tsc",
-    "format": "prettier --config ../../.prettierrc --write ."
+    "format": "prettier --config ../../.prettierrc --check ."
   }
 }
