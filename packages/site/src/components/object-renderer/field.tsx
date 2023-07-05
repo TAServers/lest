@@ -3,7 +3,7 @@ import Heading from "@theme/Heading";
 import { useField, useMemberPrefix } from "./object";
 import Description from "../Description";
 import { renderType } from "../../helpers/renderers";
-import { isFunctionProperty } from "../../doc-types";
+import { isFunctionProperty } from "@lest/docs";
 import FunctionRenderer from "@site/src/components/FunctionRenderer";
 
 interface FieldRendererProps {

@@ -1,4 +1,4 @@
-import { FunctionProperty, Property, isFunctionProperty, isArrayProperty, ArrayItems } from "../doc-types";
+import { FunctionProperty, Property, isFunctionProperty, isArrayProperty, ArrayItems } from "@lest/docs";
 
 const renderFunctionType = ({ parameters = [], returns = [] }: FunctionProperty) => {
 	const paramSignature = parameters.length > 0 ? renderParameterSignature(parameters) : "";
