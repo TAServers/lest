@@ -7,8 +7,5 @@
   "scripts": {
     "build": "tsc",
     "format": "prettier --config ../../.prettierrc --write ."
-  },
-  "devDependencies": {
-    "prettier": "^3.0.0"
   }
 }
