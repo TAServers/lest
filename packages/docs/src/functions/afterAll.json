@@ -1,0 +1,20 @@
+{
+  "name": "afterAll",
+  "description": [
+    "Runs a function after all tests in this file have completed.",
+    "",
+    "You can provide an optional `timeout` (in milliseconds) to specify how long to wait before aborting the callback.",
+    "The default timeout is 5 seconds."
+  ],
+  "parameters": [
+    {
+      "name": "fn",
+      "type": "function"
+    },
+    {
+      "name": "timeout",
+      "type": "number",
+      "optional": true
+    }
+  ]
+}
