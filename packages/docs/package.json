@@ -6,6 +6,7 @@
   "type": "commonjs",
   "scripts": {
     "build": "tsc",
+    "preinstall": "npm run build",
     "format": "prettier --config ../../.prettierrc --check ."
   }
 }
