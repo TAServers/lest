@@ -1,6 +1,6 @@
 import React from "react";
 import Heading from "@theme/Heading";
-import { Function } from "../../doc-types";
+import { Function } from "@lest/docs";
 import { renderParameterSignature, renderReturnSignature } from "../../helpers/renderers";
 import { Aliases } from "./components/Aliases";
 import Description from "../Description";

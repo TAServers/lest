@@ -1,7 +1,5 @@
 packages/**/dist
 node_modules
-.idea/vcs.xml
-.idea/workspace.xml
-.idea/runConfigurations
-.idea/codeStyles
 packages/**/coverage
+.idea/discord.xml
+*.tsbuildinfo

@@ -1,4 +1,4 @@
-import { Property } from "@site/src/doc-types/property";
+import { Property } from "./property";
 
 export interface Function {
 	name: string;

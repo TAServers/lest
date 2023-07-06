@@ -1,5 +1,5 @@
 import React from "react";
-import { Function } from "../doc-types";
+import { Function } from "@lest/docs";
 import FunctionRenderer from "./FunctionRenderer";
 
 interface MatcherRendererProps extends Function {
