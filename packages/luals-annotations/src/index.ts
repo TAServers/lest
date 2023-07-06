@@ -2,9 +2,9 @@ import * as functions from "@lest/docs/functions";
 import * as classes from "@lest/docs/types";
 import * as matchers from "@lest/docs/matchers";
 
-import AnnotationBuilder, { ClassBuilder } from "./annotationBuilder.js";
+import AnnotationBuilder, { ClassBuilder } from "./annotationBuilder";
 import * as fs from "fs";
-import { Docs } from "./docTypes.js";
+import { Docs } from "./docTypes";
 
 const document = new AnnotationBuilder();
 
@@ -14,8 +14,9 @@ Object.values<Docs.Class>(classes).forEach((classDef) => {
 		description: classDef.description,
 	});
 
-	const methods = classDef.fields.filter((method) => Docs.isFunctionProperty(method)) as Docs.Function[];
-	const fields = classDef.fields.filter((property) => property.type !== "function");
+	const methods =
+		(classDef.fields?.filter((method) => Docs.isFunctionProperty(method)) as Docs.Function[] | undefined) ?? [];
+	const fields = classDef.fields?.filter((property) => property.type !== "function") ?? [];
 
 	fields.forEach((field) => cls.addField(field));
 	cls.addDeclaration();

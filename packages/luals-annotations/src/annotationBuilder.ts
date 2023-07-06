@@ -1,5 +1,5 @@
-import { Docs } from "./docTypes.js";
-import luaLSType from "./luaLSType.js";
+import { Docs } from "./docTypes";
+import luaLSType from "./luaLSType";
 
 type FunctionRenderOptions = {
 	staticMethod?: boolean;
@@ -70,7 +70,8 @@ export class ClassBuilder extends DocumentBuilder {
 		this.add(`--- ${comment}`);
 	}
 
-	addDescription(description: string | string[]) {
+	addDescription(description: string | string[] | undefined) {
+		if (!description) return;
 		(Array.isArray(description) ? description : [description]).forEach((line) => this.addComment(line));
 	}
 

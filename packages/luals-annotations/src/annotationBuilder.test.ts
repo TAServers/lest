@@ -1,4 +1,4 @@
-import AnnotationBuilder, { ClassBuilder } from "./annotationBuilder.js";
+import AnnotationBuilder, { ClassBuilder } from "./annotationBuilder";
 
 describe("annotationBuilder", () => {
 	it("should generate correct function annotations", () => {
@@ -174,6 +174,26 @@ describe("annotationBuilder", () => {
 
 		// Assert
 		expect(generatedAnnotations).toContain(expectedElement);
+	});
+
+	it("should handle undefined class descriptions", () => {
+		// Arrange
+		const document = new AnnotationBuilder();
+		const cls = new ClassBuilder({
+			name: "test",
+			description: undefined,
+		});
+
+		cls.addDeclaration();
+		document.addClass(cls);
+
+		const unexpectedElement = "--- undefined";
+
+		// Act
+		const generatedAnnotations = document.build();
+
+		// Assert
+		expect(generatedAnnotations).not.toContain(unexpectedElement);
 	});
 
 	it("should handle static methods on classes", () => {

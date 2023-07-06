@@ -1,5 +1,5 @@
-import luaLSType from "./luaLSType.js";
-import { Docs } from "./docTypes.js";
+import luaLSType from "./luaLSType";
+import { Docs } from "./docTypes";
 
 describe("luaLSType", () => {
 	it("should handle untyped arrays", () => {
