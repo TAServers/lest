@@ -2,11 +2,9 @@
   "name": "@lest/docs",
   "private": true,
   "description": "API documentation in JSON form.",
-  "main": "dist/index.js",
-  "type": "commonjs",
+  "main": "dist/index",
+  "types": "dist/index",
   "scripts": {
-    "build": "tsc",
-    "preinstall": "npm run build",
-    "format": "prettier --config ../../.prettierrc --check ."
+    "build": "tsc"
   }
 }
