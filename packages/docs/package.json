@@ -1,5 +1,10 @@
 {
   "name": "@lest/docs",
   "private": true,
-  "description": "API documentation in JSON form."
+  "description": "API documentation in JSON form.",
+  "main": "dist/index",
+  "types": "dist/index",
+  "scripts": {
+    "build": "tsc"
+  }
 }
