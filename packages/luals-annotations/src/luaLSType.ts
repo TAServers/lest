@@ -1,4 +1,5 @@
 import { Docs } from "./docTypes";
+import { isArrayProperty, isFunctionProperty, isTableProperty } from "@lest/docs";
 
 function convertFunctionProperty(property: Docs.FunctionProperty): string {
 	const params = property.parameters ?? [];
@@ -31,14 +32,17 @@ function convertTableProperty(property: Docs.TableProperty) {
 }
 
 export default function luaLSType(docType: Docs.Property): string {
-	switch (docType.type) {
-		case "function":
-			return convertFunctionProperty(docType as Docs.FunctionProperty);
-		case "array":
-			return convertArrayProperty(docType as Docs.ArrayProperty);
-		case "table":
-			return convertTableProperty(docType as Docs.TableProperty);
-		default:
-			return docType.type;
+	if (isFunctionProperty(docType)) {
+		return convertFunctionProperty(docType);
 	}
+
+	if (isArrayProperty(docType)) {
+		return convertArrayProperty(docType);
+	}
+
+	if (isTableProperty(docType)) {
+		return convertTableProperty(docType);
+	}
+
+	return docType.type;
 }
