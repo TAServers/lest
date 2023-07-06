@@ -1,12 +1,7 @@
 {
+  "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "module": "commonjs",
-    "target": "es5",
-    "sourceMap": true,
-    "declaration": true,
     "strict": true,
-    "esModuleInterop": true,
-    "resolveJsonModule": true,
     "outDir": "dist"
   },
   "include": ["src/**/*.ts", "tests/**/*.ts"]
