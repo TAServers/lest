@@ -1,8 +1,7 @@
 import React, { createContext, useContext } from "react";
 import Heading from "@theme/Heading";
 import Description from "../Description";
-import { Class } from "@lest/docs";
-import { isTableProperty, Property } from "@lest/docs";
+import { Class, isTableProperty, Property } from "@lest/docs";
 
 interface ObjectContextProps {
 	object?: Class;
