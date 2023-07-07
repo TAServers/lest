@@ -1,9 +1,9 @@
 import * as functions from "@lest/docs/functions";
 import * as classes from "@lest/docs/types";
 import * as matchers from "@lest/docs/matchers";
-import { Class, Function, isFunctionProperty } from "@lest/docs";
-import * as fs from "fs";
+import { Class, Function, FunctionProperty, isFunctionProperty } from "@lest/docs";
 
+import * as fs from "fs";
 import AnnotationBuilder, { ClassBuilder } from "./annotationBuilder";
 
 const functionDocs = Object.values<Function>(functions);
@@ -12,31 +12,30 @@ const matcherDocs = Object.values<Function>(matchers);
 
 const document = new AnnotationBuilder();
 
-function processClasses() {
+function generateClasses() {
 	classDocs.forEach((classDef) => {
 		const cls = new ClassBuilder({
 			name: classDef.name,
 			description: classDef.description,
 		});
 
-		const methods =
-			(classDef.fields?.filter((method) => isFunctionProperty(method)) as Function[] | undefined) ?? [];
-		const fields = classDef.fields?.filter((property) => property.type !== "function") ?? [];
+		const methods = classDef.fields?.filter((method) => isFunctionProperty(method)) ?? [];
+		const fields = classDef.fields?.filter((property) => !isFunctionProperty(property)) ?? [];
 
 		fields.forEach((field) => cls.addField(field));
 		cls.addDeclaration();
-		methods.forEach((method) => cls.addFunction(method));
+		methods.forEach((method) => cls.addFunction(method as Function));
 		document.addClass(cls);
 	});
 }
 
-function processFunctions() {
+function generateFunctions() {
 	functionDocs.forEach((func) => {
 		document.addFunction(func);
 	});
 }
 
-function processMatchers({ inverse }: { inverse: boolean }) {
+function generateMatcherClass({ inverse }: { inverse: boolean }) {
 	const name = inverse ? "lest.InverseMatchers" : "lest.Matchers";
 	const description = inverse ? "Inverse matchers for expect()" : "Matchers for expect()";
 
@@ -58,10 +57,10 @@ function processMatchers({ inverse }: { inverse: boolean }) {
 	document.addClass(matchersClass);
 }
 
-processClasses();
-processFunctions();
-processMatchers({ inverse: false });
-processMatchers({ inverse: true });
+generateClasses();
+generateFunctions();
+generateMatcherClass({ inverse: false });
+generateMatcherClass({ inverse: true });
 
 // This environment variable is set by NPM when you pass a double dashed argument to it.
 // The dev script passes --debug to the start:ts-node script, so this code is ran when you run `npm run dev`.
