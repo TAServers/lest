@@ -196,6 +196,25 @@ describe("annotationBuilder", () => {
 		expect(generatedAnnotations).not.toContain(unexpectedElement);
 	});
 
+	it("should handle undefined function descriptions", () => {
+		// Arrange
+		const document = new AnnotationBuilder();
+		document.addFunction({
+			name: "test",
+			description: undefined,
+			parameters: [],
+			returns: [],
+		});
+
+		const unexpectedElement = "--- undefined";
+
+		// Act
+		const generatedAnnotations = document.build();
+
+		// Assert
+		expect(generatedAnnotations).not.toContain(unexpectedElement);
+	});
+
 	it("should handle static methods on classes", () => {
 		// Arrange
 		const document = new AnnotationBuilder();

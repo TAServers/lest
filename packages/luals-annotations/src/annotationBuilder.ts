@@ -6,26 +6,46 @@ type FunctionRenderOptions = {
 	className?: string;
 };
 
-function renderFunctionDeclaration(func: Function, { staticMethod, className }: FunctionRenderOptions = {}): string {
-	const params = func.parameters ?? [];
-	const returns = func.returns ?? [];
+function renderParameterAnnotations(parameters: Property[]): string[] {
+	return parameters.map((param) => `---@param ${param.name}${param.optional ? "?" : ""} ${luaLSType(param)}`);
+}
 
-	const paramList = params.map((param) => `---@param ${param.name}${param.optional ? "?" : ""} ${luaLSType(param)}`);
-	const returnList = returns.map((ret) => `---@return ${luaLSType(ret)} ${ret.name ?? ""}`);
+function renderReturnAnnotations(returns: Property[]): string[] {
+	return returns.map((ret) => `---@return ${luaLSType(ret)} ${ret.name ?? ""}`);
+}
+
+function renderFunctionSignature(func: Function, staticMethod: boolean, className: string): string[] {
+	const { parameters = [], returns = [] } = func;
 
 	const functionCharacter = staticMethod ? "." : ":";
 	const functionPrefix = className ? `${className}${functionCharacter}` : "";
 
 	const functionNames = [func.name, ...(func.aliases ?? [])];
 
-	const annotations = functionNames.map((name) => {
-		const signature = `function ${functionPrefix}${name}(${params.map((param) => param.name)}) end`;
-		const description = Array.isArray(func.description) ? func.description : [func.description];
+	return functionNames.map(
+		(name) => `function ${functionPrefix}${name}(${parameters.map((param) => param.name)}) end`
+	);
+}
 
-		return [...description.map((line) => `--- ${line}`), ...paramList, ...returnList, signature].join("\n");
-	});
+function renderDescription(description: string | string[]): string[] {
+	const descriptionLines = Array.isArray(description) ? description : [description];
+	return descriptionLines.map((line) => `--- ${line}`);
+}
 
-	return annotations.join("\n");
+function renderFunctionDeclaration(
+	func: Function,
+	{ staticMethod = false, className = "" }: FunctionRenderOptions = {}
+): string {
+	const { parameters = [], returns = [], description = [] } = func;
+
+	const descriptionLines = renderDescription(description);
+	const paramList = renderParameterAnnotations(parameters);
+	const returnList = renderReturnAnnotations(returns);
+	const functionSignatures = renderFunctionSignature(func, staticMethod, className);
+
+	return functionSignatures
+		.map((signature) => [...descriptionLines, ...paramList, ...returnList, signature].join("\n"))
+		.join("\n");
 }
 
 export class DocumentBuilder {
