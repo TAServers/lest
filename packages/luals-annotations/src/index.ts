@@ -14,17 +14,18 @@ const document = new AnnotationBuilder();
 
 function generateClasses() {
 	classDocs.forEach((classDef) => {
+		const { name, description, fields = [] } = classDef;
 		const cls = new ClassBuilder({
-			name: classDef.name,
-			description: classDef.description,
+			name,
+			description,
 		});
 
-		const methods = classDef.fields?.filter((method) => isFunctionProperty(method)) ?? [];
-		const fields = classDef.fields?.filter((property) => !isFunctionProperty(property)) ?? [];
+		const classMethods = fields.filter((method) => isFunctionProperty(method)) ?? [];
+		const classFields = fields.filter((property) => !isFunctionProperty(property)) ?? [];
 
-		fields.forEach((field) => cls.addField(field));
+		classFields.forEach((field) => cls.addField(field));
 		cls.addDeclaration();
-		methods.forEach((method) => cls.addFunction(method as Function));
+		classMethods.forEach((method) => cls.addFunction(method as Function));
 		document.addClass(cls);
 	});
 }
