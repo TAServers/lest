@@ -12,22 +12,24 @@ const matcherDocs = Object.values<Function>(matchers);
 
 const document = new AnnotationBuilder();
 
-function generateClasses() {
-	classDocs.forEach((classInfo) => {
-		const { name, description, fields = [] } = classInfo;
-		const cls = new ClassBuilder({
-			name,
-			description,
-		});
-
-		const classMethods = fields.filter((method) => isFunctionProperty(method)) ?? [];
-		const classFields = fields.filter((property) => !isFunctionProperty(property)) ?? [];
-
-		classFields.forEach(cls.addField);
-		cls.addDeclaration();
-		classMethods.forEach((method) => cls.addFunction(method as Function));
-		document.addClass(cls);
+function generateClass(classInfo: Class) {
+	const { name, description, fields = [] } = classInfo;
+	const cls = new ClassBuilder({
+		name,
+		description,
 	});
+
+	const classMethods = fields.filter((method) => isFunctionProperty(method)) ?? [];
+	const classFields = fields.filter((property) => !isFunctionProperty(property)) ?? [];
+
+	classFields.forEach(cls.addField);
+	cls.addDeclaration();
+	classMethods.forEach((method) => cls.addFunction(method as Function));
+	document.addClass(cls);
+}
+
+function generateClasses() {
+	classDocs.forEach(generateClass);
 }
 
 function generateFunctions() {

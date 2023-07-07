@@ -84,9 +84,9 @@ export class ClassBuilder extends DocumentBuilder {
 
 	addClassAnnotations() {
 		this.add(`---@class ${this.name}`);
-		(Array.isArray(this.description) ? this.description : [this.description]).forEach(
-			(line) => line && this.add(`--- ${line}`)
-		);
+
+		const descriptionLines = Array.isArray(this.description) ? this.description : [this.description];
+		descriptionLines.forEach((line) => line && this.add(`--- ${line}`));
 	}
 
 	addFunction(func: Function, staticMethod: boolean = false) {
