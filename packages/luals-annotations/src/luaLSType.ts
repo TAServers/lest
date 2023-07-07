@@ -8,15 +8,15 @@ import {
 	Property,
 } from "@lest/docs";
 
-export function createParameterType(param: Property, returnSeparator = ":"): string {
+export function formatProperty(param: Property, typeSeparator = ":"): string {
 	const { name, optional } = param;
-	return `${name}${optional ? "?" : ""}${returnSeparator}${luaLSType(param)}`;
+	return `${name}${optional ? "?" : ""}${typeSeparator}${luaLSType(param)}`;
 }
 
 function convertFunctionProperty(property: FunctionProperty): string {
 	const { parameters = [], returns = [] } = property;
 
-	const paramList = parameters.map((param) => createParameterType(param));
+	const paramList = parameters.map((param) => formatProperty(param));
 	const returnList = returns.map((ret) => luaLSType(ret));
 
 	if (returnList.length === 0) {
@@ -39,7 +39,7 @@ function convertTableProperty(property: TableProperty) {
 		return "table";
 	}
 
-	return `{${property.fields.map((field) => `${field.name}:${luaLSType(field)}`).join(",")}}`;
+	return `{${property.fields.map((field) => formatProperty(field)).join(",")}}`;
 }
 
 export default function luaLSType(docType: Property): string {

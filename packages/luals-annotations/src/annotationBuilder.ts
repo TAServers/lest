@@ -1,4 +1,4 @@
-import luaLSType, { createParameterType } from "./luaLSType";
+import luaLSType, { formatProperty } from "./luaLSType";
 import { Function, Property } from "@lest/docs";
 
 type FunctionRenderOptions = {
@@ -7,7 +7,7 @@ type FunctionRenderOptions = {
 };
 
 function renderParameterAnnotations(parameters: Property[]): string[] {
-	return parameters.map((param) => `---@param ${createParameterType(param, " ")}`);
+	return parameters.map((param) => `---@param ${formatProperty(param, " ")}`);
 }
 
 function renderReturnAnnotations(returns: Property[]): string[] {
