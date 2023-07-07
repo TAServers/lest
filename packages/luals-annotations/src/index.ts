@@ -23,7 +23,7 @@ function generateClasses() {
 		const classMethods = fields.filter((method) => isFunctionProperty(method)) ?? [];
 		const classFields = fields.filter((property) => !isFunctionProperty(property)) ?? [];
 
-		classFields.forEach((field) => cls.addField(field));
+		classFields.forEach(cls.addField);
 		cls.addDeclaration();
 		classMethods.forEach((method) => cls.addFunction(method as Function));
 		document.addClass(cls);
@@ -31,9 +31,7 @@ function generateClasses() {
 }
 
 function generateFunctions() {
-	functionDocs.forEach((func) => {
-		document.addFunction(func);
-	});
+	functionDocs.forEach(document.addFunction);
 }
 
 function generateMatcherClass({ inverse }: { inverse: boolean }) {
