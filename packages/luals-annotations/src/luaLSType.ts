@@ -1,7 +1,14 @@
-import { Docs } from "./docTypes";
-import { isArrayProperty, isFunctionProperty, isTableProperty } from "@lest/docs";
+import {
+	FunctionProperty,
+	ArrayProperty,
+	TableProperty,
+	isArrayProperty,
+	isFunctionProperty,
+	isTableProperty,
+	Property,
+} from "@lest/docs";
 
-function convertFunctionProperty(property: Docs.FunctionProperty): string {
+function convertFunctionProperty(property: FunctionProperty): string {
 	const params = property.parameters ?? [];
 	const returns = property.returns ?? [];
 
@@ -15,7 +22,7 @@ function convertFunctionProperty(property: Docs.FunctionProperty): string {
 	return `fun(${paramList}):${returnList}`;
 }
 
-function convertArrayProperty(property: Docs.ArrayProperty) {
+function convertArrayProperty(property: ArrayProperty) {
 	if (typeof property.items === "string") {
 		return `${property.items}[]`;
 	} else {
@@ -23,7 +30,7 @@ function convertArrayProperty(property: Docs.ArrayProperty) {
 	}
 }
 
-function convertTableProperty(property: Docs.TableProperty) {
+function convertTableProperty(property: TableProperty) {
 	if (!property.fields) {
 		return "table";
 	}
@@ -31,7 +38,7 @@ function convertTableProperty(property: Docs.TableProperty) {
 	return `{${property.fields.map((field) => `${field.name}:${luaLSType(field)}`).join(",")}}`;
 }
 
-export default function luaLSType(docType: Docs.Property): string {
+export default function luaLSType(docType: Property): string {
 	if (isFunctionProperty(docType)) {
 		return convertFunctionProperty(docType);
 	}

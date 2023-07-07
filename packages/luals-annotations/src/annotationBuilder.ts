@@ -1,15 +1,12 @@
-import { Docs } from "./docTypes";
 import luaLSType from "./luaLSType";
+import { Function, Property } from "@lest/docs";
 
 type FunctionRenderOptions = {
 	staticMethod?: boolean;
 	className?: string;
 };
 
-function renderFunctionDeclaration(
-	func: Docs.Function,
-	{ staticMethod, className }: FunctionRenderOptions = {}
-): string {
+function renderFunctionDeclaration(func: Function, { staticMethod, className }: FunctionRenderOptions = {}): string {
 	const params = func.parameters ?? [];
 	const returns = func.returns ?? [];
 
@@ -75,11 +72,11 @@ export class ClassBuilder extends DocumentBuilder {
 		(Array.isArray(description) ? description : [description]).forEach((line) => this.addComment(line));
 	}
 
-	addFunction(func: Docs.Function, staticMethod: boolean = false) {
+	addFunction(func: Function, staticMethod: boolean = false) {
 		this.add(renderFunctionDeclaration(func, { staticMethod: staticMethod, className: this.name }));
 	}
 
-	addField(property: Docs.Property) {
+	addField(property: Property) {
 		// LuaLS has no support for multi line field descriptions, so that is why we join them with a space
 		const description = Array.isArray(property.description) ? property.description.join(" ") : property.description;
 		this.add(`---@field ${property.name} ${luaLSType(property)} ${description}`);
@@ -96,7 +93,7 @@ export default class AnnotationBuilder extends DocumentBuilder {
 		this.add("---@meta");
 	}
 
-	addFunction(func: Docs.Function) {
+	addFunction(func: Function) {
 		this.add(renderFunctionDeclaration(func));
 	}
 

@@ -1,10 +1,10 @@
 import luaLSType from "./luaLSType";
-import { Docs } from "./docTypes";
+import { ArrayProperty, TableProperty, FunctionProperty, Property } from "@lest/docs";
 
 describe("luaLSType", () => {
 	it("should handle untyped arrays", () => {
 		// Arrange
-		const testProperty: Docs.ArrayProperty = {
+		const testProperty: ArrayProperty = {
 			name: "test",
 			type: "array",
 			items: "any",
@@ -19,7 +19,7 @@ describe("luaLSType", () => {
 
 	it("should handle typed arrays", () => {
 		// Arrange
-		const testProperty: Docs.ArrayProperty = {
+		const testProperty: ArrayProperty = {
 			name: "test",
 			type: "array",
 			items: "lest.MockResult",
@@ -34,7 +34,7 @@ describe("luaLSType", () => {
 
 	it("should handle untyped arrays of arrays", () => {
 		// Arrange
-		const testProperty: Docs.ArrayProperty = {
+		const testProperty: ArrayProperty = {
 			name: "test",
 			type: "array",
 			items: {
@@ -52,7 +52,7 @@ describe("luaLSType", () => {
 
 	it("should handle specified function types", () => {
 		// Arrange
-		const testProperty: Docs.FunctionProperty = {
+		const testProperty: FunctionProperty = {
 			name: "test",
 			type: "function",
 			parameters: [
@@ -78,7 +78,7 @@ describe("luaLSType", () => {
 
 	it("should handle unspecified function types", () => {
 		// Arrange
-		const testProperty: Docs.Property = {
+		const testProperty: Property = {
 			name: "test",
 			type: "function",
 		};
@@ -92,7 +92,7 @@ describe("luaLSType", () => {
 
 	it("should handle functions with no returns", () => {
 		// Arrange
-		const testProperty: Docs.FunctionProperty = {
+		const testProperty: FunctionProperty = {
 			name: "test",
 			type: "function",
 			parameters: [
@@ -112,7 +112,7 @@ describe("luaLSType", () => {
 
 	it("should handle functions with optional parameters", () => {
 		// Arrange
-		const testProperty: Docs.FunctionProperty = {
+		const testProperty: FunctionProperty = {
 			name: "test",
 			type: "function",
 			parameters: [
@@ -138,7 +138,7 @@ describe("luaLSType", () => {
 	it("should handle multiple string literal types", () => {
 		// These are actually valid in LuaLS. So we don't need to do anything special.
 		// Arrange
-		const testProperty: Docs.Property = {
+		const testProperty: Property = {
 			name: "test",
 			type: '"test" | "test2"',
 		};
@@ -152,7 +152,7 @@ describe("luaLSType", () => {
 
 	it("should handle tables", () => {
 		// Arrange
-		const testProperty: Docs.TableProperty = {
+		const testProperty: TableProperty = {
 			name: "test",
 			type: "table",
 			fields: [
@@ -183,7 +183,7 @@ describe("luaLSType", () => {
 							type: "number",
 						},
 					],
-				} as Docs.FunctionProperty,
+				} as FunctionProperty,
 			],
 		};
 
@@ -196,7 +196,7 @@ describe("luaLSType", () => {
 
 	it("should handle generic table types", () => {
 		// Arrange
-		const testProperty: Docs.Property = {
+		const testProperty: Property = {
 			name: "test",
 			type: "table",
 		};
