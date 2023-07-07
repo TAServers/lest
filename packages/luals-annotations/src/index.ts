@@ -1,7 +1,7 @@
 import * as functions from "@lest/docs/functions";
 import * as classes from "@lest/docs/types";
 import * as matchers from "@lest/docs/matchers";
-import { Class, Function, FunctionProperty, isFunctionProperty } from "@lest/docs";
+import { Class, Function, isFunctionProperty } from "@lest/docs";
 
 import * as fs from "fs";
 import AnnotationBuilder, { ClassBuilder } from "./annotationBuilder";
