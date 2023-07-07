@@ -1,4 +1,4 @@
-import luaLSType from "./luaLSType";
+import luaLSType, { createParameterType } from "./luaLSType";
 import { Function, Property } from "@lest/docs";
 
 type FunctionRenderOptions = {
@@ -7,7 +7,7 @@ type FunctionRenderOptions = {
 };
 
 function renderParameterAnnotations(parameters: Property[]): string[] {
-	return parameters.map((param) => `---@param ${param.name}${param.optional ? "?" : ""} ${luaLSType(param)}`);
+	return parameters.map((param) => `---@param ${createParameterType(param, " ")}`);
 }
 
 function renderReturnAnnotations(returns: Property[]): string[] {
@@ -15,7 +15,7 @@ function renderReturnAnnotations(returns: Property[]): string[] {
 }
 
 function renderFunctionSignature(func: Function, staticMethod: boolean, className: string): string[] {
-	const { parameters = [], returns = [] } = func;
+	const { parameters = [] } = func;
 
 	const functionCharacter = staticMethod ? "." : ":";
 	const functionPrefix = className ? `${className}${functionCharacter}` : "";

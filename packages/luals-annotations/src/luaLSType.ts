@@ -8,11 +8,15 @@ import {
 	Property,
 } from "@lest/docs";
 
-function convertFunctionProperty(property: FunctionProperty): string {
-	const params = property.parameters ?? [];
-	const returns = property.returns ?? [];
+export function createParameterType(param: Property, returnSeparator = ":"): string {
+	const { name, optional } = param;
+	return `${name}${optional ? "?" : ""}${returnSeparator}${luaLSType(param)}`;
+}
 
-	const paramList = params.map((param) => `${param.name}${(param.optional && "?") || ""}:${luaLSType(param)}`);
+function convertFunctionProperty(property: FunctionProperty): string {
+	const { parameters = [], returns = [] } = property;
+
+	const paramList = parameters.map((param) => createParameterType(param));
 	const returnList = returns.map((ret) => luaLSType(ret));
 
 	if (returnList.length === 0) {
