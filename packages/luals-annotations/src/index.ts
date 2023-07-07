@@ -13,8 +13,8 @@ const matcherDocs = Object.values<Function>(matchers);
 const document = new AnnotationBuilder();
 
 function generateClasses() {
-	classDocs.forEach((classDef) => {
-		const { name, description, fields = [] } = classDef;
+	classDocs.forEach((classInfo) => {
+		const { name, description, fields = [] } = classInfo;
 		const cls = new ClassBuilder({
 			name,
 			description,
