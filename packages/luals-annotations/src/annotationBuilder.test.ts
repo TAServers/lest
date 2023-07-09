@@ -128,13 +128,13 @@ describe("annotationBuilder", () => {
 		cls.addDeclaration();
 		document.addClass(cls);
 
-		const expectedElement = "---@field test string Hello! World!";
+		const expectedElements = ["---@field test string", "--- Hello!", "--- World!"];
 
 		// Act
 		const generatedAnnotations = document.build();
 
 		// Assert
-		expect(generatedAnnotations).toContain(expectedElement);
+		expectedElements.forEach((element) => expect(generatedAnnotations).toContain(element));
 	});
 
 	it("should handle multi-line descriptions for classes", () => {

@@ -84,8 +84,11 @@ export class ClassBuilder extends DocumentBuilder {
 
 	addClassAnnotations() {
 		this.add(`---@class ${this.name}`);
+		this.addDescription(this.description);
+	}
 
-		const descriptionLines = Array.isArray(this.description) ? this.description : [this.description];
+	addDescription(description: string[] | string | undefined) {
+		const descriptionLines = Array.isArray(description) ? description : [description];
 		descriptionLines.forEach((line) => line && this.add(`--- ${line}`));
 	}
 
@@ -94,9 +97,8 @@ export class ClassBuilder extends DocumentBuilder {
 	}
 
 	addField(property: Property) {
-		// LuaLS has no support for multi line field descriptions, so that is why we join them with a space
-		const description = Array.isArray(property.description) ? property.description.join(" ") : property.description;
-		this.add(`---@field ${formatProperty(property, " ")} ${description}`);
+		this.addDescription(property.description);
+		this.add(`---@field ${formatProperty(property, " ")}`);
 	}
 
 	addDeclaration() {
