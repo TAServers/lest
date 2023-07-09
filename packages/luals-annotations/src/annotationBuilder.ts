@@ -38,6 +38,11 @@ function renderFunctionDeclaration(
 ): string {
 	const { parameters = [], returns = [], description = [] } = func;
 
+	// LuaLS has a very strict order about the function annotations, so this is why we have a specific order.
+	// 1. Description
+	// 2. Parameters
+	// 3. Returns
+	// 4. Function signature
 	const descriptionLines = renderDescription(description);
 	const paramList = renderParameterAnnotations(parameters);
 	const returnList = renderReturnAnnotations(returns);
