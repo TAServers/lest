@@ -14,7 +14,7 @@ function renderReturnAnnotations(returns: Property[]): string[] {
 	return returns.map((ret) => `---@return ${luaLSType(ret)} ${ret.name ?? ""}`);
 }
 
-function renderFunctionSignature(func: Function, staticMethod: boolean, className: string): string[] {
+function renderFunctionAliases(func: Function, staticMethod: boolean, className: string): string[] {
 	const { parameters = [] } = func;
 
 	const functionCharacter = staticMethod ? "." : ":";
@@ -41,7 +41,7 @@ function renderFunctionDeclaration(
 	const descriptionLines = renderDescription(description);
 	const paramList = renderParameterAnnotations(parameters);
 	const returnList = renderReturnAnnotations(returns);
-	const functionSignatures = renderFunctionSignature(func, staticMethod, className);
+	const functionSignatures = renderFunctionAliases(func, staticMethod, className);
 
 	return functionSignatures
 		.map((signature) => [...descriptionLines, ...paramList, ...returnList, signature].join("\n"))
