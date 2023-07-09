@@ -18,9 +18,7 @@
     "lest": "dist/index.js"
   },
   "scripts": {
-    "bundle": "luabundler bundle src/lua/lest.lua -p \"./?.lua\" -o dist/lua/lest.lua",
-    "minify": "lua scripts/minify.lua",
-    "build:lua": "npm run bundle && npm run minify",
+    "build:lua": "luabundler bundle src/lua/lest.lua -p \"./?.lua\" -o dist/lua/lest.lua",
     "build:ts": "tsc -p tsconfig.build.json",
     "build": "npm run build:lua && npm run build:ts",
     "test:lua": "lua src/lua/lest.lua",
