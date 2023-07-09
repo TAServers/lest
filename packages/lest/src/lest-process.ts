@@ -29,7 +29,7 @@ export class LestProcess {
 		this.scriptPath = path.join(__dirname, "lua", "lest.lua");
 	}
 
-	async run(args: string[] = []) {
+	async run(args: string[] = []): Promise<boolean> {
 		const executablePath = await findLuaExecutable(this.luaCommand);
 		const process = spawn(executablePath, [this.scriptPath, ...args]);
 
@@ -43,6 +43,12 @@ export class LestProcess {
 
 		process.on("error", (error) => {
 			this.triggerEvent(LestEvent.Error, error);
+		});
+
+		return new Promise((resolve) => {
+			process.on("exit", (code) => {
+				resolve(code === 0);
+			});
 		});
 	}
 
