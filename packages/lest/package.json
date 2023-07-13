@@ -9,13 +9,11 @@
     "url": "https://github.com/TAServers/lest",
     "directory": "packages/lest"
   },
-  "main": "dist/index.js",
-  "exports": {
-    ".": "dist/index.js"
-  },
-  "types": "dist/index.d.ts",
+  "main": "./dist/index.js",
+  "exports": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "bin": {
-    "lest": "dist/index.js"
+    "lest": "./dist/bin/lest.js"
   },
   "scripts": {
     "build:lua": "luabundler bundle src/lua/lest.lua -p \"./?.lua\" -o dist/lua/lest.lua",
@@ -25,7 +23,7 @@
     "test:ts": "jest",
     "test": "npm run test:lua && npm run test:ts",
     "clean": "rimraf dist",
-    "start": "ts-node src/index.ts"
+    "start": "ts-node src/bin/lest.ts"
   },
   "devDependencies": {
     "@types/jest": "^29.5.2",
