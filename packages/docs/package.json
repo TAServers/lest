@@ -4,6 +4,12 @@
   "description": "API documentation in JSON form.",
   "main": "dist/index",
   "types": "dist/index",
+  "exports": {
+    ".": "./dist/index.js",
+    "./functions": "./dist/functions/index.js",
+    "./types": "./dist/types/index.js",
+    "./matchers": "./dist/matchers/index.js"
+  },
   "scripts": {
     "build": "tsc"
   }
