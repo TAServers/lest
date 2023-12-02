@@ -4,7 +4,6 @@
   "description": "Monorepo package for Lest.",
   "license": "MIT",
   "scripts": {
-    "prepare": "husky install",
     "format:lest": "prettier --check packages/lest",
     "format:site": "prettier --check packages/site",
     "format:docs": "prettier --check packages/docs",
@@ -24,15 +23,7 @@
     "packages/luals-annotations"
   ],
   "devDependencies": {
-    "@commitlint/cli": "^17.5.1",
-    "@commitlint/config-conventional": "^17.4.4",
-    "husky": "^8.0.3",
     "prettier": "^2.8.7",
     "rimraf": "^5.0.0"
-  },
-  "overrides": {
-    "trim": "0.0.3",
-    "got": ">=11.8.5",
-    "semver": ">=7.5.2"
   }
 }
