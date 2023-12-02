@@ -18,4 +18,8 @@ The valid change types are:
 
 ### Changed
 
--   Changed the way releases are handled to use a changelog file. This is a dummy release with no code changes.
+-   Improved version and release management approach
+
+### Security
+
+-   Updated package dependencies to resolve audit failures
