@@ -35,13 +35,13 @@ jobs:
         id: changelog
         with:
           validation_level: error
+          version: ${{ steps.version.outputs.version }}
           path: ./packages/lest/CHANGELOG.md
 
       - name: debug changelog
         run: |
           echo ${{ steps.changelog.outputs.version }}
           echo ${{ steps.changelog.outputs.changes }}
-          echo ${{ steps.version.outputs.version }}
 
   test:
     runs-on: ubuntu-latest
