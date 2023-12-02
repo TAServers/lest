@@ -29,9 +29,7 @@ jobs:
 
       - name: Extract package version
         id: version
-        run: |
-          version = cat package.json | jq -r '.version'
-          echo "version=${version}" >> "$GITHUB_OUTPUT"
+        run: echo "version=$(cat package.json | jq -r '.version')" >> "$GITHUB_OUTPUT"
 
       - uses: mindsers/changelog-reader-action@v2
         id: changelog
