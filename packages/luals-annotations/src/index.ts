@@ -54,8 +54,7 @@ functionDocs.forEach((func) => document.addFunction(func));
 generateMatcherClass({ inverse: false });
 generateMatcherClass({ inverse: true });
 
-// This environment variable is set by NPM when you pass --debug to itw
-
+// This environment variable is set by NPM when you pass --debug to it
 if (process.env["npm_config_debug"]) {
 	console.log(document.build());
 	process.exit(0);
