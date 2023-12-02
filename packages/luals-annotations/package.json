@@ -6,7 +6,7 @@
     "start:ts-node": "ts-node src/index.ts",
     "start": "node dist/index.js",
     "dev": "npm run --debug start:ts-node && onchange \"src/**/*.ts\" -- npm run --debug start:ts-node",
-    "build": "tsc --build -p tsconfig.build.json",
+    "build": "tsc --build tsconfig.build.json",
     "test": "jest"
   },
   "devDependencies": {

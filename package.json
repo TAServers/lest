@@ -9,7 +9,7 @@
     "format:site": "prettier --check packages/site",
     "format:docs": "prettier --check packages/docs",
     "build:lest": "npm run build --workspace=packages/lest",
-    "build:luals-annotations": "npm run build:docs && npm run build --workspace=packages/luals-annotations",
+    "build:luals-annotations": "npm run build --workspace=packages/luals-annotations",
     "test:luals-annotations": "npm run test --workspace=packages/luals-annotations",
     "annotate:luals": "npm run start --workspace=packages/luals-annotations",
     "build:docs": "npm run build --workspace=packages/docs",
@@ -34,6 +34,5 @@
     "trim": "0.0.3",
     "got": ">=11.8.5",
     "semver": ">=7.5.2"
-
   }
 }
