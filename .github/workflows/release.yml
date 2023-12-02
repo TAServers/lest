@@ -31,45 +31,42 @@ jobs:
           cache: "npm"
           registry-url: "https://registry.npmjs.org"
 
-      - name: Generate changelog
-        id: changelog
-        uses: TriPSs/conventional-changelog-action@v3
+      - name: Publish to NPM
+        uses: JS-DevTools/npm-publish@v3
+        id: publish
         with:
-          github-token: ${{ secrets.github_token }}
-          output-file: "false"
-          skip-commit: "true"
-          skip-version-file: "true"
-          git-path: "packages/lest"
+          token: ${{ secrets.NPM_TOKEN }}
+          package: packages/lest
+          provenance: true
+          strategy: upgrade
+
+      - name: Parse CHANGELOG.md
+        uses: mindsers/changelog-reader-action@v2
+        id: changelog
+        if: steps.publish.outputs.type
+        with:
+          validation_level: warn
+          version: ${{ steps.publish.outputs.version }}
+          path: ./packages/lest/CHANGELOG.md
 
       - name: Push release
         uses: softprops/action-gh-release@v1
-        if: steps.changelog.outputs.skipped != 'true'
+        if: steps.publish.outputs.type
         with:
           files: packages/lest/dist/lua/lest.lua
-          tag_name: ${{ steps.changelog.outputs.tag }}
-          name: Lest - ${{ steps.changelog.outputs.tag }}
-          body: ${{ steps.changelog.outputs.clean_changelog }}
+          tag_name: v${{ steps.publish.outputs.version }}
+          name: Lest - v${{ steps.publish.outputs.version }}
+          body: ${{ steps.changelog.outputs.changes }}
 
       - name: Update latest tag
         uses: EndBug/latest-tag@latest
-        if: steps.changelog.outputs.skipped != 'true'
+        if: steps.publish.outputs.type
 
       - name: Push release for latest tag
         uses: softprops/action-gh-release@v1
-        if: steps.changelog.outputs.skipped != 'true'
+        if: steps.publish.outputs.type
         with:
           files: packages/lest/dist/lua/lest.lua
           tag_name: latest
-          name: Lest - ${{ steps.changelog.outputs.tag }}
-          body: ${{ steps.changelog.outputs.clean_changelog }}
-
-      - name: Update package.json version
-        if: steps.changelog.outputs.skipped != 'true'
-        run: "sed -i 's/{{VERSION}}/${{ steps.changelog.outputs.tag }}/g' packages/lest/package.json"
-
-      - name: Publish to NPM
-        if: steps.changelog.outputs.skipped != 'true'
-        working-directory: packages/lest
-        run: npm publish --provenance
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          name: Lest - ${{ steps.publish.outputs.version }}
+          body: ${{ steps.changelog.outputs.changes }}
