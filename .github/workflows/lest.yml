@@ -38,11 +38,6 @@ jobs:
           version: ${{ steps.version.outputs.version }}
           path: ./packages/lest/CHANGELOG.md
 
-      # - name: debug changelog
-      #   run: |
-      #     echo ${{ steps.changelog.outputs.version }}
-      #     echo ${{ steps.changelog.outputs.changes }}
-
   test:
     runs-on: ubuntu-latest
     strategy:
