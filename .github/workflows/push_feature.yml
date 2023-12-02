@@ -1,0 +1,10 @@
+name: Push to feature branch
+
+on:
+  push:
+    branches-ignore:
+      - master
+
+jobs:
+  lest:
+    uses: ./.github/workflows/lest.yml

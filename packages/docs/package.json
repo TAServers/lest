@@ -2,8 +2,14 @@
   "name": "@lest/docs",
   "private": true,
   "description": "API documentation in JSON form.",
-  "main": "dist/index",
-  "types": "dist/index",
+  "main": "dist/src/index",
+  "types": "dist/src/index",
+  "exports": {
+    ".": "./dist/src/index.js",
+    "./functions": "./dist/src/functions/index.js",
+    "./types": "./dist/src/types/index.js",
+    "./matchers": "./dist/src/matchers/index.js"
+  },
   "scripts": {
     "build": "tsc"
   }

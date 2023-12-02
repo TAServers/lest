@@ -1,4 +1,5 @@
 packages/**/dist
 node_modules
+packages/**/coverage
 .idea/discord.xml
 *.tsbuildinfo
