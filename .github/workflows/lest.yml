@@ -27,6 +27,12 @@ jobs:
           version: latest
           args: --check ./packages/lest
 
+      - name: Extract package version
+        id: version
+        run: |
+          version = cat package.json | jq -r '.version'
+          echo "version=${version}" >> "$GITHUB_OUTPUT"
+
       - uses: mindsers/changelog-reader-action@v2
         id: changelog
         with:
@@ -37,8 +43,7 @@ jobs:
         run: |
           echo ${{ steps.changelog.outputs.version }}
           echo ${{ steps.changelog.outputs.changes }}
-          echo ${{ steps.changelog.outputs.status }}
-          echo ${{ steps.changelog.outputs.date }}
+          echo ${{ steps.version.outputs.version }}
 
   test:
     runs-on: ubuntu-latest
