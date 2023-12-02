@@ -2,9 +2,6 @@ name: Lest CI
 
 on:
   workflow_call:
-  push:
-    branches-ignore:
-      - master
 
 jobs:
   lint:

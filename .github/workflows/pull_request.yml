@@ -1,0 +1,9 @@
+name: Pull request created or updated
+
+on: pull_request
+
+jobs:
+  lest:
+    uses: "./.github/workflows/lest.yml"
+    # Only run on forks to avoid duplicating the "push" workflow
+    if: ${{ github.event.pull_request.head.repo.fork }}
