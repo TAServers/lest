@@ -26,7 +26,7 @@ const transformHeading = (heading: Element): TOCItem => {
 };
 
 export default function DocItem({ content: DocContent }: Props) {
-	const docHtmlClassName = `docs-doc-id-${DocContent.metadata.unversionedId}`;
+	const docHtmlClassName = `docs-doc-id-${DocContent.metadata.id}`;
 	const [toc, setToc] = useState<TOCItem[]>([]);
 
 	useEffect(() => {

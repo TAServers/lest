@@ -6,7 +6,7 @@ import { Aliases } from "./components/Aliases";
 import Description from "../Description";
 
 interface FunctionRendererProps extends Function {
-	headingLevel: "h1" | "h2" | "h3" | "h4" | "h5";
+	headingLevel?: "h1" | "h2" | "h3" | "h4" | "h5";
 	children: React.ReactNode;
 }
 
