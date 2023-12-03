@@ -9,7 +9,7 @@ local function matchOption(arg)
 	for _, pattern in ipairs(OPTION_PATTERNS) do
 		local key, value = string.match(arg, pattern)
 		if key then
-			return key, value or true
+			return key, value or "true"
 		end
 	end
 end

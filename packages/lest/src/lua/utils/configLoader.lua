@@ -1,9 +1,9 @@
 local parseCliOptions = require("src.lua.utils.cliParser")
 
 ---@class ConfigProperty
----@field cliOnly? boolean
----@field default? any
+---@field default any
 ---@field type type
+---@field cliOnly? boolean
 
 local CLI_ARGUMENT_CASTS_BY_TYPE = {
 	number = tonumber,
