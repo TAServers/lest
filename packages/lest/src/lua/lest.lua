@@ -1,12 +1,9 @@
 require("src.lua.mocking")
 
-local cli = require("src.lua.cli")
 local filesInFolder = require("src.lua.utils.filesInFolder")
 local runtime = require("src.lua.runtime")
 local prettyPrint = require("src.lua.prettyprint")
-
-local options = cli(arg)
-local config = dofile(options.config)
+local config = require("src.lua.config")
 
 local files = filesInFolder()
 local testFiles, testFilesCount = {}, 0
@@ -21,9 +18,7 @@ for _, filepath in ipairs(files) do
 	end
 end
 
-if options.testTimeout then
-	runtime.setDefaultTimeout(options.testTimeout)
-elseif config.testTimeout then
+if config.testTimeout then
 	runtime.setDefaultTimeout(config.testTimeout)
 end
 
