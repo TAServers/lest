@@ -11,6 +11,7 @@ local NON_PRINTABLE_REPLACEMENTS = {
 	["\a"] = [[\a]],
 	["\b"] = [[\b]],
 	["\f"] = [[\f]],
+	["\n"] = [[\n]],
 	["\r"] = [[\r]],
 	["\t"] = [[\t]],
 	["\v"] = [[\v]],
@@ -19,7 +20,7 @@ local NON_PRINTABLE_REPLACEMENTS = {
 local function serialiseString(str)
 	return '"'
 		.. str:gsub("[\\\"']", PRINTABLE_REPLACEMENTS)
-			:gsub("[^\x20-\x7E\n]", function(match)
+			:gsub("[^\x20-\x7E]", function(match)
 				return NON_PRINTABLE_REPLACEMENTS[match]
 					or string.format([[\%d]], string.byte(match, 1))
 			end)
