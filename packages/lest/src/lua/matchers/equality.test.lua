@@ -1,6 +1,7 @@
-local equality = require("src.lua.matchers.equality")
+local equality = require("matchers.equality")
 local serialiseValue = require("utils.serialise-value")
 local assertMatcher = require("asserts.matchers")
+local renderDiff = require("utils.render-diff")
 
 local CONTEXT = {
 	inverted = false,
@@ -19,16 +20,26 @@ describe("equality matchers", function()
 		end)
 
 		it("should fail when the arguments aren't equal", function()
-			local result = equality.toBe(CONTEXT, 2, 42)
+			local expected = { 1, 2, 3 }
+			local received = { 1, 2, 3 }
+
+			local result = equality.toBe(CONTEXT, received, expected)
 
 			assertMatcher.failed(result)
-			assertMatcher.hasMessage(result, "Expected 2 to be 42")
+			assertMatcher.hasMessage(
+				result,
+				renderDiff(expected, received, false, false)
+			)
 		end)
 
 		it(
 			"should pass when inverted and the arguments aren't equal",
 			function()
-				local result = equality.toBe(INVERTED_CONTEXT, 2, 42)
+				local expected = { 1, 2, 3 }
+				local received = { 1, 2, 3 }
+
+				local result =
+					equality.toBe(INVERTED_CONTEXT, received, expected)
 				result.pass = not result.pass
 
 				assertMatcher.passed(result)
@@ -36,11 +47,25 @@ describe("equality matchers", function()
 		)
 
 		it("should fail when inverted and the arguments are equal", function()
-			local result = equality.toBe(INVERTED_CONTEXT, 2, 2)
+			local expectedAndReceived = 2
+
+			local result = equality.toBe(
+				INVERTED_CONTEXT,
+				expectedAndReceived,
+				expectedAndReceived
+			)
 			result.pass = not result.pass
 
 			assertMatcher.failed(result)
-			assertMatcher.hasMessage(result, "Expected 2 to not be 2")
+			assertMatcher.hasMessage(
+				result,
+				renderDiff(
+					expectedAndReceived,
+					expectedAndReceived,
+					false,
+					true
+				)
+			)
 		end)
 	end)
 
@@ -112,10 +137,16 @@ describe("equality matchers", function()
 		end)
 
 		it("should fail on inequality", function()
-			local result = equality.toEqual(CONTEXT, 10, 15)
+			local expected = 10
+			local received = 15
+
+			local result = equality.toEqual(CONTEXT, received, expected)
 
 			assertMatcher.failed(result)
-			assertMatcher.hasMessage(result, "Expected: 15\nReceived: 10")
+			assertMatcher.hasMessage(
+				result,
+				renderDiff(expected, received, true)
+			)
 		end)
 
 		it("should pass on deep equality", function()
@@ -171,19 +202,7 @@ describe("equality matchers", function()
 			assertMatcher.failed(result)
 			assertMatcher.hasMessage(
 				result,
-				[[- Expected  - 0
-+ Received  + 1
-
-  Table {
-    Table {
-      12,
-      14,
-      18,
-+     "I'm not supposed to be here",
-    },
-    hi = 10,
-    turing = "alan",
-  }]]
+				renderDiff(expected, received, true)
 			)
 		end)
 
@@ -195,11 +214,20 @@ describe("equality matchers", function()
 		end)
 
 		it("should fail when inverted on equality", function()
-			local result = equality.toEqual(INVERTED_CONTEXT, 10, 10)
+			local expectedAndReceived = 10
+
+			local result = equality.toEqual(
+				INVERTED_CONTEXT,
+				expectedAndReceived,
+				expectedAndReceived
+			)
 			result.pass = not result.pass
 
 			assertMatcher.failed(result)
-			assertMatcher.hasMessage(result, "Expected: not 10")
+			assertMatcher.hasMessage(
+				result,
+				renderDiff(expectedAndReceived, expectedAndReceived, true, true)
+			)
 		end)
 
 		it("should pass when inverted on deep inequality", function()
@@ -232,7 +260,7 @@ describe("equality matchers", function()
 		end)
 
 		it("should fail when inverted on deep equality", function()
-			local tableOne = {
+			local expectedAndReceived = {
 				hi = 10,
 				["turing"] = "alan",
 				{
@@ -242,24 +270,17 @@ describe("equality matchers", function()
 				},
 			}
 
-			local tableTwo = {
-				hi = 10,
-				["turing"] = "alan",
-				{
-					12,
-					14,
-					18,
-				},
-			}
-
-			local result =
-				equality.toEqual(INVERTED_CONTEXT, tableOne, tableTwo)
+			local result = equality.toEqual(
+				INVERTED_CONTEXT,
+				expectedAndReceived,
+				expectedAndReceived
+			)
 			result.pass = not result.pass
 
 			assertMatcher.failed(result)
 			assertMatcher.hasMessage(
 				result,
-				("Expected: not %s"):format(serialiseValue(tableTwo))
+				renderDiff(expectedAndReceived, expectedAndReceived, true, true)
 			)
 		end)
 	end)

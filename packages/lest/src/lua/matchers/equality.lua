@@ -6,12 +6,7 @@ local renderDiff = require("utils.render-diff")
 local function toBe(ctx, received, expected)
 	return {
 		pass = received == expected,
-		message = string.format(
-			"Expected %s to%sbe %s",
-			serialiseValue(received),
-			ctx.inverted and " not " or " ",
-			serialiseValue(expected)
-		),
+		message = renderDiff(expected, received, false, ctx.inverted),
 	}
 end
 
@@ -42,7 +37,7 @@ end
 local function toEqual(ctx, received, expected)
 	return {
 		pass = deepEqual(received, expected),
-		message = renderDiff(expected, received, ctx.inverted),
+		message = renderDiff(expected, received, true, ctx.inverted),
 	}
 end
 
