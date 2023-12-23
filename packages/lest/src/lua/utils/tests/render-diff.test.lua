@@ -240,25 +240,3 @@ test(
 		expect(rendered).toBe("Expected: not " .. COLOURS.EXPECTED("{1, 2, 3}"))
 	end
 )
-
-test("diff rendering showcase", function()
-	local expected = {
-		1,
-		"banana",
-		a = { 1, 2, 3 },
-		b = { foo = true, [false] = "bar" },
-	}
-	expected.a.a = expected.a
-	expected.a.b = expected.b
-
-	local received = {
-		1,
-		"orange",
-		a = { 1, 2, 3, 4 },
-		b = { foo = "bar", [999] = "baz" },
-	}
-	received.a.a = received.a
-	received.a.b = received.b
-
-	expect(received).toEqual(expected)
-end)
