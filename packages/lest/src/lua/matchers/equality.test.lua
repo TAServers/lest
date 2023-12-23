@@ -1,18 +1,6 @@
 local equality = require("src.lua.matchers.equality")
 local serialiseValue = require("utils.serialise-value")
-
---- Asserts that a matcher passed
----@param result lest.MatcherResult Result of the matcher
-local function assertPass(result)
-	assert(result.pass, "test failed when it should have passed!")
-end
-
---- Asserts that a matcher failed
----@param result lest.MatcherResult Result of the matcher
----@param expectedMsg string Expected message of the matcher
-local function assertFail(result, expectedMsg)
-	assert(result.message == expectedMsg, "test has an incorrect fail message!")
-end
+local assertMatcher = require("asserts.matchers")
 
 local CONTEXT = {
 	inverted = false,
@@ -27,13 +15,14 @@ describe("equality matchers", function()
 		it("should pass when the arguments are equal", function()
 			local result = equality.toBe(CONTEXT, 2, 2)
 
-			assertPass(result)
+			assertMatcher.passed(result)
 		end)
 
 		it("should fail when the arguments aren't equal", function()
 			local result = equality.toBe(CONTEXT, 2, 42)
 
-			assertFail(result, "Expected 2 to be 42")
+			assertMatcher.failed(result)
+			assertMatcher.hasMessage(result, "Expected 2 to be 42")
 		end)
 
 		it(
@@ -42,7 +31,7 @@ describe("equality matchers", function()
 				local result = equality.toBe(INVERTED_CONTEXT, 2, 42)
 				result.pass = not result.pass
 
-				assertPass(result)
+				assertMatcher.passed(result)
 			end
 		)
 
@@ -50,7 +39,8 @@ describe("equality matchers", function()
 			local result = equality.toBe(INVERTED_CONTEXT, 2, 2)
 			result.pass = not result.pass
 
-			assertFail(result, "Expected 2 to not be 2")
+			assertMatcher.failed(result)
+			assertMatcher.hasMessage(result, "Expected 2 to not be 2")
 		end)
 	end)
 
@@ -58,27 +48,29 @@ describe("equality matchers", function()
 		it("should pass when defined", function()
 			local result = equality.toBeDefined(CONTEXT, 10)
 
-			assertPass(result)
+			assertMatcher.passed(result)
 		end)
 
 		it("should fail when undefined", function()
 			local result = equality.toBeDefined(CONTEXT, nil)
 
-			assertFail(result, "Expected nil to be defined")
+			assertMatcher.failed(result)
+			assertMatcher.hasMessage(result, "Expected nil to be defined")
 		end)
 
 		it("should pass when inverted and undefined", function()
 			local result = equality.toBeDefined(INVERTED_CONTEXT, nil)
 			result.pass = not result.pass
 
-			assertPass(result)
+			assertMatcher.passed(result)
 		end)
 
 		it("should fail when inverted and defined", function()
 			local result = equality.toBeDefined(INVERTED_CONTEXT, 10)
 			result.pass = not result.pass
 
-			assertFail(result, "Expected 10 to be undefined")
+			assertMatcher.failed(result)
+			assertMatcher.hasMessage(result, "Expected 10 to be undefined")
 		end)
 	end)
 
@@ -86,27 +78,29 @@ describe("equality matchers", function()
 		it("should pass when undefined", function()
 			local result = equality.toBeUndefined(CONTEXT, nil)
 
-			assertPass(result)
+			assertMatcher.passed(result)
 		end)
 
 		it("should fail when defined", function()
 			local result = equality.toBeUndefined(CONTEXT, 10)
 
-			assertFail(result, "Expected 10 to be undefined")
+			assertMatcher.failed(result)
+			assertMatcher.hasMessage(result, "Expected 10 to be undefined")
 		end)
 
 		it("should pass when inverted and defined", function()
 			local result = equality.toBeUndefined(INVERTED_CONTEXT, 10)
 			result.pass = not result.pass
 
-			assertPass(result)
+			assertMatcher.passed(result)
 		end)
 
 		it("should fail when inverted and undefined", function()
 			local result = equality.toBeUndefined(INVERTED_CONTEXT, nil)
 			result.pass = not result.pass
 
-			assertFail(result, "Expected nil to be defined")
+			assertMatcher.failed(result)
+			assertMatcher.hasMessage(result, "Expected nil to be defined")
 		end)
 	end)
 
@@ -114,13 +108,14 @@ describe("equality matchers", function()
 		it("should pass on equality", function()
 			local result = equality.toEqual(CONTEXT, 10, 10)
 
-			assertPass(result)
+			assertMatcher.passed(result)
 		end)
 
 		it("should fail on inequality", function()
 			local result = equality.toEqual(CONTEXT, 10, 15)
 
-			assertFail(result, "Expected: 15\nReceived: 10")
+			assertMatcher.failed(result)
+			assertMatcher.hasMessage(result, "Expected: 15\nReceived: 10")
 		end)
 
 		it("should pass on deep equality", function()
@@ -146,21 +141,11 @@ describe("equality matchers", function()
 
 			local result = equality.toEqual(CONTEXT, tableOne, tableTwo)
 
-			assertPass(result)
+			assertMatcher.passed(result)
 		end)
 
 		it("should fail on deep inequality", function()
-			local tableOne = {
-				hi = 10,
-				["turing"] = "alan",
-				{
-					12,
-					14,
-					18,
-				},
-			}
-
-			local tableTwo = {
+			local received = {
 				hi = 10,
 				["turing"] = "alan",
 				{
@@ -171,9 +156,20 @@ describe("equality matchers", function()
 				},
 			}
 
-			local result = equality.toEqual(CONTEXT, tableOne, tableTwo)
+			local expected = {
+				hi = 10,
+				["turing"] = "alan",
+				{
+					12,
+					14,
+					18,
+				},
+			}
 
-			assertFail(
+			local result = equality.toEqual(CONTEXT, received, expected)
+
+			assertMatcher.failed(result)
+			assertMatcher.hasMessage(
 				result,
 				[[- Expected  - 0
 + Received  + 1
@@ -186,8 +182,8 @@ describe("equality matchers", function()
 +     "I'm not supposed to be here",
     },
     hi = 10,
-    turing = "alan"
-}]]
+    turing = "alan",
+  }]]
 			)
 		end)
 
@@ -195,13 +191,15 @@ describe("equality matchers", function()
 			local result = equality.toEqual(INVERTED_CONTEXT, 5, 10)
 			result.pass = not result.pass
 
-			assertPass(result)
+			assertMatcher.passed(result)
 		end)
 
 		it("should fail when inverted on equality", function()
 			local result = equality.toEqual(INVERTED_CONTEXT, 10, 10)
+			result.pass = not result.pass
 
-			assertFail(result, "Expected 10 to not deeply equal 10")
+			assertMatcher.failed(result)
+			assertMatcher.hasMessage(result, "Expected: not 10")
 		end)
 
 		it("should pass when inverted on deep inequality", function()
@@ -230,7 +228,7 @@ describe("equality matchers", function()
 				equality.toEqual(INVERTED_CONTEXT, tableOne, tableTwo)
 			result.pass = not result.pass
 
-			assertPass(result)
+			assertMatcher.passed(result)
 		end)
 
 		it("should fail when inverted on deep equality", function()
@@ -256,83 +254,84 @@ describe("equality matchers", function()
 
 			local result =
 				equality.toEqual(INVERTED_CONTEXT, tableOne, tableTwo)
+			result.pass = not result.pass
 
-			assertFail(
+			assertMatcher.failed(result)
+			assertMatcher.hasMessage(
 				result,
-				("Expected %s to not deeply equal %s"):format(
-					serialiseValue(tableOne),
-					serialiseValue(tableTwo)
-				)
+				("Expected: not %s"):format(serialiseValue(tableTwo))
 			)
 		end)
 	end)
 
 	describe("toBeTruthy", function()
 		it("should pass on truthy values", function()
-			assertPass(equality.toBeTruthy(CONTEXT, true))
+			assertMatcher.passed(equality.toBeTruthy(CONTEXT, true))
 		end)
 
 		it("should fail on falsy values", function()
-			assertFail(
-				equality.toBeTruthy(CONTEXT, false),
-				"Expected false to be truthy"
-			)
-			assertFail(
-				equality.toBeTruthy(CONTEXT, nil),
-				"Expected nil to be truthy"
-			)
+			local resultFalse = equality.toBeTruthy(CONTEXT, false)
+			local resultNil = equality.toBeTruthy(CONTEXT, nil)
+
+			assertMatcher.failed(resultFalse)
+			assertMatcher.hasMessage(resultFalse, "Expected false to be truthy")
+			assertMatcher.failed(resultNil)
+			assertMatcher.hasMessage(resultNil, "Expected nil to be truthy")
 		end)
 
 		it("should fail when inverted on truthy values", function()
 			local result = equality.toBeTruthy(INVERTED_CONTEXT, true)
 			result.pass = not result.pass
 
-			assertFail(result, "Expected true to not be truthy")
+			assertMatcher.failed(result)
+			assertMatcher.hasMessage(result, "Expected true to not be truthy")
 		end)
 
 		it("should pass when inverted on falsy values", function()
 			local result = equality.toBeTruthy(INVERTED_CONTEXT, false)
 			result.pass = not result.pass
 
-			assertPass(result)
+			assertMatcher.passed(result)
 
 			result = equality.toBeTruthy(INVERTED_CONTEXT, nil)
 			result.pass = not result.pass
 
-			assertPass(result)
+			assertMatcher.passed(result)
 		end)
 	end)
 
 	describe("toBeFalsy", function()
 		it("should fail on truthy values", function()
-			assertFail(
-				equality.toBeFalsy(CONTEXT, true),
-				"Expected true to be falsy"
-			)
+			local result = equality.toBeFalsy(CONTEXT, true)
+
+			assertMatcher.failed(result)
+			assertMatcher.hasMessage(result, "Expected true to be falsy")
 		end)
 
 		it("should pass on falsy values", function()
-			assertPass(equality.toBeFalsy(CONTEXT, false))
-			assertPass(equality.toBeFalsy(CONTEXT, nil))
+			assertMatcher.passed(equality.toBeFalsy(CONTEXT, false))
+			assertMatcher.passed(equality.toBeFalsy(CONTEXT, nil))
 		end)
 
 		it("should pass when inverted on truthy values", function()
 			local result = equality.toBeFalsy(INVERTED_CONTEXT, true)
 			result.pass = not result.pass
 
-			assertPass(result)
+			assertMatcher.passed(result)
 		end)
 
 		it("should fail when inverted on falsy values", function()
 			local result = equality.toBeFalsy(INVERTED_CONTEXT, false)
 			result.pass = not result.pass
 
-			assertFail(result, "Expected false to not be falsy")
+			assertMatcher.failed(result)
+			assertMatcher.hasMessage(result, "Expected false to not be falsy")
 
 			result = equality.toBeFalsy(INVERTED_CONTEXT, nil)
 			result.pass = not result.pass
 
-			assertFail(result, "Expected nil to not be falsy")
+			assertMatcher.failed(result)
+			assertMatcher.hasMessage(result, "Expected nil to not be falsy")
 		end)
 	end)
 
@@ -341,13 +340,20 @@ describe("equality matchers", function()
 		local instance = setmetatable({}, TestClass)
 
 		it("should pass on instances of a class", function()
-			assertPass(equality.toBeInstanceOf(CONTEXT, instance, TestClass))
+			assertMatcher.passed(
+				equality.toBeInstanceOf(CONTEXT, instance, TestClass)
+			)
 		end)
 
 		it("should fail on non-instances of a class", function()
 			local nonInstance = {}
-			assertFail(
-				equality.toBeInstanceOf(CONTEXT, nonInstance, TestClass),
+
+			local result =
+				equality.toBeInstanceOf(CONTEXT, nonInstance, TestClass)
+
+			assertMatcher.failed(result)
+			assertMatcher.hasMessage(
+				result,
 				("Expected %s to be an instance of %s"):format(
 					serialiseValue(nonInstance),
 					serialiseValue(TestClass)
@@ -359,7 +365,9 @@ describe("equality matchers", function()
 			local result =
 				equality.toBeInstanceOf(INVERTED_CONTEXT, instance, TestClass)
 			result.pass = not result.pass
-			assertFail(
+
+			assertMatcher.failed(result)
+			assertMatcher.hasMessage(
 				result,
 				("Expected %s to not be an instance of %s"):format(
 					serialiseValue(instance),
@@ -378,7 +386,7 @@ describe("equality matchers", function()
 
 			result.pass = not result.pass
 
-			assertPass(result)
+			assertMatcher.passed(result)
 		end)
 	end)
 end)
