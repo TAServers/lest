@@ -201,6 +201,35 @@ test("handles circular reference in both tables", function()
 	)
 end)
 
+test("handles non-circular internal reference", function()
+	local expectedValue = { a = {}, b = { foo = "bar" } }
+	expectedValue.a.b = expectedValue.b
+	local receivedValue = { a = {}, b = { foo = "bar" } }
+	receivedValue.a.b = receivedValue.b
+
+	local rendered = renderDiff(expectedValue, receivedValue, true, false)
+
+	expect(rendered).toBe(
+		string.format(
+			[[%s
+%s
+
+  Table {
+    a = Table {
+      b = Table {
+        foo = "bar",
+      },
+    },
+    b = Table {
+      foo = "bar",
+    },
+  }]],
+			COLOURS.EXPECTED("- Expected  - 0"),
+			COLOURS.RECEIVED("+ Received  + 0")
+		)
+	)
+end)
+
 test(
 	"serialises the expected value and returns inverted message when inverted",
 	function()
@@ -211,3 +240,25 @@ test(
 		expect(rendered).toBe("Expected: not " .. COLOURS.EXPECTED("{1, 2, 3}"))
 	end
 )
+
+test("diff rendering showcase", function()
+	local expected = {
+		1,
+		"banana",
+		a = { 1, 2, 3 },
+		b = { foo = true, [false] = "bar" },
+	}
+	expected.a.a = expected.a
+	expected.a.b = expected.b
+
+	local received = {
+		1,
+		"orange",
+		a = { 1, 2, 3, 4 },
+		b = { foo = "bar", [999] = "baz" },
+	}
+	received.a.a = received.a
+	received.a.b = received.b
+
+	expect(received).toEqual(expected)
+end)

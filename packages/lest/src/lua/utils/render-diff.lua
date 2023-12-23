@@ -65,13 +65,16 @@ local function renderTableDiff(
 	visitedTables
 )
 	indentation = indentation or "  "
-	visitedTables = visitedTables or {}
 	local rendered = "Table {\n"
 	local expected = 0
 	local received = 0
 
-	visitedTables[expectedTable] = true
-	visitedTables[receivedTable] = true
+	local visitedTablesCopy = {}
+	for k, v in pairs(visitedTables or {}) do
+		visitedTablesCopy[k] = v
+	end
+	visitedTablesCopy[expectedTable] = true
+	visitedTablesCopy[receivedTable] = true
 
 	local nextArrayKey = 1
 	for _, key in ipairs(getCombinedSortedKeys(expectedTable, receivedTable)) do
@@ -110,15 +113,17 @@ local function renderTableDiff(
 			renderCurrentField("+", serialiseValue(receivedValue))
 		elseif receivedValue == nil then
 			renderCurrentField("-", serialiseValue(expectedValue))
-		elseif visitedTables[expectedValue] or visitedTables[receivedValue] then
+		elseif
+			visitedTablesCopy[expectedValue] or visitedTablesCopy[receivedValue]
+		then
 			renderCurrentField(
 				"-",
-				visitedTables[expectedValue] and CIRCULAR_REFERENCE_TEXT
+				visitedTablesCopy[expectedValue] and CIRCULAR_REFERENCE_TEXT
 					or serialiseValue(expectedValue)
 			)
 			renderCurrentField(
 				"+",
-				visitedTables[receivedValue] and CIRCULAR_REFERENCE_TEXT
+				visitedTablesCopy[receivedValue] and CIRCULAR_REFERENCE_TEXT
 					or serialiseValue(receivedValue)
 			)
 		elseif
@@ -129,7 +134,7 @@ local function renderTableDiff(
 				expectedValue,
 				receivedValue,
 				indentation .. "  ",
-				visitedTables
+				visitedTablesCopy
 			)
 
 			renderCurrentField(" ", valueDiff.rendered)
