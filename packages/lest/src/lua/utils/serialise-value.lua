@@ -20,7 +20,7 @@ local NON_PRINTABLE_REPLACEMENTS = {
 local function serialiseString(str)
 	return '"'
 		.. str:gsub("[\\\"']", PRINTABLE_REPLACEMENTS)
-			:gsub("[^\x20-\x7E]", function(match)
+			:gsub("[^\032-\126]", function(match)
 				return NON_PRINTABLE_REPLACEMENTS[match]
 					or string.format([[\%d]], string.byte(match, 1))
 			end)
