@@ -1,6 +1,31 @@
 local sortTableKeys = require("utils.sort-table-keys")
 local isLuaSymbol = require("utils.is-lua-symbol")
 
+local PRINTABLE_REPLACEMENTS = {
+	["\\"] = [[\\]],
+	['"'] = [[\"]],
+	["'"] = [[\']],
+}
+
+local NON_PRINTABLE_REPLACEMENTS = {
+	["\a"] = [[\a]],
+	["\b"] = [[\b]],
+	["\f"] = [[\f]],
+	["\r"] = [[\r]],
+	["\t"] = [[\t]],
+	["\v"] = [[\v]],
+}
+
+local function serialiseString(str)
+	return '"'
+		.. str:gsub("[\\\"']", PRINTABLE_REPLACEMENTS)
+			:gsub("[^\x20-\x7E\n]", function(match)
+				return NON_PRINTABLE_REPLACEMENTS[match]
+					or string.format([[\%d]], string.byte(match, 1))
+			end)
+		.. '"'
+end
+
 --- Iterator function which returns elements in numeric then lexicographic order
 ---@param tbl table
 ---@return fun(): any, any
@@ -68,7 +93,7 @@ serialiseValue = function(value, visitedTables)
 	visitedTables = visitedTables or {}
 
 	if type(value) == "string" then
-		return '"' .. value .. '"'
+		return serialiseString(value)
 	end
 
 	-- TODO: Replace with math.huge and update tests

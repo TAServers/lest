@@ -2,6 +2,12 @@ local serialiseValue = require("utils.serialise-value")
 
 test.each({
 	{ "string", "foo", [["foo"]] },
+	{
+		"string with special characters",
+		"\a \b \f\n\r \t \v \\ \" ' \0 \00 \000 \1 \026",
+		[["\a \b \f
+\r \t \v \\ \" \' \0 \0 \0 \1 \26"]],
+	},
 	{ "number", 123, [[123]] },
 	{ "boolean", true, [[true]] },
 	{ "positive infinity", math.huge, [[inf]] },
