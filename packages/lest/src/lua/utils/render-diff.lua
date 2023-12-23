@@ -1,6 +1,17 @@
 local serialiseValue = require("utils.serialise-value")
 local sortTableKeys = require("utils.sort-table-keys")
 local isLuaSymbol = require("utils.is-lua-symbol")
+local COLOURS = require("utils.consoleColours")
+
+local CIRCULAR_REFERENCE_TEXT = "<circular reference>"
+
+local COLOURS_BY_PREFIX = {
+	[" "] = function(text)
+		return text
+	end,
+	["-"] = COLOURS.EXPECTED,
+	["+"] = COLOURS.RECEIVED,
+}
 
 --- Renders a field in the diff of a table
 ---@param key any
@@ -41,17 +52,15 @@ local function getCombinedSortedKeys(expectedTable, receivedTable)
 	return keys
 end
 
---- Renders a difference between two tables with optional indentation and highlighting
+--- Renders a difference between two tables
 ---@param expectedTable table
 ---@param receivedTable table
----@param withColour boolean
 ---@param indentation? string
 ---@param visitedTables? table<table, boolean>
 ---@return table
 local function renderTableDiff(
 	expectedTable,
 	receivedTable,
-	withColour,
 	indentation,
 	visitedTables
 )
@@ -76,11 +85,16 @@ local function renderTableDiff(
 
 		local renderCurrentField = function(prefix, value)
 			rendered = string.format(
-				"%s%s %s%s,\n",
+				"%s%s\n",
 				rendered,
-				prefix,
-				indentation,
-				renderTableField(key, value, isArray)
+				COLOURS_BY_PREFIX[prefix](
+					string.format(
+						"%s %s%s,",
+						prefix,
+						indentation,
+						renderTableField(key, value, isArray)
+					)
+				)
 			)
 
 			if prefix == "-" then
@@ -99,12 +113,12 @@ local function renderTableDiff(
 		elseif visitedTables[expectedValue] or visitedTables[receivedValue] then
 			renderCurrentField(
 				"-",
-				visitedTables[expectedValue] and "-- Circular reference --"
+				visitedTables[expectedValue] and CIRCULAR_REFERENCE_TEXT
 					or serialiseValue(expectedValue)
 			)
 			renderCurrentField(
 				"+",
-				visitedTables[receivedValue] and "-- Circular reference --"
+				visitedTables[receivedValue] and CIRCULAR_REFERENCE_TEXT
 					or serialiseValue(receivedValue)
 			)
 		elseif
@@ -114,7 +128,6 @@ local function renderTableDiff(
 			local valueDiff = renderTableDiff(
 				expectedValue,
 				receivedValue,
-				withColour,
 				indentation .. "  ",
 				visitedTables
 			)
@@ -135,40 +148,42 @@ local function renderTableDiff(
 	}
 end
 
---- Renders the difference between two values with optional ANSI colour highlighting
+--- Renders the difference between two values with ANSI colour highlighting
 ---@param expectedValue any
 ---@param receivedValue any
+---@param deep boolean # Whether to render a deep equality diff
 ---@param inverted? boolean # Whether the assertion this diff is for was inverted (Default false)
----@param withColour? boolean # Defaults to true
 ---@return string
-local function renderDiff(expectedValue, receivedValue, inverted, withColour)
-	if withColour == nil then
-		withColour = true
-	end
-
+local function renderDiff(expectedValue, receivedValue, deep, inverted)
 	if inverted then
-		return string.format("Expected: not %s", serialiseValue(expectedValue))
+		return string.format(
+			"Expected: not %s",
+			COLOURS.EXPECTED(serialiseValue(expectedValue))
+		)
 	end
 
-	if type(expectedValue) ~= "table" or type(receivedValue) ~= "table" then
+	if
+		not deep
+		or type(expectedValue) ~= "table"
+		or type(receivedValue) ~= "table"
+	then
 		local serialisedExpected = serialiseValue(expectedValue)
 		local serialisedReceived = serialiseValue(receivedValue)
 
 		return string.format(
 			"Expected: %s\nReceived: %s",
-			serialisedExpected,
+			COLOURS.EXPECTED(serialisedExpected),
 			serialisedReceived == serialisedExpected
 					and "serialises to the same string"
-				or serialisedReceived
+				or COLOURS.RECEIVED(serialisedReceived)
 		)
 	end
 
-	local diff =
-		renderTableDiff(expectedValue, receivedValue, not not withColour)
+	local diff = renderTableDiff(expectedValue, receivedValue)
 	return string.format(
-		"- Expected  - %d\n+ Received  + %d\n\n  %s",
-		diff.expected,
-		diff.received,
+		"%s\n%s\n\n  %s",
+		COLOURS.EXPECTED(string.format("- Expected  - %d", diff.expected)),
+		COLOURS.RECEIVED(string.format("+ Received  + %d", diff.received)),
 		diff.rendered
 	)
 end

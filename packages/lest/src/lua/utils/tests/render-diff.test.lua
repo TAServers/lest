@@ -1,105 +1,146 @@
 local renderDiff = require("utils.render-diff")
+local COLOURS = require("utils.consoleColours")
 
 test.each({
 	{
 		"primitive before and after",
 		123,
 		"456",
-		[[Expected: 123
-Received: "456"]],
+		string.format(
+			"Expected: %s\nReceived: %s",
+			COLOURS.EXPECTED("123"),
+			COLOURS.RECEIVED('"456"')
+		),
 	},
 	{
 		"primitive before, table after",
 		123,
 		{ 1, 2, 3 },
-		[[Expected: 123
-Received: {1, 2, 3}]],
+		string.format(
+			"Expected: %s\nReceived: %s",
+			COLOURS.EXPECTED("123"),
+			COLOURS.RECEIVED("{1, 2, 3}")
+		),
 	},
 	{
 		"table before, primitive after",
 		{ 1, 2, 3 },
 		123,
-		[[Expected: {1, 2, 3}
-Received: 123]],
+		string.format(
+			"Expected: %s\nReceived: %s",
+			COLOURS.EXPECTED("{1, 2, 3}"),
+			COLOURS.RECEIVED("123")
+		),
 	},
 	{
 		"same primitive before and after",
 		1,
 		1,
-		[[Expected: 1
-Received: serialises to the same string]],
+		string.format(
+			"Expected: %s\nReceived: serialises to the same string",
+			COLOURS.EXPECTED("1")
+		),
 	},
 	{
 		"non-recursive equal tables",
 		{ foo = 1 },
 		{ foo = 1 },
-		[[- Expected  - 0
-+ Received  + 0
+		string.format(
+			[[%s
+%s
 
   Table {
     foo = 1,
   }]],
+			COLOURS.EXPECTED("- Expected  - 0"),
+			COLOURS.RECEIVED("+ Received  + 0")
+		),
 	},
 	{
 		"non-recursive tables with different value",
 		{ foo = 1 },
 		{ foo = 2 },
-		[[- Expected  - 1
-+ Received  + 1
+		string.format(
+			[[%s
+%s
 
   Table {
--   foo = 1,
-+   foo = 2,
+%s
+%s
   }]],
+			COLOURS.EXPECTED("- Expected  - 1"),
+			COLOURS.RECEIVED("+ Received  + 1"),
+			COLOURS.EXPECTED("-   foo = 1,"),
+			COLOURS.RECEIVED("+   foo = 2,")
+		),
 	},
 	{
 		"non-recursive tables with different field",
 		{ foo = 1 },
 		{ bar = 1 },
-		[[- Expected  - 1
-+ Received  + 1
+		string.format(
+			[[%s
+%s
 
   Table {
-+   bar = 1,
--   foo = 1,
+%s
+%s
   }]],
+			COLOURS.EXPECTED("- Expected  - 1"),
+			COLOURS.RECEIVED("+ Received  + 1"),
+			COLOURS.RECEIVED("+   bar = 1,"),
+			COLOURS.EXPECTED("-   foo = 1,")
+		),
 	},
 	{
 		"non-recursive tables with missing field",
 		{ foo = 1 },
 		{},
-		[[- Expected  - 1
-+ Received  + 0
+		string.format(
+			[[%s
+%s
 
   Table {
--   foo = 1,
+%s
   }]],
+			COLOURS.EXPECTED("- Expected  - 1"),
+			COLOURS.RECEIVED("+ Received  + 0"),
+			COLOURS.EXPECTED("-   foo = 1,")
+		),
 	},
 	{
 		"recursive tables",
 		{ { foo = 1 }, { bar = 2 }, [true] = { baz = 3 } },
 		{ { foo = 1 }, { bar = 3 }, [true] = { biz = 3 } },
-		[[- Expected  - 2
-+ Received  + 2
+		string.format(
+			[[%s
+%s
 
   Table {
     Table {
       foo = 1,
     },
     Table {
--     bar = 2,
-+     bar = 3,
+%s
+%s
     },
     [true] = Table {
--     baz = 3,
-+     biz = 3,
+%s
+%s
     },
   }]],
+			COLOURS.EXPECTED("- Expected  - 2"),
+			COLOURS.RECEIVED("+ Received  + 2"),
+			COLOURS.EXPECTED("-     bar = 2,"),
+			COLOURS.RECEIVED("+     bar = 3,"),
+			COLOURS.EXPECTED("-     baz = 3,"),
+			COLOURS.RECEIVED("+     biz = 3,")
+		),
 	},
 })(
-	"correctly renders %s",
+	"correctly renders %s when deep is true",
 	function(_, expectedValue, receivedValue, expectedDiff)
-		local rendered = renderDiff(expectedValue, receivedValue, false)
+		local rendered = renderDiff(expectedValue, receivedValue, true, false)
 
 		expect(rendered).toBe(expectedDiff)
 	end
@@ -110,15 +151,17 @@ test("handles circular reference in expected table", function()
 	expectedValue.bar = expectedValue
 	local receivedValue = { bar = "5" }
 
-	local rendered = renderDiff(expectedValue, receivedValue, false)
+	local rendered = renderDiff(expectedValue, receivedValue, true, false)
 
-	expect(rendered).toBe([[- Expected  - 1
-+ Received  + 1
-
-  Table {
--   bar = -- Circular reference --,
-+   bar = "5",
-  }]])
+	expect(rendered).toBe(
+		string.format(
+			"%s\n%s\n\n  Table {\n%s\n%s\n  }",
+			COLOURS.EXPECTED("- Expected  - 1"),
+			COLOURS.RECEIVED("+ Received  + 1"),
+			COLOURS.EXPECTED("-   bar = <circular reference>,"),
+			COLOURS.RECEIVED('+   bar = "5",')
+		)
+	)
 end)
 
 test("handles circular reference in received table", function()
@@ -126,15 +169,17 @@ test("handles circular reference in received table", function()
 	local receivedValue = {}
 	receivedValue.bar = receivedValue
 
-	local rendered = renderDiff(expectedValue, receivedValue, false)
+	local rendered = renderDiff(expectedValue, receivedValue, true, false)
 
-	expect(rendered).toBe([[- Expected  - 1
-+ Received  + 1
-
-  Table {
--   bar = "5",
-+   bar = -- Circular reference --,
-  }]])
+	expect(rendered).toBe(
+		string.format(
+			"%s\n%s\n\n  Table {\n%s\n%s\n  }",
+			COLOURS.EXPECTED("- Expected  - 1"),
+			COLOURS.RECEIVED("+ Received  + 1"),
+			COLOURS.EXPECTED('-   bar = "5",'),
+			COLOURS.RECEIVED("+   bar = <circular reference>,")
+		)
+	)
 end)
 
 test("handles circular reference in both tables", function()
@@ -143,15 +188,17 @@ test("handles circular reference in both tables", function()
 	local receivedValue = {}
 	receivedValue.bar = receivedValue
 
-	local rendered = renderDiff(expectedValue, receivedValue, false, false)
+	local rendered = renderDiff(expectedValue, receivedValue, true, false)
 
-	expect(rendered).toBe([[- Expected  - 1
-+ Received  + 1
-
-  Table {
--   bar = -- Circular reference --,
-+   bar = -- Circular reference --,
-  }]])
+	expect(rendered).toBe(
+		string.format(
+			"%s\n%s\n\n  Table {\n%s\n%s\n  }",
+			COLOURS.EXPECTED("- Expected  - 1"),
+			COLOURS.RECEIVED("+ Received  + 1"),
+			COLOURS.EXPECTED("-   bar = <circular reference>,"),
+			COLOURS.RECEIVED("+   bar = <circular reference>,")
+		)
+	)
 end)
 
 test(
@@ -159,8 +206,8 @@ test(
 	function()
 		local expectedValue = { 1, 2, 3 }
 
-		local rendered = renderDiff(expectedValue, expectedValue, true, false)
+		local rendered = renderDiff(expectedValue, expectedValue, true, true)
 
-		expect(rendered).toBe("Expected: not {1, 2, 3}")
+		expect(rendered).toBe("Expected: not " .. COLOURS.EXPECTED("{1, 2, 3}"))
 	end
 )
