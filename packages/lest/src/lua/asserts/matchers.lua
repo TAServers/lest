@@ -1,21 +1,24 @@
 --- Asserts the matcher passed.
 ---@param result lest.MatcherResult
 local function assertPass(result)
-	assert(result.pass, debug.traceback("Expected matcher to pass", 2))
+	if not result.pass then
+		error("Expected matcher to pass", 2)
+	end
 end
 
 --- Asserts the matcher failed.
 ---@param result lest.MatcherResult
 local function assertFail(result)
-	assert(not result.pass, debug.traceback("Expected matcher to fail", 2))
+	if result.pass then
+		error("Expected matcher to fail", 2)
+	end
 end
 
 --- Asserts the matcher returned the given message.
 ---@param result lest.MatcherResult
 local function assertMessage(result, message)
-	assert(
-		result.message == message,
-		debug.traceback(
+	if result.message ~= message then
+		error(
 			string.format(
 				"Expected message: %s\nReceived message: %s",
 				message,
@@ -23,7 +26,7 @@ local function assertMessage(result, message)
 			),
 			2
 		)
-	)
+	end
 end
 
 return {
