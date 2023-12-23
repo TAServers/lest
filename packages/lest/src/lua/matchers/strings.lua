@@ -1,5 +1,5 @@
-local prettyValue = require("src.lua.utils.prettyValue")
-local assertType = require("src.lua.asserts.type")
+local serialiseValue = require("utils.serialise-value")
+local assertType = require("asserts.type")
 
 ---@type lest.Matcher
 local function toMatch(ctx, received, pattern)
@@ -9,9 +9,9 @@ local function toMatch(ctx, received, pattern)
 		pass = type(received) == "string" and received:match(pattern) ~= nil,
 		message = string.format(
 			"Expected %s to%smatch %s",
-			prettyValue(received),
+			serialiseValue(received),
 			ctx.inverted and " not " or " ",
-			prettyValue(pattern)
+			serialiseValue(pattern)
 		),
 	}
 end

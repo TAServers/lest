@@ -1,5 +1,5 @@
-local TypeError = require("src.lua.errors.type")
-local prettyValue = require("src.lua.utils.prettyValue")
+local TypeError = require("errors.type")
+local serialiseValue = require("utils.serialise-value")
 
 --- Asserts the object is of the specified type
 ---
@@ -9,7 +9,7 @@ local prettyValue = require("src.lua.utils.prettyValue")
 ---@param label? string
 ---@param level? number
 return function(object, typeStringOrMeta, label, level)
-	label = label or prettyValue(object)
+	label = label or serialiseValue(object)
 	level = (level or 1) + 1
 
 	if
@@ -34,7 +34,7 @@ return function(object, typeStringOrMeta, label, level)
 				string.format(
 					"Expected %s to be an instance of %s",
 					label,
-					prettyValue(typeStringOrMeta)
+					serialiseValue(typeStringOrMeta)
 				)
 			),
 			level

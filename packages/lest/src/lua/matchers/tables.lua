@@ -1,6 +1,6 @@
-local prettyValue = require("src.lua.utils.prettyValue")
-local deepEqual = require("src.lua.utils.deepEqual")
-local assertType = require("src.lua.asserts.type")
+local serialiseValue = require("utils.serialise-value")
+local deepEqual = require("utils.deepEqual")
+local assertType = require("asserts.type")
 
 ---@type lest.Matcher
 local function toHaveLength(ctx, received, length)
@@ -14,7 +14,7 @@ local function toHaveLength(ctx, received, length)
 		pass = success and comparison,
 		message = string.format(
 			"Expected %s to%shave a length of %d",
-			prettyValue(received),
+			serialiseValue(received),
 			ctx.inverted and " not " or " ",
 			length
 		),
@@ -40,9 +40,9 @@ local function toContain(ctx, received, item)
 		pass = pass,
 		message = string.format(
 			"Expected %s to%scontain %s",
-			prettyValue(received),
+			serialiseValue(received),
 			ctx.inverted and " not " or " ",
-			prettyValue(item)
+			serialiseValue(item)
 		),
 	}
 end
@@ -64,9 +64,9 @@ local function toContainEqual(ctx, received, item)
 		pass = pass,
 		message = string.format(
 			"Expected %s to%scontain %s with deep equality",
-			prettyValue(received),
+			serialiseValue(received),
 			ctx.inverted and " not " or " ",
-			prettyValue(item)
+			serialiseValue(item)
 		),
 	}
 end
@@ -106,9 +106,9 @@ local function toMatchObject(ctx, received, object)
 		pass = type(received) == "table" and matches(received, object),
 		message = string.format(
 			"Expected %s to%smatch %s",
-			prettyValue(received),
+			serialiseValue(received),
 			ctx.inverted and " not " or " ",
-			prettyValue(object)
+			serialiseValue(object)
 		),
 	}
 end

@@ -1,4 +1,4 @@
-local prettyValue = require("utils.prettyValue")
+local serialiseValue = require("utils.serialise-value")
 
 --- Renders a field in the diff of a table
 ---@param prefix " "|"-"|"+"
@@ -22,8 +22,8 @@ local function renderTableField(
 		"%s %s[%s] = %s,\n",
 		prefix,
 		indentation,
-		prettyValue(key),
-		shouldPrettyPrintValue and prettyValue(value) or value
+		serialiseValue(key),
+		shouldPrettyPrintValue and serialiseValue(value) or value
 	)
 end
 
@@ -135,8 +135,8 @@ local function renderDiff(expectedValue, receivedValue, withColour)
 	if type(expectedValue) ~= "table" or type(receivedValue) ~= "table" then
 		return string.format(
 			"Expected: %s\nReceived: %s",
-			prettyValue(expectedValue),
-			prettyValue(receivedValue)
+			serialiseValue(expectedValue),
+			serialiseValue(receivedValue)
 		)
 	end
 

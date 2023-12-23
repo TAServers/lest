@@ -1,5 +1,6 @@
-local prettyValue = require("src.lua.utils.prettyValue")
-local deepEqual = require("src.lua.utils.deepEqual")
+local serialiseValue = require("utils.serialise-value")
+local deepEqual = require("utils.deepEqual")
+local renderDiff = require("utils.render-diff")
 
 ---@type lest.Matcher
 local function toBe(ctx, received, expected)
@@ -7,9 +8,9 @@ local function toBe(ctx, received, expected)
 		pass = received == expected,
 		message = string.format(
 			"Expected %s to%sbe %s",
-			prettyValue(received),
+			serialiseValue(received),
 			ctx.inverted and " not " or " ",
-			prettyValue(expected)
+			serialiseValue(expected)
 		),
 	}
 end
@@ -20,7 +21,7 @@ local function toBeDefined(ctx, received)
 		pass = received ~= nil,
 		message = string.format(
 			"Expected %s to be %sdefined",
-			prettyValue(received),
+			serialiseValue(received),
 			ctx.inverted and "un" or ""
 		),
 	}
@@ -32,7 +33,7 @@ local function toBeUndefined(ctx, received)
 		pass = received == nil,
 		message = string.format(
 			"Expected %s to be %sdefined",
-			prettyValue(received),
+			serialiseValue(received),
 			ctx.inverted and "" or "un"
 		),
 	}
@@ -41,12 +42,11 @@ end
 local function toEqual(ctx, received, expected)
 	return {
 		pass = deepEqual(received, expected),
-		message = string.format(
-			"Expected %s to%sdeeply equal %s",
-			prettyValue(received),
-			ctx.inverted and " not " or " ",
-			prettyValue(expected)
-		),
+		message = ctx.inverted and string.format(
+			"Expected %s to not deeply equal %s",
+			serialiseValue(received),
+			serialiseValue(expected)
+		) or renderDiff(expected, received, true),
 	}
 end
 
@@ -56,7 +56,7 @@ local function toBeTruthy(ctx, received)
 		pass = not not received,
 		message = string.format(
 			"Expected %s to%sbe truthy",
-			prettyValue(received),
+			serialiseValue(received),
 			ctx.inverted and " not " or " "
 		),
 	}
@@ -68,7 +68,7 @@ local function toBeFalsy(ctx, received)
 		pass = not received,
 		message = string.format(
 			"Expected %s to%sbe falsy",
-			prettyValue(received),
+			serialiseValue(received),
 			ctx.inverted and " not " or " "
 		),
 	}
@@ -82,9 +82,9 @@ local function toBeInstanceOf(ctx, received, metatable)
 		pass = getmetatable(received) == metatable,
 		message = string.format(
 			"Expected %s to%sbe an instance of %s",
-			prettyValue(received),
+			serialiseValue(received),
 			ctx.inverted and " not " or " ",
-			prettyValue(metatable)
+			serialiseValue(metatable)
 		),
 	}
 end

@@ -1,11 +1,11 @@
-local prettyValue = require("src.lua.utils.prettyValue")
-local deepEqual = require("src.lua.utils.deepEqual")
-local assertType = require("src.lua.asserts.type")
+local serialiseValue = require("utils.serialise-value")
+local deepEqual = require("utils.deepEqual")
+local assertType = require("asserts.type")
 
 local function prettyArgs(args)
 	local argStrings = {}
 	for i, arg in ipairs(args) do
-		argStrings[i] = prettyValue(arg)
+		argStrings[i] = serialiseValue(arg)
 	end
 
 	return table.concat(argStrings, ", ")
@@ -16,7 +16,10 @@ end
 ---@return lest.Mock
 local function assertMockFn(value)
 	if not lest.isMockFunction(value) then
-		error(string.format("%s is not a mock function", prettyValue(value)), 3)
+		error(
+			string.format("%s is not a mock function", serialiseValue(value)),
+			3
+		)
 	end
 
 	return value

@@ -1,5 +1,5 @@
 local equality = require("src.lua.matchers.equality")
-local prettyValue = require("src.lua.utils.prettyValue")
+local serialiseValue = require("utils.serialise-value")
 
 --- Asserts that a matcher passed
 ---@param result lest.MatcherResult Result of the matcher
@@ -120,7 +120,7 @@ describe("equality matchers", function()
 		it("should fail on inequality", function()
 			local result = equality.toEqual(CONTEXT, 10, 15)
 
-			assertFail(result, "Expected 10 to deeply equal 15")
+			assertFail(result, "Expected: 15\nReceived: 10")
 		end)
 
 		it("should pass on deep equality", function()
@@ -175,10 +175,19 @@ describe("equality matchers", function()
 
 			assertFail(
 				result,
-				("Expected %s to deeply equal %s"):format(
-					prettyValue(tableOne),
-					prettyValue(tableTwo)
-				)
+				[[- Expected  - 0
++ Received  + 1
+
+  Table {
+    Table {
+      12,
+      14,
+      18,
++     "I'm not supposed to be here",
+    },
+    hi = 10,
+    turing = "alan"
+}]]
 			)
 		end)
 
@@ -251,8 +260,8 @@ describe("equality matchers", function()
 			assertFail(
 				result,
 				("Expected %s to not deeply equal %s"):format(
-					prettyValue(tableOne),
-					prettyValue(tableTwo)
+					serialiseValue(tableOne),
+					serialiseValue(tableTwo)
 				)
 			)
 		end)
@@ -340,8 +349,8 @@ describe("equality matchers", function()
 			assertFail(
 				equality.toBeInstanceOf(CONTEXT, nonInstance, TestClass),
 				("Expected %s to be an instance of %s"):format(
-					prettyValue(nonInstance),
-					prettyValue(TestClass)
+					serialiseValue(nonInstance),
+					serialiseValue(TestClass)
 				)
 			)
 		end)
@@ -353,8 +362,8 @@ describe("equality matchers", function()
 			assertFail(
 				result,
 				("Expected %s to not be an instance of %s"):format(
-					prettyValue(instance),
-					prettyValue(TestClass)
+					serialiseValue(instance),
+					serialiseValue(TestClass)
 				)
 			)
 		end)

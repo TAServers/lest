@@ -1,6 +1,6 @@
-local matchers = require("src.lua.matchers.tables")
-local assertMatcher = require("src.lua.asserts.matchers")
-local prettyValue = require("src.lua.utils.prettyValue")
+local matchers = require("matchers.tables")
+local assertMatcher = require("asserts.matchers")
+local serialiseValue = require("utils.serialise-value")
 
 describe("table matchers", function()
 	local CONTEXT = {
@@ -49,7 +49,7 @@ describe("table matchers", function()
 					assertMatcher.hasMessage(
 						resultArray,
 						("Expected %s to have a length of %d"):format(
-							prettyValue(testArray),
+							serialiseValue(testArray),
 							4
 						)
 					)
@@ -69,7 +69,7 @@ describe("table matchers", function()
 				assertMatcher.hasMessage(
 					result,
 					("Expected %s to have a length of 10"):format(
-						prettyValue(noLengthObject)
+						serialiseValue(noLengthObject)
 					)
 				)
 			end)
@@ -87,7 +87,7 @@ describe("table matchers", function()
 			assertMatcher.hasMessage(
 				resultArray,
 				("Expected %s to not have a length of 4"):format(
-					prettyValue(testArray)
+					serialiseValue(testArray)
 				)
 			)
 		end)
@@ -145,8 +145,8 @@ describe("table matchers", function()
 					assertMatcher.hasMessage(
 						result,
 						("Expected %s to contain %s"):format(
-							prettyValue(testArray),
-							prettyValue(testItem)
+							serialiseValue(testArray),
+							serialiseValue(testItem)
 						)
 					)
 				end
@@ -168,8 +168,8 @@ describe("table matchers", function()
 					assertMatcher.hasMessage(
 						result,
 						("Expected %s to contain %s"):format(
-							prettyValue(testString),
-							prettyValue(testItem)
+							serialiseValue(testString),
+							serialiseValue(testItem)
 						)
 					)
 				end
@@ -190,8 +190,8 @@ describe("table matchers", function()
 					assertMatcher.hasMessage(
 						result,
 						("Expected %s to contain %s"):format(
-							prettyValue(invalidObject),
-							prettyValue(10)
+							serialiseValue(invalidObject),
+							serialiseValue(10)
 						)
 					)
 				end
@@ -211,8 +211,8 @@ describe("table matchers", function()
 			assertMatcher.hasMessage(
 				result,
 				("Expected %s to not contain %s"):format(
-					prettyValue(testArray),
-					prettyValue(testItem)
+					serialiseValue(testArray),
+					serialiseValue(testItem)
 				)
 			)
 		end)
@@ -253,8 +253,8 @@ describe("table matchers", function()
 					assertMatcher.hasMessage(
 						result,
 						("Expected %s to contain %s with deep equality"):format(
-							prettyValue(testArray),
-							prettyValue(testItem)
+							serialiseValue(testArray),
+							serialiseValue(testItem)
 						)
 					)
 				end
@@ -273,7 +273,7 @@ describe("table matchers", function()
 				assertMatcher.hasMessage(
 					result,
 					("Expected %s to contain 45 with deep equality"):format(
-						prettyValue(invalidObject)
+						serialiseValue(invalidObject)
 					)
 				)
 			end)
@@ -292,8 +292,8 @@ describe("table matchers", function()
 			assertMatcher.hasMessage(
 				result,
 				("Expected %s to not contain %s with deep equality"):format(
-					prettyValue(testArray),
-					prettyValue(testItem)
+					serialiseValue(testArray),
+					serialiseValue(testItem)
 				)
 			)
 		end)
@@ -395,8 +395,8 @@ describe("table matchers", function()
 					assertMatcher.hasMessage(
 						result,
 						("Expected %s to match %s"):format(
-							prettyValue(testObject),
-							prettyValue(testMatchObject)
+							serialiseValue(testObject),
+							serialiseValue(testMatchObject)
 						)
 					)
 				end
@@ -442,8 +442,8 @@ describe("table matchers", function()
 					assertMatcher.hasMessage(
 						result,
 						("Expected %s to match %s"):format(
-							prettyValue(testObjectArray),
-							prettyValue(testMatchObjectArray)
+							serialiseValue(testObjectArray),
+							serialiseValue(testMatchObjectArray)
 						)
 					)
 				end
@@ -463,8 +463,8 @@ describe("table matchers", function()
 				assertMatcher.hasMessage(
 					result,
 					("Expected %s to match %s"):format(
-						prettyValue(invalidObject),
-						prettyValue(matchTable)
+						serialiseValue(invalidObject),
+						serialiseValue(matchTable)
 					)
 				)
 			end)
@@ -492,8 +492,8 @@ describe("table matchers", function()
 			assertMatcher.hasMessage(
 				result,
 				("Expected %s to not match %s"):format(
-					prettyValue(testObject),
-					prettyValue(testMatchObject)
+					serialiseValue(testObject),
+					serialiseValue(testMatchObject)
 				)
 			)
 		end)
