@@ -37,3 +37,12 @@ test.each({
 
 	expect(serialised).toBe(expected)
 end)
+
+test("serialises table with circular reference", function()
+	local tbl = { foo = "123" }
+	tbl.bar = tbl
+
+	local serialised = serialiseValue(tbl)
+
+	expect(serialised).toBe('{bar = <circular reference>, foo = "123"}')
+end)

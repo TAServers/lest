@@ -26,27 +26,32 @@ local serialiseValue
 
 --- Serialises an inline truncated table
 ---@param tbl table
+---@param visitedTables table<table, boolean>
 ---@return string
-local function serialiseTable(tbl)
+local function serialiseTable(tbl, visitedTables)
 	local renderedFields = {}
 	local nextArrayIndex = 1
 
 	for key, value in sortedPairs(tbl) do
 		if type(key) == "number" and key == nextArrayIndex then
-			table.insert(renderedFields, serialiseValue(value))
+			table.insert(renderedFields, serialiseValue(value, visitedTables))
 			nextArrayIndex = nextArrayIndex + 1
 		elseif isLuaSymbol(key) then
 			table.insert(
 				renderedFields,
-				string.format("%s = %s", key, serialiseValue(value))
+				string.format(
+					"%s = %s",
+					key,
+					serialiseValue(value, visitedTables)
+				)
 			)
 		else
 			table.insert(
 				renderedFields,
 				string.format(
 					"[%s] = %s",
-					serialiseValue(key),
-					serialiseValue(value)
+					serialiseValue(key, visitedTables),
+					serialiseValue(value, visitedTables)
 				)
 			)
 		end
@@ -57,8 +62,11 @@ end
 
 --- Serialises a value recursively
 ---@param value any
+---@param visitedTables? table<table, boolean>
 ---@return string
-serialiseValue = function(value)
+serialiseValue = function(value, visitedTables)
+	visitedTables = visitedTables or {}
+
 	if type(value) == "string" then
 		return '"' .. value .. '"'
 	end
@@ -80,7 +88,12 @@ serialiseValue = function(value)
 		type(value) == "table"
 		and string.match(tostring(value), "table: [%a%d]+")
 	then
-		return serialiseTable(value)
+		if visitedTables[value] then
+			return "<circular reference>"
+		end
+
+		visitedTables[value] = true
+		return serialiseTable(value, visitedTables)
 	end
 
 	if type(value) == "function" then
