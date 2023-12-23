@@ -42,11 +42,7 @@ end
 local function toEqual(ctx, received, expected)
 	return {
 		pass = deepEqual(received, expected),
-		message = ctx.inverted and string.format(
-			"Expected %s to not deeply equal %s",
-			serialiseValue(received),
-			serialiseValue(expected)
-		) or renderDiff(expected, received, true),
+		message = renderDiff(expected, received, ctx.inverted),
 	}
 end
 

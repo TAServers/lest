@@ -1,30 +1,44 @@
 local serialiseValue = require("utils.serialise-value")
+local sortTableKeys = require("utils.sort-table-keys")
+local isLuaSymbol = require("utils.is-lua-symbol")
 
 --- Renders a field in the diff of a table
----@param prefix " "|"-"|"+"
----@param indentation string
 ---@param key any
 ---@param value any
----@param shouldPrettyPrintValue? boolean # Defaults to true
+---@param isArray boolean
 ---@return string
-local function renderTableField(
-	prefix,
-	indentation,
-	key,
-	value,
-	shouldPrettyPrintValue
-)
-	if shouldPrettyPrintValue == nil then
-		shouldPrettyPrintValue = true
+local function renderTableField(key, value, isArray)
+	if isArray then
+		return value
 	end
 
-	return string.format(
-		"%s %s[%s] = %s,\n",
-		prefix,
-		indentation,
-		serialiseValue(key),
-		shouldPrettyPrintValue and serialiseValue(value) or value
-	)
+	if isLuaSymbol(key) then
+		return string.format("%s = %s", key, value)
+	end
+
+	return string.format("[%s] = %s", serialiseValue(key), value)
+end
+
+--- Returns a sorted list of the union of keys from the expected and received tables
+---@param expectedTable table
+---@param receivedTable table
+---@return any[]
+local function getCombinedSortedKeys(expectedTable, receivedTable)
+	local keys = {}
+	local countedKeys = {}
+
+	for key in pairs(expectedTable) do
+		table.insert(keys, key)
+		countedKeys[key] = true
+	end
+	for key in pairs(receivedTable) do
+		if not countedKeys[key] then
+			table.insert(keys, key)
+		end
+	end
+
+	sortTableKeys(keys)
+	return keys
 end
 
 --- Renders a difference between two tables with optional indentation and highlighting
@@ -50,36 +64,49 @@ local function renderTableDiff(
 	visitedTables[expectedTable] = true
 	visitedTables[receivedTable] = true
 
-	for key, expectedValue in pairs(expectedTable) do
+	local nextArrayKey = 1
+	for _, key in ipairs(getCombinedSortedKeys(expectedTable, receivedTable)) do
+		local expectedValue = expectedTable[key]
 		local receivedValue = receivedTable[key]
 
+		local isArray = key == nextArrayKey
+		if isArray then
+			nextArrayKey = nextArrayKey + 1
+		end
+
+		local renderCurrentField = function(prefix, value)
+			rendered = string.format(
+				"%s%s %s%s,\n",
+				rendered,
+				prefix,
+				indentation,
+				renderTableField(key, value, isArray)
+			)
+
+			if prefix == "-" then
+				expected = expected + 1
+			elseif prefix == "+" then
+				received = received + 1
+			end
+		end
+
 		if expectedValue == receivedValue then
-			rendered = rendered
-				.. renderTableField(" ", indentation, key, expectedValue)
+			renderCurrentField(" ", serialiseValue(expectedValue))
+		elseif expectedValue == nil then
+			renderCurrentField("+", serialiseValue(receivedValue))
 		elseif receivedValue == nil then
-			rendered = rendered
-				.. renderTableField("-", indentation, key, expectedValue)
-			expected = expected + 1
+			renderCurrentField("-", serialiseValue(expectedValue))
 		elseif visitedTables[expectedValue] or visitedTables[receivedValue] then
-			rendered = rendered
-				.. renderTableField(
-					"-",
-					indentation,
-					key,
-					visitedTables[expectedValue] and "-- Circular reference --"
-						or expectedValue,
-					not visitedTables[expectedValue]
-				)
-				.. renderTableField(
-					"+",
-					indentation,
-					key,
-					visitedTables[receivedValue] and "-- Circular reference --"
-						or receivedValue,
-					not visitedTables[receivedValue]
-				)
-			expected = expected + 1
-			received = received + 1
+			renderCurrentField(
+				"-",
+				visitedTables[expectedValue] and "-- Circular reference --"
+					or serialiseValue(expectedValue)
+			)
+			renderCurrentField(
+				"+",
+				visitedTables[receivedValue] and "-- Circular reference --"
+					or serialiseValue(receivedValue)
+			)
 		elseif
 			type(expectedValue) == "table"
 			and type(receivedValue) == "table"
@@ -92,30 +119,12 @@ local function renderTableDiff(
 				visitedTables
 			)
 
-			rendered = rendered
-				.. renderTableField(
-					" ",
-					indentation,
-					key,
-					valueDiff.rendered,
-					false
-				)
+			renderCurrentField(" ", valueDiff.rendered)
 			expected = expected + valueDiff.expected
 			received = received + valueDiff.received
 		else
-			rendered = rendered
-				.. renderTableField("-", indentation, key, expectedValue)
-				.. renderTableField("+", indentation, key, receivedValue)
-			expected = expected + 1
-			received = received + 1
-		end
-	end
-
-	for key, value in pairs(receivedTable) do
-		if expectedTable[key] == nil then
-			rendered = rendered
-				.. renderTableField("+", indentation, key, value)
-			received = received + 1
+			renderCurrentField("-", serialiseValue(expectedValue))
+			renderCurrentField("+", serialiseValue(receivedValue))
 		end
 	end
 
@@ -129,14 +138,28 @@ end
 --- Renders the difference between two values with optional ANSI colour highlighting
 ---@param expectedValue any
 ---@param receivedValue any
----@param withColour? boolean # Defaults to false
+---@param inverted? boolean # Whether the assertion this diff is for was inverted (Default false)
+---@param withColour? boolean # Defaults to true
 ---@return string
-local function renderDiff(expectedValue, receivedValue, withColour)
+local function renderDiff(expectedValue, receivedValue, inverted, withColour)
+	if withColour == nil then
+		withColour = true
+	end
+
+	if inverted then
+		return string.format("Expected: not %s", serialiseValue(expectedValue))
+	end
+
 	if type(expectedValue) ~= "table" or type(receivedValue) ~= "table" then
+		local serialisedExpected = serialiseValue(expectedValue)
+		local serialisedReceived = serialiseValue(receivedValue)
+
 		return string.format(
 			"Expected: %s\nReceived: %s",
-			serialiseValue(expectedValue),
-			serialiseValue(receivedValue)
+			serialisedExpected,
+			serialisedReceived == serialisedExpected
+					and "serialises to the same string"
+				or serialisedReceived
 		)
 	end
 

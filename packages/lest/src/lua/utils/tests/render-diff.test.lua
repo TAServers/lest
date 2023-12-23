@@ -13,14 +13,21 @@ Received: "456"]],
 		123,
 		{ 1, 2, 3 },
 		[[Expected: 123
-Received: { 1, 2, 3 }]],
+Received: {1, 2, 3}]],
 	},
 	{
 		"table before, primitive after",
 		{ 1, 2, 3 },
 		123,
-		[[Expected: { 1, 2, 3 }
+		[[Expected: {1, 2, 3}
 Received: 123]],
+	},
+	{
+		"same primitive before and after",
+		1,
+		1,
+		[[Expected: 1
+Received: serialises to the same string]],
 	},
 	{
 		"non-recursive equal tables",
@@ -30,7 +37,7 @@ Received: 123]],
 + Received  + 0
 
   Table {
-    ["foo"] = 1,
+    foo = 1,
   }]],
 	},
 	{
@@ -41,8 +48,8 @@ Received: 123]],
 + Received  + 1
 
   Table {
--   ["foo"] = 1,
-+   ["foo"] = 2,
+-   foo = 1,
++   foo = 2,
   }]],
 	},
 	{
@@ -53,8 +60,8 @@ Received: 123]],
 + Received  + 1
 
   Table {
--   ["foo"] = 1,
-+   ["bar"] = 1,
++   bar = 1,
+-   foo = 1,
   }]],
 	},
 	{
@@ -65,27 +72,27 @@ Received: 123]],
 + Received  + 0
 
   Table {
--   ["foo"] = 1,
+-   foo = 1,
   }]],
 	},
 	{
 		"recursive tables",
-		{ { foo = 1 }, { bar = 2 }, { baz = 3 } },
-		{ { foo = 1 }, { bar = 3 }, { biz = 3 } },
+		{ { foo = 1 }, { bar = 2 }, [true] = { baz = 3 } },
+		{ { foo = 1 }, { bar = 3 }, [true] = { biz = 3 } },
 		[[- Expected  - 2
 + Received  + 2
 
   Table {
-    [1] = Table {
-      ["foo"] = 1,
+    Table {
+      foo = 1,
     },
-    [2] = Table {
--     ["bar"] = 2,
-+     ["bar"] = 3,
+    Table {
+-     bar = 2,
++     bar = 3,
     },
-    [3] = Table {
--     ["baz"] = 3,
-+     ["biz"] = 3,
+    [true] = Table {
+-     baz = 3,
++     biz = 3,
     },
   }]],
 	},
@@ -109,8 +116,8 @@ test("handles circular reference in expected table", function()
 + Received  + 1
 
   Table {
--   ["bar"] = -- Circular reference --,
-+   ["bar"] = "5",
+-   bar = -- Circular reference --,
++   bar = "5",
   }]])
 end)
 
@@ -125,8 +132,8 @@ test("handles circular reference in received table", function()
 + Received  + 1
 
   Table {
--   ["bar"] = "5",
-+   ["bar"] = -- Circular reference --,
+-   bar = "5",
++   bar = -- Circular reference --,
   }]])
 end)
 
@@ -136,13 +143,24 @@ test("handles circular reference in both tables", function()
 	local receivedValue = {}
 	receivedValue.bar = receivedValue
 
-	local rendered = renderDiff(expectedValue, receivedValue, false)
+	local rendered = renderDiff(expectedValue, receivedValue, false, false)
 
 	expect(rendered).toBe([[- Expected  - 1
 + Received  + 1
 
   Table {
--   ["bar"] = -- Circular reference --,
-+   ["bar"] = -- Circular reference --,
+-   bar = -- Circular reference --,
++   bar = -- Circular reference --,
   }]])
 end)
+
+test(
+	"serialises the expected value and returns inverted message when inverted",
+	function()
+		local expectedValue = { 1, 2, 3 }
+
+		local rendered = renderDiff(expectedValue, expectedValue, true, false)
+
+		expect(rendered).toBe("Expected: not {1, 2, 3}")
+	end
+)

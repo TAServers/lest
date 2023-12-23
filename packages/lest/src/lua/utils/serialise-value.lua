@@ -1,3 +1,6 @@
+local sortTableKeys = require("utils.sort-table-keys")
+local isLuaSymbol = require("utils.is-lua-symbol")
+
 --- Iterator function which returns elements in numeric then lexicographic order
 ---@param tbl table
 ---@return fun(): any, any
@@ -7,16 +10,7 @@ local function sortedPairs(tbl)
 		table.insert(keys, key)
 	end
 
-	table.sort(keys, function(a, b)
-		local aIsNumber = type(a) == "number"
-		local bIsNumber = type(b) == "number"
-
-		if aIsNumber then
-			return not bIsNumber or a < b
-		end
-
-		return not bIsNumber and tostring(a) < tostring(b)
-	end)
+	sortTableKeys(keys)
 
 	local i = 1
 	return function()
@@ -41,9 +35,7 @@ local function serialiseTable(tbl)
 		if type(key) == "number" and key == nextArrayIndex then
 			table.insert(renderedFields, serialiseValue(value))
 			nextArrayIndex = nextArrayIndex + 1
-		elseif
-			type(key) == "string" and string.match(key, "^[_%a][_%a%d]*$")
-		then
+		elseif isLuaSymbol(key) then
 			table.insert(
 				renderedFields,
 				string.format("%s = %s", key, serialiseValue(value))
