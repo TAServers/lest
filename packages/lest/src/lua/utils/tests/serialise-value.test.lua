@@ -51,3 +51,12 @@ test("serialises table with circular reference", function()
 
 	expect(serialised).toBe('{bar = <circular reference>, foo = "123"}')
 end)
+
+test("serialises table with non-circular internal reference", function()
+	local tbl = { a = {}, b = { foo = "bar" } }
+	tbl.a.b = tbl.b
+
+	local serialised = serialiseValue(tbl)
+
+	expect(serialised).toBe('{a = {b = {foo = "bar"}}, b = {foo = "bar"}}')
+end)

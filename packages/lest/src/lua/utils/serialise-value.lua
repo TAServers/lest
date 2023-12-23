@@ -118,8 +118,13 @@ serialiseValue = function(value, visitedTables)
 			return "<circular reference>"
 		end
 
-		visitedTables[value] = true
-		return serialiseTable(value, visitedTables)
+		local visitedTablesCopy = {}
+		for k, v in pairs(visitedTables) do
+			visitedTablesCopy[k] = v
+		end
+		visitedTablesCopy[value] = true
+
+		return serialiseTable(value, visitedTablesCopy)
 	end
 
 	if type(value) == "function" then
