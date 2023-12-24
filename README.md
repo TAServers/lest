@@ -26,7 +26,7 @@ Lest can be run with zero dependencies by downloading the `lest.lua` file publis
 
 -   API that 1:1 matches Jest in most places (with some Lua-specific aliases like `toBeNil`)
 -   Fast test running despite being a single thread, with Lest's 157 tests (at the time of writing) running in **under a second**!
--   Full support for all major version of Lua (`5.1.5`, `5.2.4`, `5.3.6`, `5.4.4`, `LuaJIT 2.0.5` and `LuaJIT 2.1.0`)
+-   Full support for all major versions of Lua (`5.1.5`, `5.2.4`, `5.3.6`, `5.4.4`, `LuaJIT 2.0.5` and `LuaJIT 2.1.0`)
 
 ## Quick Links
 
