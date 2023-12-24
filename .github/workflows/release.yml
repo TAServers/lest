@@ -31,6 +31,9 @@ jobs:
           cache: "npm"
           registry-url: "https://registry.npmjs.org"
 
+      - name: Copy global readme to package
+        run: cp README.md packages/lest/README.md
+
       - name: Publish to NPM
         uses: JS-DevTools/npm-publish@v3
         id: publish
