@@ -1,5 +1,5 @@
-<h1>
-	<img alt="Lest, painless Lua testing" src="https://raw.githubusercontent.com/TAServers/lest/master/packages/site/static/img/social.png" />
+<h1 align="center">
+	<img alt="Lest, painless Lua testing" src="readme.png" width="70%" />
 </h1>
 <p align="center">
 	<a href="https://www.npmjs.com/package/@taservers/lest" style="text-decoration: none;">
