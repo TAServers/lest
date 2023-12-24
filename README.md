@@ -10,7 +10,7 @@
 	</a>
 	<a href="https://github.com/TAServers/lest/blob/master/LICENSE">
 		<img alt="License: MIT" src="https://img.shields.io/github/license/TAServers/lest?style=for-the-badge&color=blue" />
-	</a><br>
+	</a>
 	<a href="https://discord.taservers.com" style="text-decoration: none;">
 		<img alt="Discord" src="https://img.shields.io/discord/800234484649820163?color=%237289DA&label=Discord&logo=discord&logoColor=white&style=for-the-badge" />
 	</a>
