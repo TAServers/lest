@@ -1,4 +1,4 @@
-<h1 align="center" id="readme-header">
+<h1 align="center">
 	<img alt="Lest, painless Lua testing" src="readme.png" width="70%" />
 </h1>
 <p align="center">
