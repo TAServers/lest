@@ -77,12 +77,13 @@ Most configuration options can be either passed in from the CLI or defined in a 
 The Lest config file should be a valid Lua script returning a table containing config options. For example:
 
 ```lua
+-- lest.config.lua
 return {
   testMatch = { "tests/lua/.+%.test%.lua" }
 }
 ```
 
-As this Lua script is executed before running or scanning for tests, you can use it to perform setup actions like defining `package.path`. A dedicated `setupFile` option will also be added in the future.
+As this script is executed before running or scanning for tests, you can use it to perform setup actions like defining `package.path`. A dedicated `setupFile` option will also be added in the future.
 
 For a full list of configuration options, see the docs page here (🚧 UNDER CONSTRUCTION 🚧).
 
