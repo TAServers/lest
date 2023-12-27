@@ -1,6 +1,6 @@
 {
   "name": "@taservers/lest",
-  "version": "3.1.0",
+  "version": "3.1.1",
   "license": "MIT",
   "description": "Painless Lua testing.",
   "homepage": "https://taservers.github.io/lest/",
