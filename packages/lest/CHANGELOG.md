@@ -14,6 +14,12 @@ The valid change types are:
 -   `Fixed` for any bug fixes.
 -   `Security` in case of vulnerabilities.
 
+## [3.1.1] - [#TODO](https://github.com/TAServers/lest/pull/TODO
+
+### Fixed
+
+-   Fixed banner image URL in `README.md`
+
 ## [3.1.0] - [#113](https://github.com/TAServers/lest/pull/113)
 
 ### Added
