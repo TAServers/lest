@@ -1,5 +1,5 @@
-local prettyValue = require("src.lua.utils.prettyValue")
-local assertType = require("src.lua.asserts.type")
+local serialiseValue = require("utils.serialise-value")
+local assertType = require("asserts.type")
 
 ---@type lest.Matcher
 local function toBeCloseTo(ctx, received, expected, numDigits)
@@ -14,9 +14,9 @@ local function toBeCloseTo(ctx, received, expected, numDigits)
 			pass = passed,
 			message = string.format(
 				"Expected %s to%sbe close to %s (%d decimal places)",
-				prettyValue(received),
+				serialiseValue(received),
 				ctx.inverted and " not " or " ",
-				prettyValue(expected),
+				serialiseValue(expected),
 				numDigits
 			),
 		}
@@ -47,9 +47,9 @@ local function toBeGreaterThan(ctx, received, expected)
 		pass = success and comparison,
 		message = string.format(
 			"Expected %s to%sbe greater than %s",
-			prettyValue(received),
+			serialiseValue(received),
 			ctx.inverted and " not " or " ",
-			prettyValue(expected)
+			serialiseValue(expected)
 		),
 	}
 end
@@ -66,9 +66,9 @@ local function toBeGreaterThanOrEqual(ctx, received, expected)
 		pass = success and comparison,
 		message = string.format(
 			"Expected %s to%sbe greater than or equal to %s",
-			prettyValue(received),
+			serialiseValue(received),
 			ctx.inverted and " not " or " ",
-			prettyValue(expected)
+			serialiseValue(expected)
 		),
 	}
 end
@@ -85,9 +85,9 @@ local function toBeLessThan(ctx, received, expected)
 		pass = success and comparison,
 		message = string.format(
 			"Expected %s to%sbe less than %s",
-			prettyValue(received),
+			serialiseValue(received),
 			ctx.inverted and " not " or " ",
-			prettyValue(expected)
+			serialiseValue(expected)
 		),
 	}
 end
@@ -104,9 +104,9 @@ local function toBeLessThanOrEqual(ctx, received, expected)
 		pass = success and comparison,
 		message = string.format(
 			"Expected %s to%sbe less than or equal to %s",
-			prettyValue(received),
+			serialiseValue(received),
 			ctx.inverted and " not " or " ",
-			prettyValue(expected)
+			serialiseValue(expected)
 		),
 	}
 end
@@ -117,7 +117,7 @@ local function toBeNaN(ctx, received)
 		pass = type(received) == "number" and received ~= received,
 		message = string.format(
 			"Expected %s to%sbe NaN",
-			prettyValue(received),
+			serialiseValue(received),
 			ctx.inverted and " not " or " "
 		),
 	}
@@ -129,7 +129,7 @@ local function toBeInfinity(ctx, received)
 		pass = type(received) == "number" and math.abs(received) == math.huge,
 		message = string.format(
 			"Expected %s to%sbe infinity",
-			prettyValue(received),
+			serialiseValue(received),
 			ctx.inverted and " not " or " "
 		),
 	}

@@ -1,7 +1,6 @@
 local COLOURS = require("src.lua.utils.consoleColours")
 local NodeType = require("src.lua.interface.testnodetype")
 local tablex = require("src.lua.utils.tablex")
-local prettyValue = require("src.lua.utils.prettyValue")
 local codepage = require("src.lua.utils.codepage")
 
 local PASS_SYMBOL = COLOURS.PASS("√")

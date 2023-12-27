@@ -1,6 +1,6 @@
-local matchers = require("src.lua.matchers.strings")
-local assertMatcher = require("src.lua.asserts.matchers")
-local prettyValue = require("src.lua.utils.prettyValue")
+local matchers = require("matchers.strings")
+local assertMatcher = require("asserts.matchers")
+local serialiseValue = require("utils.serialise-value")
 
 describe("string matchers", function()
 	local CONTEXT = {
@@ -63,8 +63,8 @@ describe("string matchers", function()
 					assertMatcher.hasMessage(
 						result,
 						("Expected %s to match %s"):format(
-							prettyValue(testString),
-							prettyValue(testPattern)
+							serialiseValue(testString),
+							serialiseValue(testPattern)
 						)
 					)
 				end
@@ -86,8 +86,8 @@ describe("string matchers", function()
 					assertMatcher.hasMessage(
 						result,
 						("Expected %s to match %s"):format(
-							prettyValue(testString),
-							prettyValue(testPattern)
+							serialiseValue(testString),
+							serialiseValue(testPattern)
 						)
 					)
 				end
@@ -107,8 +107,8 @@ describe("string matchers", function()
 				assertMatcher.hasMessage(
 					result,
 					("Expected %s to match %s"):format(
-						prettyValue(invalidObject),
-						prettyValue(testString)
+						serialiseValue(invalidObject),
+						serialiseValue(testString)
 					)
 				)
 			end)
@@ -127,8 +127,8 @@ describe("string matchers", function()
 			assertMatcher.hasMessage(
 				result,
 				("Expected %s to not match %s"):format(
-					prettyValue(testString),
-					prettyValue(testPattern)
+					serialiseValue(testString),
+					serialiseValue(testPattern)
 				)
 			)
 		end)

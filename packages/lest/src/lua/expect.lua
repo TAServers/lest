@@ -1,30 +1,22 @@
-local COLOURS = require("src.lua.utils.consoleColours")
+local COLOURS = require("utils.consoleColours")
 
-local matchers = require("src.lua.matchers")
-local prettyValue = require("src.lua.utils.prettyValue")
-local TestResultError = require("src.lua.errors.testresult")
+local matchers = require("matchers")
+local TestResultError = require("errors.testresult")
 
 --- Builds a signature for the expect call
 ---@param name string -- Name of the matcher that was used
----@param args any -- Arguments passed to the matcher
----@param received any
 ---@param inverted boolean -- True if the condition was inverted
 ---@return string
-local function buildSignature(name, args, received, inverted)
-	local stringArgs = {}
-	for i, arg in ipairs(args) do
-		stringArgs[i] = prettyValue(arg)
-	end
-
+local function buildSignature(name, inverted)
 	return string.format(
 		"%s%s%s%s.%s%s%s%s",
 		COLOURS.DIMMED("expect("),
-		COLOURS.RECEIVED(prettyValue(received)),
+		COLOURS.RECEIVED("received"),
 		COLOURS.DIMMED(")"),
 		inverted and ".never" or "",
 		COLOURS.HIGHLIGHT(name),
 		COLOURS.DIMMED("("),
-		COLOURS.EXPECTED(table.concat(stringArgs, ", ")),
+		COLOURS.EXPECTED("expected"),
 		COLOURS.DIMMED(")")
 	)
 end
@@ -51,7 +43,7 @@ local function bindMatcher(name, matcher, received, inverted)
 			error(
 				TestResultError(
 					tostring(result.message),
-					buildSignature(name, { ... }, received, inverted)
+					buildSignature(name, inverted)
 				)
 			)
 		end

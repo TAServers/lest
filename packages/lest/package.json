@@ -1,6 +1,6 @@
 {
   "name": "@taservers/lest",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "license": "MIT",
   "description": "Painless Lua testing.",
   "homepage": "https://taservers.github.io/lest/",
@@ -16,10 +16,10 @@
     "lest": "./dist/bin/lest.js"
   },
   "scripts": {
-    "build:lua": "luabundler bundle src/lua/lest.lua -p \"./?.lua\" -o dist/lua/lest.lua",
+    "build:lua": "luabundler bundle src/lua/lest.lua -p \"./src/lua/?.lua\" -p \"./src/lua/?/index.lua\" -p \"./?.lua\" -o dist/lua/lest.lua",
     "build:ts": "tsc -p tsconfig.build.json",
     "build": "npm run build:lua && npm run build:ts",
-    "test:lua": "lua src/lua/lest.lua",
+    "test:lua": "npm run build:lua && lua dist/lua/lest.lua",
     "test:ts": "jest",
     "test": "npm run test:lua && npm run test:ts",
     "clean": "rimraf dist",

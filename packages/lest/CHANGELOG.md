@@ -14,6 +14,20 @@ The valid change types are:
 -   `Fixed` for any bug fixes.
 -   `Security` in case of vulnerabilities.
 
+## [3.1.0] - [#113](https://github.com/TAServers/lest/pull/113)
+
+### Added
+
+-   Added pretty diff rendering to `toEqual` matcher to show differences between deeply nested values
+
+### Changed
+
+-   `toBe` matcher now generates its message more in line with Jest to make comparing values easier
+-   All values displayed in test failure messages are now properly serialised to mostly valid Lua, including the contents of tables
+-   Test failure messages no longer include the expected and received values in the `expect(...).matcherName(...)` signature
+    -   This matches the behaviour of Jest and avoids duplicating information between the signature and failure message
+-   Test failure messages are no longer highlighted in red to give more control to matchers over how individual messages are formatted
+
 ## [3.0.0] - [#102](https://github.com/TAServers/lest/issues/102)
 
 ### Added
